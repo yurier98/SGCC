@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Editors
+.idea/
+.vscode
+
+# staticfiles
+web_project/staticfiles
+
+#Carpeta excluida
+portal-theme-bs5-v2.0
