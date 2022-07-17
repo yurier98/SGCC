@@ -3,16 +3,13 @@
 
 {% block content %}
     <div class="app-wrapper">
-
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
-
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
-
-
-                    {% include "includes/_breadcrumbs.html" %}
-
-
+                    <div class="col-auto">
+                        {#                        <h1 class="app-page-title mb-0">Inventario</h1>#}
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
                     <div class="col-auto">
                         <div class="page-utilities">
                             <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
@@ -51,7 +48,7 @@
                                     </a>
                                 </div>
                                 <div class="col-auto">
-                                    <a class="btn app-btn-primary" href="{% url 'prestamos:create' %}">
+                                    <a class="btn app-btn-primary" href="{% url 'loan:create' %}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                              fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -63,7 +60,6 @@
                         </div><!--//table-utilities-->
                     </div><!--//col-auto-->
                 </div><!--//row-->
-
 
                 <nav id="orders-table-tab"
                      class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
@@ -78,9 +74,7 @@
                        href="#orders-cancelled" role="tab" aria-controls="orders-cancelled"
                        aria-selected="false">Entregados</a>
                 </nav>
-
-                {% if prestamos_list %}
-
+                {% if loan_list %}
                     <div class="tab-content" id="orders-table-tab-content">
                         <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
                              aria-labelledby="orders-all-tab">
@@ -101,20 +95,25 @@
                                             </thead>
                                             <tbody>
 
-                                            {% for object in prestamos_list %}
+                                            {% for object in loan_list %}
 
                                                 <tr>
-                                                    <td class="cell">{{ object.solapin }}</td>
+                                                    <td class="cell">{{ object.user.solapin }}</td>
                                                     <td class="cell"><span
-                                                            class="truncate">{{ object.nombre_apellidos }}</span>
+                                                            class="truncate">{{ object.user }}</span>
                                                     </td>
-                                                    <td class="cell">{{ object.facultad }}</td>
-                                                    <td class="cell"><span>17 Oct</span><span
-                                                            class="note">2:16 PM</span>
+                                                    <td class="cell">{{ object.user.area }}</td>
+                                                    <td class="cell"><span>{{ object.created |date:"j F, Y" }}</span><span
+                                                            class="note">{{ object.created|date:' H:i'  }}</span>
                                                     </td>
-                                                    <td class="cell"><span
-                                                            class="badge bg-success">{{ object.state }}</span></td>
-                                                    <td class="cell">{{ object.manifestacion }}</td>
+                                                    <td class="cell">
+                                                        {% if object.state  == 'PR' %}
+                                                            <span class="badge bg-success"> Prestado </span>
+                                                        {% elif object.state  == 'PE' %}
+                                                            <span class="badge bg-warning"> Pendiente </span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="cell">{{ object.manifestation }}</td>
                                                     <td class="cell"><a class="btn-sm app-btn-secondary"
                                                                         href="#">Ver</a>
                                                     </td>
@@ -156,8 +155,6 @@
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
-
-
 
                                             {% endfor %}
                                             </tbody>
@@ -313,7 +310,6 @@
                         </div><!--//tab-pane-->
 
                     </div><!--//tab-content-->
-
                 {% else %}
                     <div class="col-md-6 col-lg-12" data-aos="zoom-in" data-aos-delay="200">
                         <header class="section-header">
@@ -342,8 +338,6 @@
                     </li>
                 </ul>
             </nav><!--//app-pagination-->
-
-
         </div><!--//container-fluid-->
     </div><!--//app-content-->
 

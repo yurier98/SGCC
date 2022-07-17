@@ -1,0 +1,235 @@
+{% extends 'includes/list.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block head_list %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
+
+    <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+    <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
+    <script src="{% static 'loan/js/form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto ">
+                                    {% block content_list_before %}{% endblock %}
+                                </div><!--//col-->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div>
+
+                <form id="frmLoan" class="app-card-settings " method="post" data-url="{{ list_url }}">
+                    <div class=" settings-form row g-3 mb-5  align-items-start">
+                        <div class="app-card-header p-3 border-bottom-0">
+                            <h4 class="app-card-title">{{ title }}</h4>
+                            <hr>
+                        </div>
+                        <div class="app-card-body px-4 w-100">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
+                                            <div class="app-card-header  p-2 border-bottom-0">
+                                                <h3 class="app-card-title">
+                                                    <div class="app-icon-holder"><i class="fas fa-boxes"></i>
+                                                    </div>
+                                                    Detalle de productos
+                                                </h3>
+                                                <hr>
+                                            </div>
+                                            <div class="app-card-body w-100">
+                                                <div class="container-fluid settings-section">
+                                                    <div class="form-group settings-form">
+                                                        <label class="form-label">Buscador de productos:</label>
+                                                        <div class="input-group">
+                                                            <select class="form-control select2"
+                                                                    name="search_product"></select>
+                                                            {#                                        <input type="text" class="form-control" autocomplete="off"#}
+                                                            {#                                               placeholder="Ingrese una descripción" maxlength="50" name="search">#}
+                                                            <div class="input-group-append">
+                                                                <button class="btn app-btn-secondary dropdown-toggle"
+                                                                        type="button"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                    Opciones
+                                                                </button>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <a class="dropdown-item btnSearchProducts">
+                                                                        <i class="fas fa-search"></i> Buscar productos
+                                                                    </a>
+                                                                    <a class="dropdown-item btnClearSearch">
+                                                                        <i class="fas fa-times"></i> Limpiar búsqueda
+                                                                    </a>
+                                                                    <li>
+                                                                        <hr class="dropdown-divider">
+                                                                    </li>
+                                                                    <a class="dropdown-item btnRemoveAll">
+                                                                        <i class="fa-regular fa-trash-alt"></i> Eliminar
+                                                                        todos mis
+                                                                        items
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <table class="table app-table-hover mb-0 text-left "
+                                                           id="tblProducts">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="cell">Eliminar</th>
+                                                            <th class="cell">Imagen</th>
+                                                            <th class="cell">Producto</th>
+                                                            <th class="cell">Categoría</th>
+                                                            <th class="cell">Stock</th>
+                                                            <th class="cell">Cantidad</th>
+                                                            <th class="cell">Estado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="app-card app-card-orders-table shadow-sm align-items-start">
+                                            <div class="app-card-header p-3 border-bottom-0">
+                                                <h3 class="app-card-title">
+                                                    <div class="app-icon-holder"><i class="fas fa-shopping-cart"></i>
+                                                    </div>
+                                                    Datos del préstamo
+                                                </h3>
+                                                <hr>
+                                            </div>
+                                            <div class="app-card-body p-3">
+                                                <div class="container-fluid">
+                                                    <input type="hidden" name="action" value="{{ action }}">
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Rango de fecha:</label>
+                                                        {{ form.date_range }}
+                                                    </div>
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Usuario:</label>
+                                                        <div class="input-group">
+                                                            {{ form.user }}
+{#                                                            <div class="input-group-append">#}
+{#                                                                <button class="btn app-btn-secondary btnAddUser"#}
+{#                                                                        type="button">#}
+{#                                                                    <i class="fas fa-user-plus"></i>#}
+{#                                                                </button>#}
+{#                                                            </div>#}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Manifestación:</label>
+                                                        {{ form.manifestation }}
+                                                    </div>
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Estado:</label>
+                                                        {{ form.state }}
+                                                    </div>
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Descripción:</label>
+                                                        {{ form.description }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-card-footer p-4 mt-auto">
+                            <hr>
+                            <div class="mt-3 row justify-content-between">
+                                <div class="col-auto">
+
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn app-btn-primary btn-flat">
+                                        <i class="fas fa-save"></i> Guardar registro
+                                    </button>
+                                    <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModalSearchProducts" tabindex="-1" role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class=" modal-content app-card">
+                <div class="modal-header app-card-header p-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <h4 class="modal-title app-card-title " id="exampleModalLabel">
+                                {#                        <div class="app-icon-holder"><i class="fas fa-search"></i></div>#}
+                                Búsqueda de Productos</h4>
+                        </div><!--//col-->
+                        <div class="col-auto">
+                            <div class="card-header-action">
+                                <button type="button" class="btn-sm app-btn-secondary" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div><!--//card-header-actions-->
+                        </div><!--//col-->
+                    </div>
+                </div>
+                <div class="modal-body app-card-body app-card-orders-table p-3 mt-auto">
+                    <table class="table app-table-hover mb-0 text-left " id="tblSearchProducts">
+                        <thead>
+                        <tr>
+                            <th class="cell">Producto</th>
+                            <th class="cell">Imagen</th>
+                            <th class="cell">Stock</th>
+                            <th class="cell">Categoría</th>
+                            <th class="cell">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        loan.details.products = {{ products|safe }};
+        // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
+    </script>
+{% endblock %}

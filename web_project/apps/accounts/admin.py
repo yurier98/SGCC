@@ -1,12 +1,39 @@
 from django.contrib import admin
 
-from .models import Perfil
+from .models import UserProfile
 
 
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'solapin', 'categoria']
-    #list_filter = ['is_superuser']
-    #search_fields = ['username', 'first_name', 'last_name']
+class PerfileAdmin(admin.ModelAdmin):
+    search_fields = ('user'),
+    ordering = ['user']
 
 
-admin.site.register(Perfil, ProfileAdmin)
+admin.site.register(UserProfile, PerfileAdmin)
+# admin.site.register(Menu)
+
+
+# class LoginAndPassManagerVarsConfigAdmin(admin.ModelAdmin):
+#     list_display = [
+#         "id",
+#         "account_logout_url",
+#         "account_pasword_change_redirect_url",
+#         "password_regex",
+#         "store_password_history",
+#         "password_history_life",
+#         "password_expiry_time",
+#         "block_auth_from_other_ip",
+#         "faillogin_attemps_before_deactive",
+#         "token_validity_duration",
+#     ]
+#     fields = [
+#         "account_logout_url",
+#         "account_pasword_change_redirect_url",
+#         "password_regex",
+#         "store_password_history",
+#         "password_history_life",
+#         "password_expiry_time",
+#         "block_auth_from_other_ip",
+#         "faillogin_attemps_before_deactive",
+#         "token_validity_duration",
+#     ]
+# admin.site.register(LoginAndPassManagerVarsConfigAdmin)

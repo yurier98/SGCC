@@ -1,0 +1,111 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+    <div class="app-wrapper">
+
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+
+                {% include "includes/_breadcrumbs.html" %}
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Modificar perfil</h3>
+                        <div class="section-intro">Settings section intro goes here. Lorem ipsum dolor sit amet,
+                            consectetur adipiscing elit. <a href="help.html">Learn more</a></div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <form method="post" action="." enctype="multipart/form-data">
+                            <div class="app-card app-card-settings shadow-sm p-4">
+                                <div class="app-card-header">
+                                    <h4 class="card-title">
+                                        {% if action == 'add' %}
+                                            <i class="fas fa-plus"></i>
+                                        {% else %}
+                                            <i class="fas fa-edit"></i>
+                                        {% endif %}
+                                        {{ title }}
+                                    </h4>
+                                </div>
+                                <div class="app-card-body ">
+                                    <div class=" settings-form p-3">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="{{ action }}">
+                                        {% if form.errors %}
+                                            <div class="alert alert-danger alert-dismissible">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">×
+                                                </button>
+                                                <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al
+                                                    querer guardar el registro</h5>
+                                                <ul>
+                                                    {% for field in form %}
+                                                        {% for error in field.errors %}
+                                                            <li>{{ error }}</li>
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                        {% for field in form.visible_fields %}
+                                            <div class="form-group mb-3">
+                                                <label class="form-label" for="email">{{ field.label }}:</label>
+                                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div><!--//app-card-body-->
+                                <div class="app-card-footer p-3">
+                                    <button type="submit" class="btn app-btn-primary ">
+                                        <i class="fas fa-save"></i> Guardar registro
+                                    </button>
+                                    <a href="{{ list_url }}" class="btn app-btn-secondary">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
+                                </div>
+
+                            </div><!--//app-card-->
+                        </form>
+                    </div>
+                </div><!--//row-->
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+
+
+    </div><!--//app-wrapper-->
+    <script>
+        {% if form.errors %}
+            var errors = '';
+            {% for field in form %}
+                {% for error in field.errors %}
+                    errors += '{{ error }}\n';
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                errors += '{{ error }}\n';
+            {% endfor %}
+            Swal.fire({
+                title: 'Error!',
+                text: errors,
+                icon: 'error'
+            });
+        {% endif %}
+
+        $(function () {
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                var parameters = new FormData(this);
+                submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                    location.href = '{{ list_url }}';
+                });
+            });
+        });
+
+
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+    {% block head_list %}
+
+    {% endblock %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl app-card-settings">
+
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto ">
+                                    {% block content_list_before %}{% endblock %}
+                                </div><!--//col-->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+
+                    <hr>
+                </div>
+
+                <div class="container-fluid">
+
+                    <div class="form-group settings-form ">
+                        <div class=" mb-3">
+                            <a href="{{ create_url }}" class="btn app-btn-primary btnTest">
+                                <i class="fas fa-plus"></i> Nuevo registro
+                            </a>
+                            <a href="{{ list_url }}" class="btn app-btn-secondary">
+                                <i class="fas fa-sync"></i> Actualizar
+                            </a>
+                        </div>
+                    </div>
+                    <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start ">
+                        <div class="app-card-body ">
+                            <div class="table-responsive p-3">
+                                <table class="table app-table-hover mb-0 text-left " id="data">
+                                    <thead>
+                                    {% block columns %}
+
+                                    {% endblock %}
+                                    </thead>
+                                    <tbody>
+                                    {% block rows %}
+
+                                    {% endblock %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script type="application/javascript">
+        $(function () {
+            $('#data').DataTable({
+                responsive: true,
+                autoWidth: false
+            });
+        });
+
+    </script>
+{% endblock %}

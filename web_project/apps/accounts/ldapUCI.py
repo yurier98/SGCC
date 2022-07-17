@@ -1,12 +1,13 @@
 import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 from django.contrib.auth.models import User
-from .models import Perfil
+from .models import UserProfile
 
 
 class LDAPBackend(object):
     def authenticate(self, username=None, password=None, **kwargs):
         # Direccion del servidor ldap
-        self.servidor_ldap = 'ldap://10.0.0.3'
+        self.servidor_ldap = 'ldap://10.0.0.4'
         # Usuario para inicializar
         self.dn_ldap = 'cn=ad search, ou=Systems, ou=UCI Domain Impersonals, dc=uci, dc=cu'
         # Clave del usuario a inicializar
@@ -44,10 +45,12 @@ class LDAPBackend(object):
         """Intenta conectarce con el usuario y clave para iniciar la coneccion"""
         try:
             self.conexion = ldap.initialize(self.servidor_ldap)
+            print("Conexion establecida al servidor ldap....")
 
             self.conexion.protocol_version = ldap.VERSION3
             self.conexion.referrals = ldap.OPT_REFERRALS
             resultado = self.conexion.simple_bind_s(self.dn_ldap, self.clave_ldap)
+            print(resultado)
 
             """Intenta autenticar un usuario cualquiera con su clave en el servidor ldap, devuelve el usuario de ser correcto los datos"""
             if username != None and password != '':
@@ -68,7 +71,7 @@ class LDAPBackend(object):
                                 print (self.autenticadoDatos)
                                 usuario = User.objects.create_user(username, self.getCorreo(), password)
                                 usuario.is_staff = None
-                                perfil = Perfil(user=usuario, solapin=self.getSolapin(), nombre=self.getNombre(),
+                                perfil = UserProfile(user=usuario, solapin=self.getSolapin(), nombre=self.getNombre(),
                                                 apellidos=self.getApellidos(), categoria=self.getCategoria(),
                                                 area=self.getArea(), foto=self.getFoto())
                                 perfil.save()
@@ -85,7 +88,7 @@ class LDAPBackend(object):
         if self.conexion != None:
             try:
                 resultado_busqueda = self.conexion.search_s(self.CONTEXTO, ldap.SCOPE_SUBTREE,
-                                                            'samaccountname=' + usuario, self.DATOS_USUARIO_LDAP)
+                                                            'sAMAccountName=' + usuario, self.DATOS_USUARIO_LDAP)
                 return resultado_busqueda[0]
             except:
                 pass

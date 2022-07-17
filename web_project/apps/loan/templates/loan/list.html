@@ -1,0 +1,72 @@
+{% extends 'includes/list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
+    <script src="{% static 'loan/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th class="cell" scope="col" style="width: 10%;">Número</th>
+        <th class="cell" scope="col" style="width: 10%;">Solapín</th>
+        <th class="cell" scope="col" style="width: 10%;">Usuario</th>
+        <th class="cell" scope="col" style="width: 10%;">Facultad</th>
+        <th class="cell" scope="col" style="width: 10%;">Fecha de registro</th>
+        <th class="cell" scope="col" style="width: 10%;">Estado</th>
+        <th class="cell" scope="col" style="width: 10%;"> Manifestación</th>
+        <th class="cell" scope="col" style="width: 10%;"></th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+    <div class="modal fade" id="myModalProducts" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-search"></i> Detalle del préstamo
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table app-table-hover mb-0 text-left" id="tblProducts">
+                        <thead>
+                        <tr>
+                            <th class="cell">Producto</th>
+                            <th class="cell">Categoría</th>
+                            <th class="cell">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_list_before %}
+        <div class="form-group settings-form ">
+            <label class="form-label">Rangos de fechas:</label>
+            <div class="input-group mb-3">
+                {{ form.date_range }}
+                <div class="input-group-append ">
+                    <button class="btn app-btn-primary btnSearch" type="button">
+                        <i class="fa-regular fa-calendar-check"></i> Buscar por rangos
+                    </button>
+                    <button class="btn app-btn-secondary  btnSearchAll" type="button">
+                        <i class="fa-regular fa-calendar-check"></i> Ver todos
+                    </button>
+                </div>
+            </div>
+        </div>
+{% endblock %}

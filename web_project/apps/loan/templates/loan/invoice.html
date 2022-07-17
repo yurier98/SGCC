@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <img alt="" src=" {{ loan.company.get_image }}" class="img-fluid d-block mx-auto img-logo">
+    <h1 class="name-company">{{ sale.company.name }}</h1>
+    <p class="text-center">
+        {{ loan.company.ruc }}<br>
+        {{ loan.company.address }}<br>
+        Celular: {{ loan.company.mobile }}<br>
+        Teléfono: {{ loan.company.phone }}<br>
+        Web: {{ sale.company.website }}<br>
+    </p>
+    <div class="mt-2 row justify-content-between">
+        <div class="col-auto">
+            <b>Nombre y apellidos:</b> {{ loan.user.nombre }} {{ loan.user.apellidos }}<br>
+            <b>Usuario:</b> {{ loan.user }}<br>
+            <b>Manifestación:</b> {{ loan.manifestation.name }}<br>
+            <b>Fecha de registro:</b> {{ loan.created }}<br>
+        </div>
+        <div class=" col-auto">
+            <b>Número:</b> {{ loan.get_number }}<br>
+            <b>Fecha de inicio:</b> {{ loan.start_date }}<br>
+            <b>Fecha de entrega:</b> {{ loan.end_date }}<br>
+        </div>
+        <div class=" col-auto">
+            <b>Descripción:</b> {{ loan.description }}<br>
+        </div>
+    </div>
+
+
+    <table class="table app-table-hover mb-0 text-left" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="cell" style="width: 80%;">Producto</th>
+            <th class="cell" style="width: 20%;">Cantidad</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in loan.saleproduct_set.all %}
+            <tr>
+                <td class="text-center">{{ det.cant }} 10</td>
+                <td>{{ det.product }} Nombre del producto</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td>Nombre del producto</td>
+            <td class="text-center">10</td>
+        </tr>
+
+
+        <tr>
+            <td colspan="4">
+                <p class="text-uppercase font-weight-bold text-center mt-3">
+                    Total de productos: {{ sale.detsale_set.all.count }}<br>
+                    !Gracias por su preferencia!<br>
+                    Una vez que usted a recibido el pedido<br>
+                    No hay derecho a reclamo ni devolución del producto<br>
+                    Que tenga un excelente día
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
