@@ -1,10 +1,10 @@
+from django.forms import Form, ModelForm
 from django import forms
-from django.contrib.auth.models import User
 
 from .models import UserProfile
 
 
-class LoginForm(forms.Form):
+class LoginForm(Form):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -29,16 +29,16 @@ class LoginForm(forms.Form):
     )
 
 
-class ResetPasswordForm(forms.Form):
+class ResetPasswordForm(Form):
     username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Ingrese un username',
+        'placeholder': 'Ingrese su usuario',
         'class': 'form-control',
         'autocomplete': 'off'
     }))
 
     def clean(self):
         cleaned = super().clean()
-        if not User.objects.filter(username=cleaned['username']).exists():
+        if not UserProfile.objects.filter(username=cleaned['username']).exists():
             # self._errors['error'] = self._errors.get('error', self.error_class())
             # self._errors['error'].append('El usuario no existe')
             raise forms.ValidationError('El usuario no existe')
@@ -46,10 +46,10 @@ class ResetPasswordForm(forms.Form):
 
     def get_user(self):
         username = self.cleaned_data.get('username')
-        return User.objects.get(username=username)
+        return UserProfile.objects.get(username=username)
 
 
-class ChangePasswordForm(forms.Form):
+class ChangePasswordForm(Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Ingrese un password',
         'class': 'form-control',
@@ -73,14 +73,15 @@ class ChangePasswordForm(forms.Form):
         return cleaned
 
 
-class UserProfileForm(forms.ModelForm):
+class UserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = UserProfile
-        fields = 'first_name', 'last_name', 'email', 'solapin', 'photo', 'phone', 'area'
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area', \
+                 'groups'
         widgets = {
             'first_name': forms.TextInput(
                 attrs={
@@ -97,41 +98,151 @@ class UserProfileForm(forms.ModelForm):
                     'placeholder': 'Ingrese su email',
                 }
             ),
-            'solapin': forms.TextInput(
+            'username': forms.TextInput(
                 attrs={
-                    'placeholder': 'Ingrese su Solapin',
+                    'placeholder': 'Ingrese su usuario',
                 }
             ),
-            'phone': forms.TextInput(
+            'password': forms.PasswordInput(render_value=True,
+                                            attrs={
+                                                'placeholder': 'Ingrese su contraseña',
+                                            }
+                                            ),
+            'solapin': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su Solapín',
+                    'class': 'form-control',
+                }
+            ),
+            'phone': forms.NumberInput(
                 attrs={
                     'placeholder': 'Ingrese su teléfono',
+                    'class': 'form-control',
                 }
             ),
             'area': forms.TextInput(
                 attrs={
-                    'placeholder': 'Ingrese su area',
+                    'placeholder': 'Ingrese su área',
+                    'class': 'form-control',
+                }
+            ),
+            'groups': forms.SelectMultiple(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%',
+                'multiple': 'multiple'
+            })
+        }
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff',
+                   'created', 'updated']
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                pwd = self.cleaned_data['password']
+                u = form.save(commit=False)
+                if u.pk is None:
+                    u.set_password(pwd)
+                else:
+                    user = UserProfile.objects.get(pk=u.pk)
+                    if user.password != pwd:
+                        u.set_password(pwd)
+                u.save()
+                u.groups.clear()
+                for g in self.cleaned_data['groups']:
+                    u.groups.add(g)
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class UserProfileForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = UserProfile
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area'
+
+        widgets = {
+            # 'image': forms.ImageField(
+            #     # attrs={
+            #     #     'class': 'drop-zone__input',
+            #     # }
+            # ),
+            'first_name': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus nombres',
+                    'class': 'form-control',
+                }
+            ),
+            'last_name': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus apellidos',
+                    'class': 'form-control',
+                }
+            ),
+            'email': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su email',
+                    'class': 'form-control',
+                }
+            ),
+            'username': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su username',
+                    'class': 'form-control',
+                }
+            ),
+            'password': forms.PasswordInput(render_value=True,
+                                            attrs={
+                                                'placeholder': 'Ingrese su password',
+                                                'class': 'form-control',
+                                            }
+                                            ),
+            'solapin': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su Solapín',
+                    'class': 'form-control',
+                }
+            ),
+            'phone': forms.NumberInput(
+                attrs={
+                    'placeholder': 'Ingrese su teléfono',
+                    'class': 'form-control',
+                }
+            ),
+            'area': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su área',
+                    'class': 'form-control',
                 }
             ),
 
         }
-        exclude = ['created', 'updated']
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff', 'groups',
+                   'created', 'updated']
 
-    # def save(self, commit=True):
-    #     data = {}
-    #     form = super()
-    #     try:
-    #         if form.is_valid():
-    #             pwd = self.cleaned_data['password']
-    #             u = form.save(commit=False)
-    #             if u.pk is None:
-    #                 u.set_password(pwd)
-    #             else:
-    #                 user = User.objects.get(pk=u.pk)
-    #                 if user.password != pwd:
-    #                     u.set_password(pwd)
-    #             u.save()
-    #         else:
-    #             data['error'] = form.errors
-    #     except Exception as e:
-    #         data['error'] = str(e)
-    #     return data
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                pwd = self.cleaned_data['password']
+                u = form.save(commit=False)
+                if u.pk is None:
+                    u.set_password(pwd)
+                else:
+                    user = UserProfile.objects.get(pk=u.pk)
+                    if user.password != pwd:
+                        u.set_password(pwd)
+                u.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data

@@ -3,7 +3,6 @@ from django.db import models
 from django.db.models.functions import Coalesce
 from django.forms import model_to_dict
 from django.urls import reverse
-from ..audit.mixins import AuditMixin
 
 # Create your models here.
 from ..accounts.models import UserProfile
@@ -48,7 +47,7 @@ class Loan(models.Model):
 
     def __str__(self):
         """Return title and username."""
-        return 'Préstamo de {} de {}'.format(self.user.user.first_name, self.user.user.username)
+        return 'Préstamo a {}'.format(self.user.username)
 
     def get_number(self):
         return f'{self.id:06d}'
@@ -57,9 +56,10 @@ class Loan(models.Model):
         item = model_to_dict(self)
         item['number'] = self.get_number()
         item['start_date'] = self.start_date.strftime('%Y-%m-%d')
+        item['end_date'] = self.end_date.strftime('%Y-%m-%d')
+        item['created'] = self.created.strftime('%Y-%m-%d')
         item['user'] = self.user.toJSON()
         item['manifestation'] = self.manifestation.toJSON()
-        # item['created'] = self.created.strftime('%Y-%m-%d')
         item['loanproduct'] = [i.toJSON() for i in self.loanproduct_set.all()]
         return item
 

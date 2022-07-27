@@ -1,0 +1,75 @@
+{% extends 'reports/reports.html' %}
+{% load static %}
+{% block head_report %}
+    <script src="{% static 'inventary/js/report_inventary.js' %}"></script>
+{% endblock %}
+
+{% block content_report %}
+
+    <table class="table app-table-hover mb-0 text-left" id="data">
+        <thead>
+        <tr>
+            <th class="cell" scope="col">Nro</th>
+            <th class="cell" scope="col">Nombre del producto</th>
+            <th class="cell" scope="col">Categoría</th>
+            <th class="cell" scope="col">Cantidad almacenada</th>
+            <th class="cell" scope="col">Fecha de registro</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block content_list_before %}
+
+    <div class="page-utilities">
+        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+            <div class="col-auto">
+                <form class="table-search-form row gx-1 align-items-center">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label>Filtros:</label>
+                            <div class="input-group mb-3">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+{#                         {{ form.state }}#}
+{#                        <select class="form-select w-auto">#}
+{#                            <option selected="" value="option-1">Todos</option>#}
+{#                            <option value="option-2">Prestado</option>#}
+{#                            <option value="option-3">Disponible</option>#}
+{#                        </select>#}
+                    </div>
+                    <div class="col-auto">
+                         {{ form.category }}
+{#                        <select class="form-select w-auto">#}
+{#                            <option selected="" value="option-1">Todo</option>#}
+{#                            <option value="option-2">Pantalones</option>#}
+{#                            <option value="option-3">Vestidos</option>#}
+{#                        </select>#}
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn app-btn-primary btnSearchFilter" type="button">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+
+            </div><!--//col-->
+        </div><!--//row-->
+    </div>
+
+{% endblock %}
+
+{% block form-group %}
+    <div class="form-group settings-form ">
+        <div class=" mb-3">
+            <button type="button" class="btn app-btn-secondary btnSearch">
+                <i class="fas fa-sync"></i> Actualizar
+            </button>
+        </div>
+    </div>
+{% endblock %}

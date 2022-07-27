@@ -4,66 +4,55 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from django.contrib import auth
+from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, FormView, RedirectView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from .forms import LoginForm, ResetPasswordForm, ChangePasswordForm, UserProfileForm
-from django.views.generic import FormView, RedirectView, UpdateView
-from config.settings import base as settings
 
-# Create your views here.
+from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
+from .forms import LoginForm, ResetPasswordForm, ChangePasswordForm, UserProfileForm, UserForm
+
+from config.settings import base as settings
 from .models import UserProfile
 
 
-def login_user(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = auth.authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            if user is not None:
-                if user.is_active:
-                    # Correct password, and the user is marked "active"
-                    auth.login(request, user)
-                    # Redirect to a success page.
-                    return redirect('home')
-    else:
-        form = LoginForm()
-    return render(request, 'autentications/login.html', {'form': form})
+# Create your views here.
+
+#   Vistas de los Autenticacion del sistema ######
+class LoginFormView(LoginView):
+    template_name = 'login/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(settings.LOGIN_REDIRECT_URL)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Iniciar sesión'
+        return context
 
 
-def login_view(request):
-    form = LoginForm(request.POST or None)
-    msg = None
-    if request.method == "POST":
+class LogoutView(RedirectView):
+    pattern_name = 'login'
 
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = auth.authenticate(username=username, password=password)
-            if user is not None:
-                auth.login(request, user)
-                return redirect("/")
-            else:
-                msg = 'Invalid credentials'
-        else:
-            msg = 'Error validating the form'
-
-    return render(request, "autentications/login.html", {"form": form, "msg": msg})
-
-
-def logout_user(request):
-    auth.logout(request)
-    return redirect('loguiar_usuario')
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ResetPasswordView(FormView):
     form_class = ResetPasswordForm
     template_name = 'login/resetpwd.html'
+    # template_name = 'login/reset-password.html'
     success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
 
     @method_decorator(csrf_exempt)
@@ -123,6 +112,7 @@ class ResetPasswordView(FormView):
 class ChangePasswordView(FormView):
     form_class = ChangePasswordForm
     template_name = 'login/changepwd.html'
+    template_name = 'login/changepwd.html'
     success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
 
     @method_decorator(csrf_exempt)
@@ -131,7 +121,7 @@ class ChangePasswordView(FormView):
 
     def get(self, request, *args, **kwargs):
         token = self.kwargs['token']
-        if User.objects.filter(token=token).exists():
+        if UserProfile.objects.filter(token=token).exists():
             return super().get(request, *args, **kwargs)
         return HttpResponseRedirect('/')
 
@@ -140,7 +130,7 @@ class ChangePasswordView(FormView):
         try:
             form = ChangePasswordForm(request.POST)
             if form.is_valid():
-                user = User.objects.get(token=self.kwargs['token'])
+                user = UserProfile.objects.get(token=self.kwargs['token'])
                 user.set_password(request.POST['password'])
                 user.token = uuid.uuid4()
                 user.save()
@@ -157,11 +147,139 @@ class ChangePasswordView(FormView):
         return context
 
 
+class UserChooseGroup(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            request.session['group'] = Group.objects.get(pk=self.kwargs['pk'])
+        except:
+            pass
+        return HttpResponseRedirect(reverse_lazy('home'))
+
+
+#   Vistas de los Usuarios que solo tiene acceso el admin ######
+class UserListView(ValidatePermissionRequiredMixin, ListView):
+    model = UserProfile
+    template_name = 'user/list.html'
+    permission_required = 'view_user'
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search':
+                data = []
+                for i in UserProfile.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Usuarios'
+        context['create_url'] = reverse_lazy('user_create')
+        context['list_url'] = reverse_lazy('user_list')
+        context['entity'] = 'Usuarios'
+        return context
+
+
+class UserCreateView(ValidatePermissionRequiredMixin, CreateView):
+    model = UserProfile
+    form_class = UserForm
+    template_name = 'user/create.html'
+    success_url = reverse_lazy('user_list')
+    permission_required = 'add_user'
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Crear Usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
+
+
+class UserUpdateView(ValidatePermissionRequiredMixin, UpdateView):
+    model = UserProfile
+    form_class = UserForm
+    template_name = 'user/create.html'
+    success_url = reverse_lazy('user_list')
+    permission_required = 'change_user'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Modificar usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        return context
+
+
+class UserDeleteView(ValidatePermissionRequiredMixin, DeleteView):
+    model = UserProfile
+    template_name = 'user/delete.html'
+    success_url = reverse_lazy('user_list')
+    permission_required = 'delete_user'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de un Usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        return context
+
+
+#   Vistas de los Usuarios del sistema ######
 class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
     template_name = 'user/profile.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('user_update_profile')
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -187,6 +305,45 @@ class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Edición de Perfil'
         context['entity'] = 'Perfil'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        return context
+
+
+class UserChangePasswordView(LoginRequiredMixin, FormView):
+    model = UserProfile
+    form_class = PasswordChangeForm
+    template_name = 'user/change_password.html'
+    success_url = reverse_lazy('login')
+
+    def get_form(self, form_class=None):
+        form = PasswordChangeForm(user=self.request.user)
+        form.fields['old_password'].widget.attrs['placeholder'] = 'Ingrese su contraseña actual'
+        form.fields['new_password1'].widget.attrs['placeholder'] = 'Ingrese su nueva contraseña'
+        form.fields['new_password2'].widget.attrs['placeholder'] = 'Repita su contraseña'
+        return form
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = PasswordChangeForm(user=request.user, data=request.POST)
+                if form.is_valid():
+                    form.save()
+                    update_session_auth_hash(request, form.user)
+                else:
+                    data['error'] = form.errors
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edición de Password'
+        context['entity'] = 'Password'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         return context

@@ -13,7 +13,10 @@
         <meta content="" name="keywords">
         <meta name="author" content="Yurier Herrera Lugo">
 
-    {% endblock meta %}    <link rel="shortcut icon" href="favicon.ico">
+    {% endblock meta %}
+{#    <link rel="shortcut icon" href="favicon.ico">#}
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+
     <title>{{ title }}</title>
     {% block stylesheets %}
         <!-- App CSS -->
@@ -49,6 +52,10 @@
 </head>
 
 <body class="app">
+{% if request.resolver_match.url_name == 'admin' %}
+    {% include "includes/../admin/admin_header.html" %}
+{% endif %}
+
 {% include 'includes/header.html' %}
 {% include "includes/_modal.html" %}
 <!-- Contenido de la pagina -->
@@ -60,7 +67,6 @@
 <!-- JavaScript -->
 {% block scripts %}
     <!-- FontAwesome JS-->
-{#    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>#}
     <script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
     <script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
     <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
@@ -70,27 +76,48 @@
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/drag&drop.js' %}"></script>
     <script src="{% static 'assets/plugins/jquery.bootstrap.modal.forms.js' %}"></script>
-    {#    <script src="{% static 'admin/js/vendor/select2/select2.full.js' %}"></script>#}
-    {#    <script src="{% static 'admin/js/autocomplete.js' %}"></script>#}
-    {#    <script src="{% static 'admin/js/jquery.init.js' %}"></script>#}
 
 {% endblock scripts %}
 
 {% block javascript %}
 {% endblock %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+    {% endfor %}
+{% endif %}
 <script>
-        {% if messages %}
-            var html = '<p>';
-            {% for message in messages %}
-                html += '{{ message }}<br>';
-            {% endfor %}
-            html += '</p>';
-            Swal.fire({
-                title: 'Error!',
-                html: html,
-                icon: 'error'
-            });
-        {% endif %}
+    {% if messages %}
+        var html = '<p>';
+        {% for message in messages %}
+            html += '{{ message }}<br>';
+        {% endfor %}
+        html += '</p>';
+        Swal.fire({
+            title: 'Error!',
+            html: html,
+            icon: 'error'
+        });
+    {% endif %}
+
+
+    {#    {% if messages %}#}
+    {#        var html = '<p>';#}
+    {#        {% for message in messages %}#}
+    {#            html += '{{ message }}<br>';#}
+    {#        {% endfor %}#}
+    {#        html += '</p>';#}
+    {#        Swal.fire({#}
+    {#            title: 'Error!',#}
+    {#            html: html,#}
+    {#            icon: 'error'#}
+    {#        });#}
+    {#    {% endif %}#}
 </script>
 </body>
 

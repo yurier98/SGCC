@@ -1,32 +1,18 @@
 var tblProducts;
 var select_user, select_search_product;
 var input_daterange;
+var tblSearchProducts;
 
 
 var loan = {
-    DateRange: function (all) {
-        var parameters = {
-            'action': 'add',
-            'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
-            'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
-        };
-        if (all) {
-            parameters['start_date'] = '';
-            parameters['end_date'] = '';
-        }
-    },
     details: {
-        //        subtotal: 0.00,
         products: []
-    },
-    getProductsIds: function () {
+    }, getProductsIds: function () {
         return this.details.products.map(value => value.id);
-    },
-    addProduct: function (item) {
+    }, addProduct: function (item) {
         this.details.products.push(item);
         this.listProducts();
-    },
-    listProducts: function () {
+    }, listProducts: function () {
 
         tblProducts = $('#tblProducts').DataTable({
             responsive: true,
@@ -34,13 +20,13 @@ var loan = {
             destroy: true,
             data: this.details.products,
             columns: [
-                { "data": "id" },
-                { "data": "img" },
-                { "data": "name" },
-                { "data": "category.name" },
-                { "data": "stock" },
-                { "data": "cant" },
-                { "data": "state" },
+                {"data": "id"},
+                {"data": "img"},
+                {"data": "name"},
+                {"data": "category.name"},
+                {"data": "stock"},
+                {"data": "cant"},
+                {"data": "state"},
             ],
             columnDefs: [
                 {
@@ -56,11 +42,9 @@ var loan = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 100px; height: 100px;">';
+                        return '<img src="' + data + '" class="img-fluid" style="width: 80px; height: 80px;">';
                     }
                 },
-
-
                 {
                     targets: [-2],
                     class: 'text-center',
@@ -72,13 +56,11 @@ var loan = {
                 {
                     targets: [-1],
                     class: 'text-center',
-                    orderable: false,
-                    render: function (data, type, row) {
+                    orderable: false, render: function (data, type, row) {
                         if (row.state == 'D') {
                             return '<div class="badge  bg-success">Disponible</div>'
                         }
                         return '<div class="badge  bg-danger">Prestado</div>'
-
                     }
                 },
 
@@ -86,9 +68,7 @@ var loan = {
             rowCallback(row, data, displayNum, displayIndex, dataIndex) {
 
                 $(row).find('input[name="cant"]').TouchSpin({
-                    min: 1,
-                    max: data.stock,
-                    step: 1
+                    min: 1, max: data.stock, step: 1
                 });
 
             },
@@ -101,15 +81,13 @@ var loan = {
 
 $(function () {
 
-    select_user = $('select[name="user"]');
+    select_user = $('select[name="username"]');
     select_search_product = $('select[name="search_product"]');
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
     });
-
     // Usuario
-
     select_user.select2({
         theme: "bootstrap4",
         language: 'es',
@@ -163,8 +141,7 @@ $(function () {
             },
         },
         placeholder: 'Ingrese una descripción',
-        minimumInputLength: 1,
-        templateResult: function (repo) {
+        minimumInputLength: 1, templateResult: function (repo) {
             if (repo.loading) {
                 return repo.text;
             }
@@ -173,8 +150,7 @@ $(function () {
                 return repo.text;
             }
 
-            return $(
-                '<div class="wrapper container">' +
+            return $('<div class="wrapper container">' +
                 '<div class="row">' +
                 '<div class="col-lg-1">' +
                 '<img alt="" src="' + repo.img + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
@@ -183,8 +159,8 @@ $(function () {
                 //'<br>' +
                 '<p style="margin-bottom: 0;">' +
                 '<b>Nombre:</b> ' + repo.name + '<br>' +
-                '<b>Stock:</b> ' + repo.stock + '<br>' +
-                '<b>Categoría:</b> <span class="btn-ms app-btn-secundary">' + repo.category.name + '</span>' +
+                '<b>Categoría:</b> <span class="">' + repo.category.name + '</span>' + '<br>' +
+                '<b>Stock:  </b>' + '<span class="badge  bg-success">' + repo.stock + '</span>' + ' <br>' +
                 '</p>' +
                 '</div>' +
                 '</div>' +
@@ -205,14 +181,13 @@ $(function () {
         .off()
         .on('click', 'a[rel="remove"]', function () {
             var tr = tblProducts.cell($(this).closest('td, li')).index();
-            alert_action('Notificación', '¿Estas seguro de eliminar el producto de tu detalle?',
-                function () {
-                    loan.details.products.splice(tr.row, 1);
-                    tblProducts.row(tr.row).remove().draw();
+            alert_action('Notificación', '¿Estas seguro de eliminar el producto del listado?', function () {
+                loan.details.products.splice(tr.row, 1);
+                tblProducts.row(tr.row).remove().draw();
 
-                }, function () {
+            }, function () {
 
-                });
+            });
         })
         .on('change', 'input[name="cant"]', function () {
             console.clear();
@@ -220,7 +195,7 @@ $(function () {
             var tr = tblProducts.cell($(this).closest('td, li')).index();
             loan.details.products[tr.row].cant = cant;
 
-            $('td:last', tblProducts.row(tr.row).node()).html('$' + loan.details.products[tr.row].subtotal.toFixed(2));
+            // $('td:last', tblProducts.row(tr.row).node()).html('$' + loan.details.products[tr.row].cant.toFixed(2));
         });
 
     $('.btnRemoveAll').on('click', function () {
@@ -257,11 +232,11 @@ $(function () {
                 },
             },
             columns: [
-                { "data": "full_name" },
-                { "data": "img" },
-                { "data": "stock" },
-                { "data": "category.name" },
-                { "data": "id" },
+                {"data": "full_name"},
+                {"data": "img"},
+                {"data": "stock"},
+                {"data": "category.name"},
+                {"data": "id"},
             ],
             columnDefs: [
                 {
@@ -273,7 +248,6 @@ $(function () {
                     }
                 },
 
-
                 {
                     targets: [-1],
                     class: 'text-center',
@@ -282,8 +256,7 @@ $(function () {
                         var buttons = '<a rel="add" class="btn-sm app-btn-primary "><i class="fas fa-plus"></i></a> ';
                         return buttons;
                     }
-                },
-            ],
+                },],
             initComplete: function (settings, json) {
 
             }
@@ -309,8 +282,8 @@ $(function () {
     input_daterange
         .daterangepicker({
             language: 'auto',
-            //            startDate: new Date(),
-            //            minDate: new Date(),
+            startDate: new Date(),
+            minDate: new Date(),
             locale: {
                 format: 'YYYY-MM-DD',
             }
@@ -327,18 +300,19 @@ $(function () {
         var success_url = this.getAttribute('data-url');
         var parameters = new FormData(this);
         parameters.append('products', JSON.stringify(loan.details.products));
-        submit_with_ajax(pathname, 'Notificación',
-            '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
-                alert_action('Notificación', '¿Desea imprimir la boleta de préstamos?', function () {
-                    window.open('/loan/invoice/pdf/' + response.id + '/', '_blank');
-                    location.href = success_url;
-                }, function () {
-                    location.href = success_url;
-                });
+        parameters.append('start_date', input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'));
+        parameters.append('end_date', input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'));
+
+        submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
+            alert_action('Notificación', '¿Desea imprimir la boleta de préstamos?', function () {
+                window.open('/loan/invoice/pdf/' + response.id + '/', '_blank');
+                location.href = success_url;
+            }, function () {
+                location.href = success_url;
             });
+        });
     });
 
     loan.listProducts();
-    loan.DateRange();
 });
 

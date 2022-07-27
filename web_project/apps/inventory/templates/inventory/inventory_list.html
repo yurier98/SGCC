@@ -90,9 +90,9 @@
                                              src="{% url 'home' %}media/{{ object.img }}" alt="">
                                     </div>
                                     {% if object.state  == 'D' %}
-                                        <span class="badge bg-success"> Disponible </span>
+                                        <span class="badge bg-success"> DISPONIBLE </span>
                                     {% elif object.state  == 'P' %}
-                                        <span class="badge bg-warning"> Prestado </span>
+                                        <span class="badge bg-warning"> PRESTADO </span>
                                     {% endif %}
                                     <a class="app-card-link-mask" href="{% url 'inventory:detail' object.pk %}"></a>
                                 </div>

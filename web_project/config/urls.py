@@ -23,15 +23,18 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
 
-    path("", include("apps.accounts.urls")),
+   # path("", include("apps.accounts.urls")),
 
+    path('administracion/',  include('apps.core.urls')),
     path('admin/', admin.site.urls),
     # path('', views.index, name='home'),
     path('', TemplateView.as_view(template_name="index.html"), name='home'),
     # path('inventory/', TemplateView.as_view(template_name="inventory/inventory_list.html"), name='inventory'),
+
+    path('accounts/', include('apps.accounts.urls')),
     path('inventory/', include('apps.inventory.urls', namespace='inventory')),
     path('loan/', include('apps.loan.urls')),
-    path('notificaciones/', include('apps.notificaciones.urls', namespace='notificaciones')),
+    path('notification/', include('apps.notification.urls', namespace='notification')),
     path('reports/', include('apps.reports.urls')),
 ]
 

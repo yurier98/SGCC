@@ -7,7 +7,3 @@ class AccountsConfig(AppConfig):
     label = 'accounts'
     verbose_name = 'Cuentas de usuarios'
 
-    def ready(self):
-        from ..accounts import signals
-    #     #import apps.accounts.signals
-    #     #import signals

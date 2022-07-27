@@ -4,8 +4,18 @@ from .models import UserProfile
 
 
 class PerfileAdmin(admin.ModelAdmin):
-    search_fields = ('user'),
-    ordering = ['user']
+    search_fields = ('username'),
+    ordering = ['username']
+    list_display = [
+        "username",
+        "area",
+        "phone",
+        "is_active",
+        "grupos",
+    ]
+
+    def grupos(self, obj):
+        return "\n".join([g.name for g in obj.groups.all()])
 
 
 admin.site.register(UserProfile, PerfileAdmin)

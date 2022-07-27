@@ -47,30 +47,36 @@
 </head>
 <body>
 <div class="container-fluid">
-    <img alt="" src=" {{ loan.company.get_image }}" class="img-fluid d-block mx-auto img-logo">
-    <h1 class="name-company">{{ sale.company.name }}</h1>
+    <img alt="" src="{% static 'assets/images/app-logo.svg' %}" class="img-fluid d-block mx-auto img-logo">
+    <h1 class="name-company">Dirección de Extensión Universitaria</h1>
     <p class="text-center">
-        {{ loan.company.ruc }}<br>
-        {{ loan.company.address }}<br>
+        {{ loan.company.ruc }}Reporte de Préstamos <br>
+        {#        {{ loan.company.address }}<br>#}
         Celular: {{ loan.company.mobile }}<br>
         Teléfono: {{ loan.company.phone }}<br>
         Web: {{ sale.company.website }}<br>
     </p>
     <div class="mt-2 row justify-content-between">
         <div class="col-auto">
-            <b>Nombre y apellidos:</b> {{ loan.user.nombre }} {{ loan.user.apellidos }}<br>
+            <b>Nombre y apellidos:</b> {{ loan.user.get_full_name }} {{ loan.user.apellidos }}<br>
             <b>Usuario:</b> {{ loan.user }}<br>
-            <b>Manifestación:</b> {{ loan.manifestation.name }}<br>
-            <b>Fecha de registro:</b> {{ loan.created }}<br>
+            <b>Area:</b> {{ loan.user.area }}<br>
+            <b>Teléfono:</b> {{ loan.user.phone }}<br>
+            {#            <b>Número:</b> {{ loan.get_number }}<br>#}
+
         </div>
         <div class=" col-auto">
-            <b>Número:</b> {{ loan.get_number }}<br>
+            <b>Fecha de registro:</b> {{ loan.created }}<br>
+            <b>Manifestación:</b> {{ loan.manifestation.name }}<br>
+
             <b>Fecha de inicio:</b> {{ loan.start_date }}<br>
             <b>Fecha de entrega:</b> {{ loan.end_date }}<br>
         </div>
         <div class=" col-auto">
             <b>Descripción:</b> {{ loan.description }}<br>
         </div>
+        <hr>
+
     </div>
 
 
@@ -83,25 +89,25 @@
         </tr>
         </thead>
         <tbody>
-        {% for det in loan.saleproduct_set.all %}
+        {% for det in loan.loanproduct_set.all %}
             <tr>
-                <td class="text-center">{{ det.cant }} 10</td>
-                <td>{{ det.product }} Nombre del producto</td>
+                <td>{{ det.product }}</td>
+                <td class="text-center">{{ det.cant }}</td>
             </tr>
         {% endfor %}
-        <tr>
-            <td>Nombre del producto</td>
-            <td class="text-center">10</td>
+
+        <tr class="text-uppercase font-weight-bold text-right mt-3">
+            <td >Total de productos:</td>
+            <td class="text-center"> {{ loan.loanproduct_set.all.count }}</td>
+
         </tr>
-
-
         <tr>
             <td colspan="4">
                 <p class="text-uppercase font-weight-bold text-center mt-3">
-                    Total de productos: {{ sale.detsale_set.all.count }}<br>
-                    !Gracias por su preferencia!<br>
+
+
                     Una vez que usted a recibido el pedido<br>
-                    No hay derecho a reclamo ni devolución del producto<br>
+                    Recuerde devolver el producto en el plazo de entrega establecido<br>
                     Que tenga un excelente día
                 </p>
             </td>

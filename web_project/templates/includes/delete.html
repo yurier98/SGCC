@@ -1,60 +1,129 @@
 {% extends 'layouts/base.html' %}
 {% load widget_tweaks %}
-{% block content %}
-    <form method="post" action=".">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-trash"></i>
-                    <b>{{ title }}</b>
-                </h3>
-            </div>
-            <div class="card-body">
-                <div class="container-fluid">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="{{ action }}">
-                    {% if form.errors %}
-                        <ul>
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <li>{{ error }}</li>
+
+
+<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start" role="document">
+        <form method="post" action=".">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-trash"></i> <b>{{ title }}</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="{{ action }}">
+                        {% if form.errors %}
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <p class="text-center font-weight-bold mt-3">
-                        <i class="fas fa-trash fa-3x"></i><br><br>
-                        ¿Estas seguro de eliminar el registro N° {{ object.id }}?
-                    </p>
+                            </ul>
+                        {% endif %}
+                        <p class="text-center font-weight-bold mt-3">
+                            <i class="fas fa-trash fa-3x"></i><br><br>
+                            ¿Estas seguro de eliminar el registro N° {{ object.id }}?
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer card-footer">
+                    <button type="submit" class="btn btn-primary btn-flat">
+                        <i class="fas fa-save"></i> Si, aceptar
+                    </button>
+                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
                 </div>
             </div>
-            <div class="card-footer">
-                <button type="submit" class="btn btn-primary btn-flat">
-                    <i class="fas fa-save"></i> Si, aceptar
-                </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                    <i class="fas fa-times"></i> Cancelar
-                </a>
-            </div>
-        </div>
-    </form>
-    <script>
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-            var parameters = new FormData(this);
-            submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de eliminar el siguiente registro?', parameters, function () {
-                Swal.fire({
-                    title: 'Alerta',
-                    text: 'Registro eliminado correctamente',
-                    icon: 'success',
-                    timer: 2000,
-                    onClose: () => {
-                        location.href = '{{ list_url }}';
-                    }
-                }).then((result) => {
+        </form>
+        <script>
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                var parameters = new FormData(this);
+                submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de eliminar el siguiente registro?', parameters, function () {
+                    Swal.fire({
+                        title: 'Alerta',
+                        text: 'Registro eliminado correctamente',
+                        icon: 'success',
+                        timer: 2000,
+                        onClose: () => {
+                            location.href = '{{ list_url }}';
+                        }
+                    }).then((result) => {
 
+                    });
                 });
             });
-        });
-    </script>
-{% endblock %}
+        </script>
+    </div>
+</div>
+
+
+
+
+{##}
+{#{% block content %}#}
+{#    <form method="post" action=".">#}
+{#        <div class="card">#}
+{#            <div class="card-header">#}
+{#                <h3 class="card-title">#}
+{#                    <i class="fas fa-trash"></i>#}
+{#                    <b>{{ title }}</b>#}
+{#                </h3>#}
+{#            </div>#}
+{#            <div class="card-body">#}
+{#                <div class="container-fluid">#}
+{#                    {% csrf_token %}#}
+{#                    <input type="hidden" name="action" value="{{ action }}">#}
+{#                    {% if form.errors %}#}
+{#                        <ul>#}
+{#                            {% for field in form %}#}
+{#                                {% for error in field.errors %}#}
+{#                                    <li>{{ error }}</li>#}
+{#                                {% endfor %}#}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                    {% endif %}#}
+{#                    <p class="text-center font-weight-bold mt-3">#}
+{#                        <i class="fas fa-trash fa-3x"></i><br><br>#}
+{#                        ¿Estas seguro de eliminar el registro N° {{ object.id }}?#}
+{#                    </p>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="card-footer">#}
+{#                <button type="submit" class="btn btn-primary btn-flat">#}
+{#                    <i class="fas fa-save"></i> Si, aceptar#}
+{#                </button>#}
+{#                <a href="{{ list_url }}" class="btn btn-danger btn-flat">#}
+{#                    <i class="fas fa-times"></i> Cancelar#}
+{#                </a>#}
+{#            </div>#}
+{#        </div>#}
+{#    </form>#}
+{#    <script>#}
+{#        $('form').on('submit', function (e) {#}
+{#            e.preventDefault();#}
+{#            var parameters = new FormData(this);#}
+{#            submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de eliminar el siguiente registro?', parameters, function () {#}
+{#                Swal.fire({#}
+{#                    title: 'Alerta',#}
+{#                    text: 'Registro eliminado correctamente',#}
+{#                    icon: 'success',#}
+{#                    timer: 2000,#}
+{#                    onClose: () => {#}
+{#                        location.href = '{{ list_url }}';#}
+{#                    }#}
+{#                }).then((result) => {#}
+{##}
+{#                });#}
+{#            });#}
+{#        });#}
+{#    </script>#}
+{#{% endblock %}#}

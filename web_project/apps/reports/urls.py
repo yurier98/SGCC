@@ -2,13 +2,14 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from ..reports import views
-from apps.reports.views import ReportLoanView
+#from apps.reports.views import ReportLoanView
 
 
 
 urlpatterns = [
-    path('loan/', ReportLoanView.as_view(), name='loan_report'),
-    #path('', TemplateView.as_view(template_name="reports/reports_loan.html"), name='reports'),
+    path('loan/', views.ReportLoanView.as_view(), name='report_loan'),
+    path('inventory/', views.ReportInventoryView.as_view(), name='report_inventory'),
+    #path('loan/', TemplateView.as_view(template_name="reports/reports_loan.html"), name='reports'),
 
     # path('', views.ProductListView.as_view(), name="inventory"),
     # # path('', views.ProductListView.as_view(), name=views.ProductListView.list_view_name),

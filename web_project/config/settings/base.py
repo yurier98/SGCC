@@ -44,13 +44,15 @@ LOCAL_APPS = [
     # 'web_project.apps.CoreConfig',
     # 'justshipto_core.core.apps.CoreConfig',
     # 'justshipto_core.accounts.apps.AccountsConfig',
-    # 'apps.loan',
-    # 'apps.django_ip_access',
     'apps.accounts',
     'apps.audit',
-    'apps.notificaciones',
+    'apps.notification',
     'apps.inventory',
     'apps.loan',
+    'apps.reports',
+
+    'apps.core',
+    'apps.security',
 
 ]
 
@@ -67,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # middleware
+    'crum.CurrentRequestUserMiddleware'
     # 'django_ip_access.middleware.IpAccessMiddleware',
     # 'audit.middleware.RequestMiddleware',
 ]
@@ -146,7 +149,8 @@ LANGUAGES = [
 ADMINS = [("Admin del sitio", "admin@localhost.to"), ]
 
 # ***********************AUTENTICACION*********************
-AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
+#AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
+AUTH_USER_MODEL = 'accounts.UserProfile'
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
 AUTHENTICATION_BACKENDS = (
@@ -159,12 +163,12 @@ AUTHENTICATION_BACKENDS = (
 # *********************** END AUTENTICACION *********************
 
 ROOT_URLCONF = 'config.urls'
-LOGIN_REDIRECT_URL = "/"  # Route defined in home/urls.py
+LOGIN_REDIRECT_URL = '/'  # Route defined in home/urls.py
 #LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
-#LOGIN_URL = reverse_lazy('accounts:login')
+LOGIN_URL = reverse_lazy('login')
 
 LOGOUT_REDIRECT_URL = '/login/'
-LOGIN_URL = '/login/'
+#LOGIN_URL = '/login/'
 
 # ***********************CONFIG EMAIL*********************
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

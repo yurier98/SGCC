@@ -134,6 +134,7 @@ dmypy.json
 
 # staticfiles
 web_project/staticfiles
+web_project/mediafiles
 
 #Carpeta excluida
 portal-theme-bs5-v2.0

@@ -76,6 +76,7 @@ class Product(models.Model):
         item['full_name'] = self.__str__()
         item['category'] = self.category.toJSON()
         item['img'] = self.get_image()
+        item['created'] = self.created.strftime('%Y-%m-%d')
         return item
 
     def get_image(self):

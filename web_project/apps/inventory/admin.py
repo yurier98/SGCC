@@ -11,7 +11,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_filter = ['category', 'state', 'active']
 
     def photo(self, obj):
-        return format_html('<img src={}  width="auto" height="100" />', obj.img.url)
+        return format_html('<img src={} style="width: 50px; height: 50px;" />', obj.img.url)
 
 
 # admin.site.register(ProductoAdmin)

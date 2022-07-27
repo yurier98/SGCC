@@ -28,51 +28,46 @@ var loan = {
                 }
             },
             columns: [
-                 {"data": "number"},
-                 {"data": "user.solapin"},
-                 {"data": "user.username"},
-                 {"data": "user.area"},
-                 {"data": "created"},
-                 {"data": "state"},
-                 {"data": "manifestation.name"},
-                 {"data": "id"},
+                {"data": "number"},
+                {"data": "user.username"},
+                {"data": "user.solapin"},
+                {"data": "user.area"},
+                {"data": "created"},
+                {"data": "state"},
+                {"data": "manifestation.name"},
+                {"data": "id"},
             ],
             order: [[0, "desc"], [2, "desc"]],
             columnDefs: [
                 {
-                    targets: [0],
+                    targets: [1],
                     class: 'text-center',
                     render: function (data, type, row) {
-                        return '<a class="badge  bg-success" rel="number">' + data + '</a>'
+                        return '<div class="card-header-action"><b><a class="" rel="number">' + data + '</a></b></div>'
                     }
                 },
-//                {
-//                    targets: [-2, -3, -4, -5],
-//                    class: 'text-center',
-//                    render: function (data, type, row) {
-//                        return '$' + parseFloat(data).toFixed(2);
-//                    }
-//                },
-                 {
-                      targets: [-3],
-                      class: 'text-center',
-                      render: function (data, type, row) {
-                           if (row.state=='PR'){
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        if (row.state == 'PR') {
                             return '<div class="badge  bg-success">Prestado</div>'
-                            }
-                           if (row.state=='PE'){
+                        }
+                        if (row.state == 'PE') {
                             return '<div class="badge  bg-warning">Pendiente</div>'
-                            }
-                            return '<div class="badge  bg-danger">Entregado</div>'
-                      }
-                 },
+                        }
+                        return '<div class="badge  bg-danger">Entregado</div>'
+                    }
+                },
 
                 {
                     targets: [-1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        var buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                        var
+                            // buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                            buttons = '<a href="delete" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
                         buttons += '<a href="' + pathname + 'update/' + row.id + '/" class="btn-sm app-btn-secondary btn-warning"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a rel="details" class="btn-sm app-btn-secondary"><i class="fas fa-search"></i></a> ';
                         buttons += '<a href="' + pathname + 'invoice/pdf/' + row.id + '/" target="_blank" class="btn-sm app-btn-secondary"><i class="fas fa-file-pdf"></i></a> ';
@@ -84,6 +79,12 @@ var loan = {
 
             }
         });
+
+        tblloan.on('order.dt search.dt', function () {
+            tblloan.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
     },
     formatRowHtml: function (d) {
         var html = '<table class="table app-table-hover mb-0 text-left">';
@@ -130,6 +131,9 @@ $(function () {
 
     $('#data tbody')
         .off()
+        .on('click', 'a[rel="delete"]', function () {
+            $('#myModalDelete').modal('show');
+        })
         .on('click', 'a[rel="details"]', function () {
             var tr = tblloan.cell($(this).closest('td, li')).index();
             var data = tblloan.row(tr.row).data();
