@@ -54,7 +54,9 @@
                                         <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
                                             <div class="app-card-header  p-2 border-bottom-0">
                                                 <h3 class="app-card-title">
-                                                    <div class="app-icon-holder"><i class="fas fa-boxes"></i>
+                                                    <div class="app-icon-holder">
+                                                        <i class="bi bi-box-seam fa-2x" style="line-height: 0;"></i>
+                                                        {#                                                        <i class="fas fa-boxes"></i>#}
                                                     </div>
                                                     Detalle de productos
                                                 </h3>
@@ -78,16 +80,16 @@
                                                                 </button>
                                                                 <div class="dropdown-menu dropdown-menu-right">
                                                                     <a class="dropdown-item btnSearchProducts">
-                                                                        <i class="fas fa-search"></i> Buscar productos
+                                                                        <i class="bi bi-search"></i> Buscar productos
                                                                     </a>
                                                                     <a class="dropdown-item btnClearSearch">
-                                                                        <i class="fas fa-times"></i> Limpiar búsqueda
+                                                                        <i class=" bi bi-x-circle"></i> Limpiar búsqueda
                                                                     </a>
                                                                     <li>
                                                                         <hr class="dropdown-divider">
                                                                     </li>
                                                                     <a class="dropdown-item btnRemoveAll">
-                                                                        <i class="fa-regular fa-trash-alt"></i> Eliminar
+                                                                        <i class="bi bi-trash"></i> Eliminar
                                                                         todos mis
                                                                         items
                                                                     </a>
@@ -120,7 +122,10 @@
                                         <div class="app-card app-card-orders-table shadow-sm align-items-start">
                                             <div class="app-card-header p-3 border-bottom-0">
                                                 <h3 class="app-card-title">
-                                                    <div class="app-icon-holder"><i class="fas fa-shopping-cart"></i>
+
+                                                    <div class="app-icon-holder">
+                                                        <i class="bi bi-cart2 fa-2x"
+                                                           style="line-height: 0;"></i>
                                                     </div>
                                                     Datos del préstamo
                                                 </h3>
@@ -137,12 +142,12 @@
                                                         <label class="form-label">Usuario:</label>
                                                         <div class="input-group">
                                                             {{ form.user }}
-{#                                                            <div class="input-group-append">#}
-{#                                                                <button class="btn app-btn-secondary btnAddUser"#}
-{#                                                                        type="button">#}
-{#                                                                    <i class="fas fa-user-plus"></i>#}
-{#                                                                </button>#}
-{#                                                            </div>#}
+                                                            {#                                                            <div class="input-group-append">#}
+                                                            {#                                                                <button class="btn app-btn-secondary btnAddUser"#}
+                                                            {#                                                                        type="button">#}
+                                                            {#                                                                    <i class="fas fa-user-plus"></i>#}
+                                                            {#                                                                </button>#}
+                                                            {#                                                            </div>#}
                                                         </div>
                                                     </div>
                                                     <div class="form-group py-1">
@@ -192,24 +197,18 @@
     <div class="modal fade" id="myModalSearchProducts" tabindex="-1" role="dialog"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" data-bs-backdrop="false">
-            <div class=" modal-content app-card">
-                <div class="modal-header app-card-header p-3">
-                    <div class="row justify-content-between align-items-center">
-                        <div class="col-auto">
-                            <h4 class="modal-title app-card-title " id="exampleModalLabel">
-                                {#                        <div class="app-icon-holder"><i class="fas fa-search"></i></div>#}
-                                Búsqueda de Productos</h4>
-                        </div><!--//col-->
-                        <div class="col-auto">
-                            <div class="card-header-action">
-                                <button type="button" class="btn-sm app-btn-secondary" data-dismiss="modal"
-                                        aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div><!--//card-header-actions-->
-                        </div><!--//col-->
-                    </div>
+            <div class=" modal-content app-card app-card-orders-table">
+
+                <div class="modal-header app-card-header  p-2 border-bottom-0">
+                    <h3 class="modal-title app-card-title justify-content-between align-items-center">
+                        <div class="app-icon-holder">
+                            <i class="bi bi-search fa-2x" style="line-height: 0;"></i>
+                        </div>
+                         Búsqueda de Productos
+                    </h3>
+                    <hr>
                 </div>
+
                 <div class="modal-body app-card-body app-card-orders-table p-3 mt-auto">
                     <table class="table app-table-hover mb-0 text-left " id="tblSearchProducts">
                         <thead>

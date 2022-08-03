@@ -50,16 +50,27 @@
 
                     <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start ">
 
-                        <div class="app-card-header p-3 ">
-                            <div class="row justify-content-between align-items-center">
+                        <div class="app-card-header p-3 border-bottom-0">
+                            <div class="row justify-content-between align-items-center gx-3">
                                 <div class="col-auto">
-                                    <h3 class="app-card-title">{{ title }}</h3>
+                                    <div class="row align-items-center gx-3">
+                                        <div class="col-auto">
+                                            <div class="app-icon-holder">
+                                                <i class="bi bi-list-ul fa-2x"
+                                                   style="line-height: 0;"></i>
+                                            </div><!--//icon-holder-->
+                                        </div>
+                                        <div class="col-auto">
+                                            <h4 class="app-card-title">{{ title }}</h4>
+                                        </div><!--//col-->
+                                    </div>
+
                                 </div><!--//col-->
                                 <div class="col-auto">
                                     {% block form-group %} {% endblock %}
                                 </div><!--//col-->
                             </div><!--//row-->
-
+                            <hr>
                         </div><!--//app-card-header-->
 
                         <div class="app-card-body ">

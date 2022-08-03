@@ -66,7 +66,8 @@
 
 
                                     <li><a class="dropdown-item align-items-center"
-                                           href="{% url 'logout' %}?next={{ request.path | urlencode }}">
+{#                                           href="{% url 'logout' %}?next={{ request.path | urlencode }}">#}
+                                           href="{% url 'logout' %}?next={{request.path}}">
                                         <span style="font-size: 15px;">
                                              <i class="bi bi-box-arrow-right"></i> Cerrar sesión
                                         </span>
@@ -207,8 +208,8 @@
                     </li><!--//nav-item-->
                     <li class="nav-item">
                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                        <a class="nav-link {% if request.resolver_match.url_name == 'notification' %} active {% endif %}"
-                           href="{% url 'notification:notification' %}">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'notifications_list' %} active {% endif %}"
+                           href="{% url 'notifications_list' %}">
 						        <span class="nav-icon">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bell icon"
                                          fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -223,7 +224,7 @@
                     <li class="nav-item has-submenu ">
                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                         <a class="nav-link submenu-toggle
-                        {% if request.resolver_match.url_name == 'user_update_profile' %} active
+                        {% if request.resolver_match.url_name == 'user_details_profile' %} active
                         {% elif request.resolver_match.url_name == 'user_update_profile' %} active
                         {% endif %}"
 
@@ -246,15 +247,15 @@
 	                             </span><!--//submenu-arrow-->
                         </a><!--//nav-link-->
                         <div id="submenu-1" class="collapse submenu submenu-1
-                                            {% if request.resolver_match.url_name == 'user_update_profile' %} show
+                                            {% if request.resolver_match.url_name == 'user_details_profile' %} show
                                             {% elif request.resolver_match.url_name == 'user_update_profile' %} show
                                             {% endif %}" data-bs-parent="#menu-accordion">
 
 
                             <ul class="submenu-list list-unstyled">
                                 <li class="submenu-item ">
-                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_update_profile' %} active {% endif %}"
-                                       href="{% url 'user_update_profile' %}">Ver perfil
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_details_profile' %} active {% endif %}"
+                                       href="{% url 'user_details_profile' %}">Ver perfil
                                     </a>
                                 </li>
                                 <li class="submenu-item ">

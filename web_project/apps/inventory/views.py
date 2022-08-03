@@ -8,21 +8,37 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django_filters.views import FilterView
 
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
+from .filters import ProductFilter
 from .forms import ProductoForm, CategoryForm
 from .models import Product, Category
 
 
 # Create your views here.
+class ProductFilterView(LoginRequiredMixin, FilterView):
+    """ Return un filtrado de  Productos"""
+    filterset_class = ProductFilter
+    template_name = 'inventory/inventory_list.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Productos'
+        context['create_url'] = reverse_lazy('create')
+        context['list_url'] = reverse_lazy('inventory:inventory')
+        context['entity'] = 'Inventario'
+        return context
 
 
 class ProductListView(LoginRequiredMixin, ListView):
     """ Return all Productos"""
     model = Product
-    # paginate_by = 10  # El número de objetos que se mostrarán por página, en este caso queremos que se muestren 3 Convocatorias por página.
+    paginate_by = 24
     context_object_name = 'products_list'
     template_name = 'inventory/inventory_list.html'
+    redirect_field_name = 'inventory:inventory'
 
     # add_home = False
 

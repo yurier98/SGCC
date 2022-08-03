@@ -51,12 +51,12 @@ var loan = {
                     class: 'text-center',
                     render: function (data, type, row) {
                         if (row.state == 'PR') {
-                            return '<div class="badge  bg-success">Prestado</div>'
+                            return '<div class="badge  bg-danger">Prestado</div>'
                         }
                         if (row.state == 'PE') {
                             return '<div class="badge  bg-warning">Pendiente</div>'
                         }
-                        return '<div class="badge  bg-danger">Entregado</div>'
+                        return '<div class="badge bg-success ">Entregado</div>'
                     }
                 },
 

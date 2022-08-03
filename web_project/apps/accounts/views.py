@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, FormView, RedirectView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, FormView, RedirectView, DetailView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -309,6 +309,25 @@ class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
         context['action'] = 'edit'
         return context
 
+class UserDetailProfileView(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'user/profile_details.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalles del perfil'
+        context['entity'] = 'Perfil'
+        # context['list_url'] = self.success_url
+
+        return context
 
 class UserChangePasswordView(LoginRequiredMixin, FormView):
     model = UserProfile

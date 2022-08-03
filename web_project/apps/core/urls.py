@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 from ..inventory.views import CategoryListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
 from ..accounts.views import UserListView, UserCreateView, UserUpdateView, UserDeleteView
-from ..security.views import GroupListView, json, PermissionListView
+from ..security.views import GroupListView, json, PermissionListView, GroupCreateView, GroupDeleteView, GroupUpdateView
 from ..loan.views import ManifestationListView, ManifestationCreateView, ManifestationUpdateView, \
     ManifestationDeleteView
 
@@ -38,10 +38,12 @@ urlpatterns = [
     path('category/update/<int:pk>/', CategoryUpdateView.as_view(), name='category_update'),
     path('category/delete/<int:pk>/', CategoryDeleteView.as_view(), name='manifestation_delete'),
 
-
-    #################  Manifestation   #####################################
+    #################  Roles   #####################################
     path('rols', GroupListView.as_view(), name='group_list'),
+    path('rols/add', GroupCreateView.as_view(), name='group_create'),
+    path('rols/update/<int:pk>/', GroupUpdateView.as_view(), name='group_update'),
+    path('rols/delete/<int:pk>/', GroupDeleteView.as_view(), name='group_delete'),
+
     path('permission', PermissionListView.as_view(), name='permission_list'),
-    path('group/add', GroupListView.as_view(), name='group_create'),
 
 ]

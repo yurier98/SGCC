@@ -34,7 +34,7 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('inventory/', include('apps.inventory.urls', namespace='inventory')),
     path('loan/', include('apps.loan.urls')),
-    path('notification/', include('apps.notification.urls', namespace='notification')),
+    path('notification/', include('apps.notification.urls')),
     path('reports/', include('apps.reports.urls')),
 ]
 

@@ -45,14 +45,18 @@ LOCAL_APPS = [
     # 'justshipto_core.core.apps.CoreConfig',
     # 'justshipto_core.accounts.apps.AccountsConfig',
     'apps.accounts',
-    'apps.audit',
-    'apps.notification',
     'apps.inventory',
     'apps.loan',
     'apps.reports',
-
     'apps.core',
     'apps.security',
+
+    # 'apps.audit',
+    'apps.notification',
+
+
+
+
 
 ]
 

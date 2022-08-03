@@ -28,13 +28,13 @@ var permission = {
 
                 {
                     targets: [-3],
-                    class: 'text-left',
+                    class: 'text-center',
                     render: function (data, type, row) {
+
                         console.log(row.content_type);
-                        var html = '';
-                        $.each(row.content_type, function (key, value) {
-                            html += '<span class="">' + value.app_label + '</span> ';
-                        });
+
+                        var html = '<span class="">' + row.codename + '</span> ';
+
                         return html
                     }
                 },

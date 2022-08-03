@@ -4,6 +4,12 @@ from django.db.models.functions import Coalesce
 from django.forms import model_to_dict
 from django.urls import reverse
 
+# built-in signals
+from django.db.models.signals import post_save
+
+# signals
+from ..notification.signals import notificar
+
 # Create your models here.
 from ..accounts.models import UserProfile
 from ..inventory.models import Product
@@ -39,7 +45,8 @@ class Loan(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
     end_date = models.DateField("Fecha de devolución")
-    description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado')
+    description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
+                                   null=True, blank=True)
     manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
     state = models.CharField("Estado", max_length=2, choices=ESTADO, default='PR')
     created = models.DateTimeField(auto_now_add=True)
@@ -93,3 +100,11 @@ class LoanProduct(models.Model):
         verbose_name_plural = 'Detalle de los préstamos'
         default_permissions = ()
         ordering = ['id']
+
+
+def notify_post(sender, instance, created, **kwargs):
+    notificar.send(instance.user, destiny=instance.user, verb='Se ha creado un préstamo a su usuario exitosamente.',
+                   level='success')
+
+
+post_save.connect(notify_post, sender=Loan)

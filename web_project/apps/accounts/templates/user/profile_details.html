@@ -1,0 +1,224 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+    <div class="app-wrapper">
+
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+
+                {% include "includes/_breadcrumbs.html" %}
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <div class="app-card shadow-sm p-4 d-flex flex-column align-items-center">
+                            <div class="app-card-body pt-4 profile-image ">
+                                <img src="{{ request.user.get_image }}"
+                                     style="width: 200px; height: 200px; border-radius: 50%;"
+                                     class="rounded-circle" alt="user profile">
+                                <div class="app-card-footer p-3 align-items-center">
+                                    <h3>{{ request.user.get_short_name }}</h3>
+                                    <div class="info ">
+                                        {% if request.user.groups.all.count > 1 %}
+                                            <p>hola</p>
+
+                                            {% for g in request.user.groups.all %}
+                                                <p class="text-info">
+                                                    {{ request.user.groups.all }}
+                                                </p>
+                                                {{ g.name }}
+
+                                                {% if g.id != request.session.group.id %}
+                                                    <div class=" p-2">
+                                                        <div class="info p-2">
+                                                            {{ g.name }}
+                                                            </a>
+                                                        </div>
+                                                    </div><!--//item-->
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                        <p class="text-info">
+                                            {{ request.user.groups.all }}
+
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-8">
+
+                        <nav id="orders-table-tab"
+                             class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                            <a class="flex-sm-fill text-sm-center nav-link
+                                {% if request.resolver_match.url_name == 'user_details_profile' %} active {% endif %}"
+                               id="orders-all-tab"
+                               href="{% url 'user_details_profile' %}" aria-controls="detail-product"
+                               aria-selected="true">Detalles del perfil</a>
+
+                            <a class="flex-sm-fill text-sm-center nav-link
+                             {% if request.resolver_match.url_name == 'user_update_profile' %} active {% endif %}"
+                               id="orders-all-tab"
+                               href="{% url 'user_update_profile' %}" aria-controls="detail-product"
+                               aria-selected="true">Editar perfil</a>
+                        </nav>
+
+                        <div class="tab-content" id="orders-table-tab-content">
+                            <div class="tab-pane fade show active" id="detail-product" role="tabpanel"
+                                 aria-labelledby="detail-product-tab">
+
+                                <div class="app-card app-card-account shadow-sm  p-3">
+                                    <div class="app-card-header p-1 border-bottom-0">
+                                        <div class="row align-items-center gx-3">
+                                            <div class="col-auto">
+                                                <div class="app-icon-holder">
+                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                         class="bi bi-person" fill="currentColor"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                              d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+                                                    </svg>
+                                                </div><!--//icon-holder-->
+
+                                            </div><!--//col-->
+                                            <div class="col-auto">
+                                                <h4 class="app-card-title">{{ title }}</h4>
+                                            </div><!--//col-->
+                                        </div><!--//row-->
+                                        <hr>
+                                    </div><!--//app-card-header-->
+                                    <div class="app-card-body px-4 w-100">
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label mb-2"><strong>Foto</strong></div>
+                                                    <div class="item-data"><img class="profile-image rounded-circle"
+                                                                                src="{{ request.user.get_image }}" alt="">
+                                                    </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Nombre y apellidos</strong></div>
+                                                    <div class="item-data">{{ object.get_full_name }} </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Correo electrónico</strong></div>
+                                                    <div class="item-data">{{ object.email }}</div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Teléfono</strong></div>
+                                                    <div class="item-data">
+                                                       {{ object.phone }}
+                                                    </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Área</strong></div>
+                                                    <div class="item-data">
+                                                        {{ object.area }}
+                                                    </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Solapin</strong></div>
+                                                    <div class="item-data">
+                                                        {{ object.solapin }}
+                                                    </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
+                                                    <a class="btn-sm app-btn-secondary" href="{% url 'user_update_profile' %}">Editar</a>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                    </div><!--//app-card-body-->
+                                    <div class="app-card-footer p-3 mt-auto">
+                                        <div class="mt-3 row justify-content-between">
+                                            <div class="col-auto">
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="{% url 'user_update_profile' %}" class="btn app-btn-secondary ">
+                                                    <i class="bi bi-pencil-square"></i> Editar perfil
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div><!--//app-card-footer-->
+                                </div>
+
+                            </div><!--//tab-pane-->
+                        </div><!--//tab-content-->
+
+
+                    </div>
+                </div><!--//row-->
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+
+
+    </div><!--//app-wrapper-->
+    <script>
+        {% if form.errors %}
+            var errors = '';
+            {% for field in form %}
+                {% for error in field.errors %}
+                    errors += '{{ error }}\n';
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                errors += '{{ error }}\n';
+            {% endfor %}
+            Swal.fire({
+                title: 'Error!',
+                text: errors,
+                icon: 'error'
+            });
+        {% endif %}
+
+        $(function () {
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                var parameters = new FormData(this);
+                submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                    location.href = '{{ list_url }}';
+                });
+            });
+        });
+
+
+    </script>
+{% endblock %}

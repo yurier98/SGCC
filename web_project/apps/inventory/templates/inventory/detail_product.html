@@ -11,13 +11,14 @@
                 <section class="settings-section">
                     <div class="row">
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="app-card">
                                 <div class="card-body pt-4 d-flex flex-column align-items-center">
 
-                                    <img src="{% url 'home' %}media/{{ object.img }}" width="50%" height="50%"
+                                    <img src="{% url 'home' %}media/{{ object.img }}"
+                                         style="width: 200px; height: 200px;"
                                          alt="Profile"
                                          class="">
-                                    <div class=" ">
+                                    <div class="p-2 ">
                                         <h3>{{ object.name }}</h3>
                                     </div>
                                 </div>

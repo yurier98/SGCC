@@ -41,7 +41,7 @@
           Send e-mail
         </h4>
       </div>
-      <form action="." method="POST">
+      <form action=".." method="POST">
         <div class="modal-body">
         {% csrf_token %}
         {% for field in form.visible_fields %}

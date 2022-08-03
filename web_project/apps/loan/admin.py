@@ -5,6 +5,7 @@ import datetime
 from django.http import HttpResponse
 # Register your models here.
 from django.urls import reverse
+from django.utils.html import format_html
 
 from .models import Loan, Manifestation, LoanProduct
 
@@ -38,7 +39,7 @@ export_to_csv.short_description = 'Export to CSV'
 
 def order_detail(obj):
     # return '<a href="{}">View</a>'.format(reverse('loan:admin_order_detail', args=[obj.id]))
-    return '<a href="{}">View</a>'
+    return format_html('<a class="button" href="{}">Ver</a>'.format(reverse('loan_update', args=[obj.id])))
 
 
 order_detail.allow_tags = True

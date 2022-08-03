@@ -45,10 +45,8 @@ class LoanForm(ModelForm):
             }),
             'description': forms.Textarea(attrs={
                 'placeholder': 'Ingrese una descripción',
-                # 'class': 'form-control',
-                'style': 'height: 100px',
-
                 'class': 'form-control',
+                'style': 'height: 100px',
                 'rows': 3,
                 'cols': 3
             }),

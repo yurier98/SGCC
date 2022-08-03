@@ -114,7 +114,7 @@ class UserForm(ModelForm):
                     'class': 'form-control',
                 }
             ),
-            'phone': forms.NumberInput(
+            'phone': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese su teléfono',
                     'class': 'form-control',
@@ -169,10 +169,10 @@ class UserProfileForm(ModelForm):
         fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area'
 
         widgets = {
-            # 'image': forms.ImageField(
-            #     # attrs={
-            #     #     'class': 'drop-zone__input',
-            #     # }
+            # 'image': forms.FileInput(
+            #     attrs={
+            #         'class': 'drop-zone__input',
+            #     }
             # ),
             'first_name': forms.TextInput(
                 attrs={
@@ -210,7 +210,7 @@ class UserProfileForm(ModelForm):
                     'class': 'form-control',
                 }
             ),
-            'phone': forms.NumberInput(
+            'phone': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese su teléfono',
                     'class': 'form-control',

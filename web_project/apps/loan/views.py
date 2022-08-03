@@ -406,6 +406,7 @@ class ManifestationDeleteView(BSModalDeleteView):
     success_url = reverse_lazy('manifestation_list')
     url_redirect = success_url
     permission_required = 'delete_manifestation'
+    success_message = 'Reservación creada correctamente.'
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
