@@ -25,15 +25,16 @@ urlpatterns = [
 
    # path("", include("apps.accounts.urls")),
 
-    path('administracion/',  include('apps.core.urls')),
+    path('',  include('apps.core.urls')),
     path('admin/', admin.site.urls),
     # path('', views.index, name='home'),
-    path('', TemplateView.as_view(template_name="index.html"), name='home'),
+    # path('', TemplateView.as_view(template_name="index.html"), name='home'),
     # path('inventory/', TemplateView.as_view(template_name="inventory/inventory_list.html"), name='inventory'),
 
     path('accounts/', include('apps.accounts.urls')),
     path('inventory/', include('apps.inventory.urls', namespace='inventory')),
     path('loan/', include('apps.loan.urls')),
+    path('order/', include('apps.order.urls')),
     path('notification/', include('apps.notification.urls')),
     path('reports/', include('apps.reports.urls')),
 ]

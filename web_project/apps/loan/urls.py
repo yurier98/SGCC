@@ -17,7 +17,7 @@ urlpatterns = [
     # path('search_product', views.Search_Producto.as_view(), name='search_product'),
 
     path('', views.LoanListView.as_view(), name='loan_list'),
-    path('add', views.LoanCreateView.as_view(), name='create'),
+    path('add', views.LoanCreateView.as_view(), name='loan_create'),
     path('delete/<int:pk>/', views.LoanDeleteView.as_view(), name='loan_delete'),
     path('update/<int:pk>/', views.LoanUpdateView.as_view(), name='loan_update'),
 

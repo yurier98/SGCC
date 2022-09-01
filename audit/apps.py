@@ -3,6 +3,6 @@ from django.apps import AppConfig
 
 class AuditConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.audit'
+    name = ''
     label = 'audit'
     verbose_name = 'audit'

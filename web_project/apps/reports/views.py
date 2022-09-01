@@ -8,14 +8,19 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView
 from django.db.models import Q
 from django.db import transaction
+from django_filters.views import FilterView
+
 from apps.loan.models import Loan
 from apps.inventory.models import Product, Category
 from apps.reports.forms import ReportForm, ReportFilter
+from apps.inventory.filters import ProductFilter
+from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
 
 
-class ReportLoanView(FormView):
+class ReportLoanView(ValidatePermissionRequiredMixin, FormView):
     template_name = 'reports/reports_loan.html'
     form_class = ReportForm
+    permission_required = 'loan.report_loan'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -68,66 +73,10 @@ class ReportLoanView(FormView):
         return context
 
 
-class ReportInventoryView(FormView):
+class ReportInventoryView(ValidatePermissionRequiredMixin, FilterView):
     template_name = 'reports/reports_inventory.html'
-    form_class = ReportFilter
-
-    # model = Product
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            queryset = Product.objects.all()
-            action = request.POST['action']
-            if action == 'search':
-                data = []
-
-                """Dos via para devolver los datos """
-                """si pongo esta debo quitar el comentario de la datatable en el js
-                """
-                # for i in queryset:
-                #     item = i.toJSON()
-                #     item['value'] = i.__str__()
-                #     data.append(item)
-
-                #     # data.append(i.toJSON())
-                for i in queryset:
-                    data.append([
-                        i.id,
-                        i.name,
-                        i.category.name,
-                        i.stock,
-                        i.created.strftime('%Y-%m-%d'),
-                    ])
-
-            elif action == 'search_filter':
-                data = []
-                state = request.POST['state']
-                category = request.POST['category']
-
-                if len(state) and len(category):
-                    queryset = queryset.filter(state=state, category=category)
-                for i in queryset:
-                    item = i.toJSON()
-                    item['value'] = i.__str__()
-                    data.append(item)
-                    # data.append(i.toJSON())
-
-                # for s in queryset:
-                #     data.append([
-                #         s.id,
-                #         s.name,
-                #         s.category.name,
-                #         s.stock,
-                #         s.created.strftime('%Y-%m-%d'),
-                #
-                #     ])
-
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
+    filterset_class = ProductFilter
+    permission_required = 'inventory.report_product'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

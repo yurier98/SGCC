@@ -17,11 +17,11 @@ from .models import Product, Category
 
 
 # Create your views here.
-class ProductFilterView(LoginRequiredMixin, FilterView):
+class ProductFilterView(ValidatePermissionRequiredMixin, FilterView):
     """ Return un filtrado de  Productos"""
     filterset_class = ProductFilter
     template_name = 'inventory/inventory_list.html'
-
+    permission_required = 'inventory.view_product'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +32,7 @@ class ProductFilterView(LoginRequiredMixin, FilterView):
         return context
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ValidatePermissionRequiredMixin, ListView):
     """ Return all Productos"""
     model = Product
     paginate_by = 24
@@ -51,7 +51,7 @@ class ProductListView(LoginRequiredMixin, ListView):
         return context
 
 
-class Create(LoginRequiredMixin, CreateView):
+class Create(ValidatePermissionRequiredMixin, CreateView):
     # model = Product
     # exclude = ['created', 'updated']
     # fields = ['name', 'category', 'img','state','active','stock','available']
@@ -60,6 +60,7 @@ class Create(LoginRequiredMixin, CreateView):
     template_name = 'inventory/create_product.html'
     success_message = 'Producto creada correctamente.'
     success_url = reverse_lazy('inventory:inventory')
+    url_redirect = success_url
 
 
 class Detail(BSModalReadView, DetailBreadcrumbMixin):
@@ -68,7 +69,7 @@ class Detail(BSModalReadView, DetailBreadcrumbMixin):
     template_name = 'inventory/detail_product.html'
 
 
-class Update(LoginRequiredMixin, UpdateView):
+class Update(ValidatePermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductoForm
     # template_name = 'inventory/update_product.html'
@@ -86,7 +87,7 @@ class Delete(SuccessMessageMixin, BSModalDeleteView):
 
 ####################Vistas de Category##################
 
-class CategoryListView(ListView):
+class CategoryListView(ValidatePermissionRequiredMixin, ListView):
     model = Category
     template_name = 'category/list.html'
     permission_required = 'view_category'
@@ -117,7 +118,7 @@ class CategoryListView(ListView):
         return context
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(ValidatePermissionRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'category/create.html'

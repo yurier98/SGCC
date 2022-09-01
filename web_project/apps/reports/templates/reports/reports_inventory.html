@@ -1,5 +1,7 @@
 {% extends 'reports/reports.html' %}
 {% load static %}
+{% load widget_tweaks %}
+
 {% block head_report %}
     <script src="{% static 'inventary/js/report_inventary.js' %}"></script>
 {% endblock %}
@@ -17,6 +19,23 @@
         </tr>
         </thead>
         <tbody>
+        {% for object in filter.qs %}
+            <tr>
+                <td class="cell">
+                    <span>{{ object.id }}</span>
+                </td>
+                <td class="cell">{{ object.name }}</td>
+                <td class="cell">
+                    <span>{{ object.category }}</span>
+                </td>
+                <td class="cell">
+                    <span>{{ object.stock }}</span>
+                </td>
+                <td class="cell">
+                    <span>{{ object.created |date:"j F, Y" }}</span>
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}
@@ -26,38 +45,22 @@
     <div class="page-utilities">
         <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
             <div class="col-auto">
-                <form class="table-search-form row gx-1 align-items-center">
+                <form method="get" class="docs-search-form row gx-1 align-items-center">
                     <div class="col-auto">
-                        <div class="form-group">
-                            <label>Filtros:</label>
-                            <div class="input-group mb-3">
-
-                            </div>
-                        </div>
+                        {% render_field filter.form.name class="form-control search-input" placeholder="Filtrar por nombre" %}
                     </div>
                     <div class="col-auto">
-{#                         {{ form.state }}#}
-{#                        <select class="form-select w-auto">#}
-{#                            <option selected="" value="option-1">Todos</option>#}
-{#                            <option value="option-2">Prestado</option>#}
-{#                            <option value="option-3">Disponible</option>#}
-{#                        </select>#}
+                        {% render_field filter.form.category class="form-select  w-auto" %}
                     </div>
                     <div class="col-auto">
-                         {{ form.category }}
-{#                        <select class="form-select w-auto">#}
-{#                            <option selected="" value="option-1">Todo</option>#}
-{#                            <option value="option-2">Pantalones</option>#}
-{#                            <option value="option-3">Vestidos</option>#}
-{#                        </select>#}
+                        {% render_field filter.form.state class="form-select w-auto" %}
                     </div>
                     <div class="col-auto">
-                        <button class="btn app-btn-primary btnSearchFilter" type="button">
+                        <button type="submit" class="btn app-btn-secondary">
                             <i class="bi bi-search"></i> Buscar
                         </button>
                     </div>
                 </form>
-
             </div><!--//col-->
         </div><!--//row-->
     </div>

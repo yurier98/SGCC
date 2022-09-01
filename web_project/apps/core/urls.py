@@ -1,6 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
+from . import views
 from ..inventory.views import CategoryListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
 from ..accounts.views import UserListView, UserCreateView, UserUpdateView, UserDeleteView
 from ..security.views import GroupListView, json, PermissionListView, GroupCreateView, GroupDeleteView, GroupUpdateView
@@ -11,7 +12,8 @@ from ..loan.views import ManifestationListView, ManifestationCreateView, Manifes
 
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="admin/admin.html"), name='admin'),
+    # path('', TemplateView.as_view(template_name="admin/admin.html"), name='admin'),
+    path('', views.HomePage.as_view(), name='home'),
 
     path('json/', json, name='json'),
 

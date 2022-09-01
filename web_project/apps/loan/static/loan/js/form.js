@@ -262,7 +262,6 @@ $(function () {
             }
         });
         $('#myModalSearchProducts').modal('show');
-
     });
 
     $('#tblSearchProducts tbody')
@@ -279,15 +278,58 @@ $(function () {
 
     input_daterange = $('input[name="date_range"]');
 
+    // input_daterange
+    //     .daterangepicker({
+    //         language: 'auto',
+    //         startDate: new Date(),
+    //         minDate: new Date(),
+    //         locale: {
+    //             format: 'YYYY-MM-DD',
+    //         }
+    //     });
+
     input_daterange
         .daterangepicker({
-            language: 'auto',
-            startDate: new Date(),
-            minDate: new Date(),
-            locale: {
-                format: 'YYYY-MM-DD',
+                language: 'auto',
+                // startDate: "start_date",
+                // endDate: "end_date",
+                // minDate: new Date(),
+                locale: {
+                    language: 'es',
+                    format: 'YYYY-MM-DD',
+                    "applyLabel": "Aplicar",
+                    "cancelLabel": "Cancelar",
+                    "fromLabel": "Desde",
+                    "toLabel": "hasta",
+                    "customRangeLabel": "Custom",
+                },
+                // "startDate": "2022/08/02",
+                // "endDate": "2022/08/25",
+                // "buttonClasses": "btn-sm ",
+                "applyButtonClasses": "app-btn-primary",
+                "cancelClass": "app-btn-secondary",
+
+
+                // getValue: function () {
+                //     $('#startDate').val() + 'to' + $('#endDate').val();
+                // },
+                // setValue: function () {
+                //     $('#startDate').val('2000-09-09');
+                //     $('#endDate').val("startDate");
+                // }
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
             }
-        });
+        );
+    var startDate = $("start_date").val();
+    var endDate = $("end_date").val();
+
+    // input_daterange.data('daterangepicker').setDateRanger(startDate, endDate).format('YYYY-MM-DD')
+    // input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD').setValue(startDate)
+
+    console.log("Fechas : " + $("start_date").val());
+
 
     $('#frmLoan').on('submit', function (e) {
         e.preventDefault();

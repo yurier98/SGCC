@@ -2,13 +2,17 @@ from django.contrib import admin
 
 # Register your models here.
 from ..notification.models import Notification
-from apps.notification.utils.admin import AbstractNotifyAdmin
 
 
-class NotificationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'title', 'is_seen', 'created', ]
-    list_filter = ['is_seen', 'created']
-    autocomplete_fields = ['user']
+class AbstractNotifyAdmin(admin.ModelAdmin):
+    raw_id_fields = ('destiny',)
+    list_dysplay = ('destiny', 'actor', 'verbo', 'read', 'publico')
+    list_filter = ('level', 'read', 'destiny')
+
+    def get_queryset(self, requets):
+        qs = super(AbstractNotifyAdmin, self).get_queryset(requets)
+        return qs.prefetch_related('actor')
+
 
 
 # admin.site.register(Notification, NotificationAdmin)

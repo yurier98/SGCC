@@ -15,7 +15,8 @@ from weasyprint import HTML, CSS
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View
 
-from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin, IsSuperuserMixin
+from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
+
 from apps.accounts.models import UserProfile
 from .forms import ReportForm, LoanForm, ManifestationForm
 from .models import Loan, LoanProduct, Manifestation
@@ -34,7 +35,7 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
     """ Return all Prestamos"""
     form_class = ReportForm
     template_name = 'loan/list.html'
-    permission_required = 'view_loan'
+    permission_required = 'loan.view_loan'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -63,7 +64,7 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Préstamos'
-        context['create_url'] = reverse_lazy('create')
+        context['create_url'] = reverse_lazy('loan_create')
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Préstamos'
         return context
@@ -78,6 +79,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
     permission_required = 'add_loan'
     success_message = 'Préstamo creado correctamente.'
 
+
     def post(self, request, *args, **kwargs):
         data = {}
         try:
@@ -89,7 +91,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                 products = Product.objects.filter(stock__gt=0)
                 if len(term):
                     products = products.filter(name__icontains=term)
-                    #filtrar por es estado prestado (P)
+                    # filtrar por es estado prestado (P)
                 for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
                     item['value'] = i.__str__()
@@ -171,7 +173,7 @@ class LoanDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminación de un Préstamo'
+        context['title'] = 'Eliminar Préstamo'
         context['entity'] = 'Préstamos'
         context['list_url'] = self.success_url
         return context
@@ -189,6 +191,7 @@ class LoanUpdateView(UpdateView):
         instance = self.get_object()
         form = LoanForm(instance=instance)
         form.fields['user'].queryset = UserProfile.objects.filter(id=instance.user.id)
+
         return form
 
     def get_details_product(self):
@@ -299,7 +302,7 @@ class LoanPdfView(View):
 
 ####################Vistas de Manifestación##################
 
-class ManifestationListView(ListView):
+class ManifestationListView(ValidatePermissionRequiredMixin, ListView):
     model = Manifestation
     template_name = 'manifestation/list.html'
     permission_required = 'view_manifestation'
@@ -336,7 +339,7 @@ class ManifestationListView(ListView):
         return context
 
 
-class ManifestationCreateView(CreateView):
+class ManifestationCreateView(ValidatePermissionRequiredMixin, CreateView):
     model = Manifestation
     form_class = ManifestationForm
     template_name = 'manifestation/create.html'
@@ -366,7 +369,7 @@ class ManifestationCreateView(CreateView):
         return context
 
 
-class ManifestationUpdateView(UpdateView):
+class ManifestationUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     model = Manifestation
     form_class = ManifestationForm
     template_name = 'manifestation/create.html'
@@ -400,7 +403,7 @@ class ManifestationUpdateView(UpdateView):
         return context
 
 
-class ManifestationDeleteView(BSModalDeleteView):
+class ManifestationDeleteView(ValidatePermissionRequiredMixin, BSModalDeleteView):
     model = Manifestation
     template_name = 'manifestation/delete.html'
     success_url = reverse_lazy('manifestation_list')

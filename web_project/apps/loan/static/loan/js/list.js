@@ -66,8 +66,8 @@ var loan = {
                     orderable: false,
                     render: function (data, type, row) {
                         var
-                            // buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
-                            buttons = '<a href="delete" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                            buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                        // buttons = '<a href="delete" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
                         buttons += '<a href="' + pathname + 'update/' + row.id + '/" class="btn-sm app-btn-secondary btn-warning"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a rel="details" class="btn-sm app-btn-secondary"><i class="fas fa-search"></i></a> ';
                         buttons += '<a href="' + pathname + 'invoice/pdf/' + row.id + '/" target="_blank" class="btn-sm app-btn-secondary"><i class="fas fa-file-pdf"></i></a> ';
@@ -118,6 +118,29 @@ $(function () {
                 format: 'YYYY-MM-DD',
             }
         });
+
+
+    var start = moment().subtract(6, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+    }
+
+    input_daterange.daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            'Hoy': [moment(), moment()],
+            'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+            'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+            'Este mes': [moment().startOf('month'), moment().endOf('month')],
+            'El mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+    cb(start, end);
+
 
     $('.drp-buttons').hide();
 

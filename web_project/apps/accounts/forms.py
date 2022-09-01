@@ -80,32 +80,38 @@ class UserForm(ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area', \
-                 'groups'
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'phone','solapin',  'area', \
+                 'groups', 'image', 'is_active', 'is_superuser'
+
         widgets = {
             'first_name': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese sus nombres',
+                    'class': 'form-control',
                 }
             ),
             'last_name': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese sus apellidos',
+                    'class': 'form-control',
                 }
             ),
             'email': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese su email',
+                    'class': 'form-control',
                 }
             ),
             'username': forms.TextInput(
                 attrs={
                     'placeholder': 'Ingrese su usuario',
+                    'class': 'form-control',
                 }
             ),
             'password': forms.PasswordInput(render_value=True,
                                             attrs={
                                                 'placeholder': 'Ingrese su contraseña',
+                                                'class': 'form-control',
                                             }
                                             ),
             'solapin': forms.TextInput(
@@ -130,10 +136,15 @@ class UserForm(ModelForm):
                 'class': 'form-control select2',
                 'style': 'width: 100%',
                 'multiple': 'multiple'
-            })
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
+            'is_superuser': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
         }
-        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff',
-                   'created', 'updated']
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_staff', 'created', 'updated']
 
     def save(self, commit=True):
         data = {}
@@ -166,7 +177,7 @@ class UserProfileForm(ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area'
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'solapin', 'phone', 'area',
 
         widgets = {
             # 'image': forms.FileInput(

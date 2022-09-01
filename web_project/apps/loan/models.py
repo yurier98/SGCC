@@ -1,6 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.functions import Coalesce
+from django.dispatch import receiver
 from django.forms import model_to_dict
 from django.urls import reverse
 
@@ -8,11 +9,12 @@ from django.urls import reverse
 from django.db.models.signals import post_save
 
 # signals
-from ..notification.signals import notificar
+# from apps.order.models import Order
+from apps.notification.signals import notificar
 
 # Create your models here.
-from ..accounts.models import UserProfile
-from ..inventory.models import Product
+from apps.accounts.models import UserProfile
+from apps.inventory.models import Product
 
 
 class Manifestation(models.Model):
@@ -38,8 +40,8 @@ class Loan(models.Model):
 
     """
     ESTADO = (
+        ('PE', 'Pendiente a autorización'),
         ('PR', 'Prestado'),
-        ('PE', 'Pendiente'),
         ('EN', 'Entregado'),
     )
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -54,7 +56,7 @@ class Loan(models.Model):
 
     def __str__(self):
         """Return title and username."""
-        return 'Préstamo a {}'.format(self.user.username)
+        return 'Préstamo de {}'.format(self.user.username)
 
     def get_number(self):
         return f'{self.id:06d}'
@@ -80,6 +82,9 @@ class Loan(models.Model):
         verbose_name = "Préstamo"
         verbose_name_plural = "Préstamos"
         ordering = ["-created"]
+        permissions = (
+            ("report_loan", "Puede reportar Préstamos"),
+        )
 
 
 class LoanProduct(models.Model):
@@ -108,3 +113,21 @@ def notify_post(sender, instance, created, **kwargs):
 
 
 post_save.connect(notify_post, sender=Loan)
+
+# @receiver(post_save, sender=Order)
+# def create_loan(sender, instance, **kwargs):
+#     id_order = instance.order.id
+#     user = instance.order.user_id
+#     start_date = instance.order.start_date
+#     end_date = instance.order.end_date
+#     description = instance.order.description
+#     manifestation = instance.order.manifestation_id
+#     state = instance.order.state
+#     print(state)
+#
+#     loan = Loan(user, start_date, end_date, description, manifestation)
+#     loan.save()
+#
+#     if state.__eq__('Aprobado'):
+#         loan = Loan(user, start_date, end_date, description, manifestation)
+#         loan.save()

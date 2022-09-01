@@ -46,9 +46,10 @@ order_detail.allow_tags = True
 
 
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ['user', 'start_date', 'end_date', 'manifestation', 'state',
-                    order_detail]
-    list_filter = ['manifestation', 'state', 'updated']
+    list_display = ('user', 'start_date', 'end_date', 'manifestation', 'state',
+                    order_detail)
+    list_filter = ('manifestation', 'state', 'updated',)
+    list_editable = ('manifestation', 'state',)
     autocomplete_fields = ['user']
     inlines = [LoanItemInline]
     actions = [export_to_csv]

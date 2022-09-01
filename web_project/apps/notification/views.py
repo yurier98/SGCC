@@ -1,5 +1,6 @@
 import datetime
 
+from crum import get_current_request
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -10,10 +11,10 @@ from django.urls import reverse_lazy
 from django.shortcuts import HttpResponseRedirect
 from django.utils import timezone
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, FormView
 from swapper import load_model
 
-from .forms import EmailForm
+from .forms import EmailForm, NotificationFilterForm
 from .mixins import EmailMixin
 
 # from .models import Notification
@@ -48,12 +49,13 @@ class Index(EmailMixin, TemplateView):
         return HttpResponseRedirect(reverse_lazy('notifications_list'))
 
 
-####################Vistas de Prestamos##################
+####################Vistas de Notification##################
 class NotificationListView(ListView):
     """ Return las notifications del usuario logeado"""
     model = Notification
     paginate_by = 10
     template_name = 'notifications/notifications.html'
+
     # template_name = 'notifications/notify.html'
     # context_object_name = 'notify'
 
@@ -121,6 +123,10 @@ class NotificationListView(ListView):
     #     ''' aqui tengo q devolver las notificaciones asociadas al usauario autenticado'''
     #     return self.request.user.notifications.all()
 
+    def get_queryset(self):
+        queryset = Notification.objects.filter(destiny=get_current_request().user)
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Notificaciones'
@@ -128,3 +134,105 @@ class NotificationListView(ListView):
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Notificaciones'
         return context
+
+
+class NotificationListViewFilter(FormView):
+    """ Return all the Notifications"""
+    form_class = NotificationFilterForm
+    template_name = 'notifications/notifications.html'
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search':
+                data = []
+                start_date = request.POST['start_date']
+                end_date = request.POST['end_date']
+                queryset = Notification.objects.all()
+                if len(start_date) and len(end_date):
+                    queryset = queryset.filter(created__range=[start_date, end_date])
+                for i in queryset:
+                    data.append(i.toJSON())
+            elif action == 'delete':
+                data = []
+                for i in Notification.objects.filter(id=request.POST['id']):
+                    data.append(i.toJSON())
+                    #Toamar el objeto y cambiarle el estado a eliminado
+
+
+
+
+
+            elif action == 'search_products_detail':
+                data = []
+                for i in Notification.objects.filter(loan_id=request.POST['id']):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+            print(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Notificaciones'
+        context['create_url'] = reverse_lazy('loan_create')
+        context['list_url'] = reverse_lazy('loan_list')
+        context['entity'] = 'Notificaciones'
+        return context
+
+# class NotificationViewSet(viewsets.ModelViewSet):
+#     queryset = Notification.objects.all()
+#     serializer_class = NotificationSerializer
+#     filter_backends = (SearchFilter,)
+#     search_fields = ('verb', 'description')
+#
+#     def get_queryset(self):
+#         return self.request.user.notifications.filter(timestamp__lte=datetime.now()).order_by('-timestamp', '-unread')
+#
+#
+#     def get_today(self, request):
+#         today = datetime.now().today()
+#         results = self.get_queryset().filter(timestamp__year=today.year, timestamp__month=today.month,
+#                                              timestamp__day=today.day)
+#         return results
+#
+#
+#     def get_yesterday(self, request):
+#         yesterday = datetime.now().today() - datetime.timedelta(days=1)
+#         results = self.get_queryset().filter(timestamp__year=yesterday.year, timestamp__month=yesterday.month,
+#                                              timestamp__day=yesterday.day)
+#         return results
+#
+#
+#     def get_last_month(self, request):
+#         now = datetime.now().today()
+#         previous_month = datetime.now().today() - datetime.timedelta(days=30)
+#         results = self.get_queryset().filter(timestamp__range=(previous_month, now))
+#
+#         return results
+#
+#     def get_last_year(self, request):
+#         now = datetime.now().today()
+#         previous_year = datetime.now().today() - datetime.timedelta(days=256)
+#         results = self.get_queryset().filter(timestamp__range=(previous_year, now))
+#         return results
+#
+#     @action(url_path='mte/get_unread_count', detail=False)
+#     def get_unread_count(self, request):
+#         try:
+#             results = {
+#                 'count': request.user.notifications.filter(timestamp__lte=datetime.now(), unread=True).count(),
+#                 "cancel_notifications": not request.user.profile.be_notified
+#             }
+#             return Response(results)
+#         except Notification.DoesNotExist:
+#             pass
+#
+#     @action(url_path='mark_all_as_read', detail=False)
+#     def mark_all_as_read(self, request, pk=None):
+#         results = request.user.notifications.filter(unread=True)
+#         results.update(unread=False)
+#         return Response({'status': status.HTTP_200_OK})

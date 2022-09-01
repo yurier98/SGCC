@@ -46,7 +46,7 @@
 
                 {% for notify in object_list %}
 
-                    {% if notify.level == 'Info' %}
+                    {% if notify.level == 'info' %}
                         <div class="alert alert-info  alert-dismissible fade show" role="alert">
                             <h4 class="alert-heading">
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
@@ -60,7 +60,7 @@
                             <p class="mb-0">{{ notify.verbo }}</p>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                    {% elif notify.level == 'Success' %}
+                    {% elif notify.level == 'success' %}
                         <div class="alert alert-success  alert-dismissible fade show" role="alert">
                             <h4 class="alert-heading">
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"

@@ -29,7 +29,7 @@ class LoanForm(ModelForm):
     class Meta:
         model = Loan
         # fields = '__all__'
-        exclude = ['start_date', 'end_date', 'created', 'updated']
+        exclude = ['created', 'updated']
         widgets = {
             'user': forms.Select(attrs={
                 'class': 'custom-select select2',

@@ -36,8 +36,9 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'widget_tweaks',
     'bootstrap_modal_forms',
-    "view_breadcrumbs",
-    'django_extensions',
+    # "view_breadcrumbs",
+    # 'django_extensions',
+
 ]
 
 LOCAL_APPS = [
@@ -47,10 +48,10 @@ LOCAL_APPS = [
     'apps.accounts',
     'apps.inventory',
     'apps.loan',
+    'apps.order',
     'apps.reports',
     'apps.core',
     'apps.security',
-
     # 'apps.audit',
     'apps.notification',
 
@@ -153,6 +154,9 @@ LANGUAGES = [
 ADMINS = [("Admin del sitio", "admin@localhost.to"), ]
 
 # ***********************AUTENTICACION*********************
+#Esta opcion permite convertir la session serializable para q pueda obtener los grupos desde la session
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 #AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
 AUTH_USER_MODEL = 'accounts.UserProfile'
 # Keep ModelBackend around for per-user permissions and maybe a local
@@ -177,26 +181,21 @@ LOGOUT_REDIRECT_URL = '/login/'
 # ***********************CONFIG EMAIL*********************
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.uci.cu'
-EMAIL_HOST = 'smtp.estudiantes.uci.cu'
+#EMAIL_HOST = 'smtp.estudiantes.uci.cu'
+EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
+# EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
+EMAIL_HOST_USER = 'guflyplay@gmail.com'
 
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_PASSWORD = 'gespro123'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = '2021guf@'
+# EMAIL_PORT = 25
+EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DOMAIN = ''
 #eliminar esto despues
 DEBUG = True
 # *********************** END CONFIG EMAIL*********************
-
-# *********************** BREADCRUMBS_TEMPLATE *********************
-BREADCRUMBS_TEMPLATE = "includes/_breadcrumbs.html"
-BREADCRUMBS_HOME_LABEL = "My new home"
-
-
-#############################################################################################
-
 

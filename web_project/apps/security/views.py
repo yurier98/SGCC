@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
+from .Mixin.mixins import ValidatePermissionRequiredMixin
 from .forms import GroupsForm
 
 
@@ -15,7 +16,7 @@ def json(request, self=None):
     return JsonResponse(data, safe=False)
 
 
-class GroupListView(ListView):
+class GroupListView(ValidatePermissionRequiredMixin, ListView):
     model = Group
     template_name = 'groups/list.html'
     permission_required = 'view_group'
@@ -47,7 +48,7 @@ class GroupListView(ListView):
         return context
 
 
-class GroupCreateView(CreateView):
+class GroupCreateView(ValidatePermissionRequiredMixin, CreateView):
     model = Group
     form_class = GroupsForm
     template_name = 'groups/create.html'
@@ -77,7 +78,7 @@ class GroupCreateView(CreateView):
         return context
 
 
-class GroupUpdateView(UpdateView):
+class GroupUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     model = Group
     form_class = GroupsForm
     template_name = 'groups/create.html'
@@ -111,7 +112,7 @@ class GroupUpdateView(UpdateView):
         return context
 
 
-class GroupDeleteView(DeleteView):
+class GroupDeleteView(ValidatePermissionRequiredMixin, DeleteView):
     model = Group
     template_name = 'groups/delete.html'
     success_url = reverse_lazy('group_list')
@@ -140,7 +141,7 @@ class GroupDeleteView(DeleteView):
         return context
 
 
-class PermissionListView(ListView):
+class PermissionListView(ValidatePermissionRequiredMixin, ListView):
     model = Permission
     template_name = 'permissions/list.html'
     permission_required = 'view_permission'

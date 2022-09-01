@@ -12,11 +12,11 @@
         <th class="cell" scope="col" style="width: 5%;">Nro</th>
         <th class="cell" scope="col" style="width: 15%;">Usuario</th>
         <th class="cell" scope="col" style="width: 10%;">Solapín</th>
-        <th class="cell" scope="col" style="width: 10%;">Facultad</th>
-        <th class="cell" scope="col" style="width: 15%;">Fecha de registro</th>
+        <th class="cell" scope="col" style="width: 20%;">Área</th>
+        <th class="cell" scope="col" style="width: 10%;">Fecha de registro</th>
         <th class="cell" scope="col" style="width: 10%;">Estado</th>
-        <th class="cell" scope="col" style="width: 15%;"> Manifestación</th>
-        <th class="cell" scope="col" style="width: 20%;"></th>
+        <th class="cell" scope="col" style="width: 10%;"> Manifestación</th>
+        <th class="cell" scope="col" style="width: 15%;"></th>
     </tr>
 {% endblock %}
 
@@ -137,6 +137,14 @@
         <label class="form-label">Rangos de fechas:</label>
         <div class="input-group mb-3">
             {{ form.date_range }}
+
+{#            <div id="reportrange"#}
+{#                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">#}
+{#                <i class="fa fa-calendar"></i>&nbsp;#}
+{#                <span></span> <i class="fa fa-caret-down"></i>#}
+{#            </div>#}
+
+
             <div class="input-group-append ">
                 <button class="btn app-btn-primary btnSearch" type="button">
                     <i class="fa-regular fa-calendar-check"></i> Buscar por rangos

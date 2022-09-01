@@ -6,3 +6,4 @@ class LoanConfig(AppConfig):
     name = 'apps.loan'
     label = 'loan'
     verbose_name = 'Préstamos'
+

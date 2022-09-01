@@ -8,3 +8,10 @@ class EmailForm(forms.Form):
 
     class Meta:
         fields = ('email_to', 'title', 'message')
+
+
+class NotificationFilterForm(forms.Form):
+    date_range = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }))

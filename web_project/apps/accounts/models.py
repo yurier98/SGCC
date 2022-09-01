@@ -15,7 +15,7 @@ class UserProfile(AbstractUser):
                               default='no_picture.svg')
     token = models.UUIDField(primary_key=False, editable=False, null=True, blank=True)
     solapin = models.CharField(max_length=7)
-    area = models.CharField(max_length=50)
+    area = models.CharField(verbose_name="Área", max_length=50)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{8,11}$',
                                  message="El número de teléfono debe ingresarse en el formato: '+5399999999'. de hasta "
                                          "11 dígitos permitidos.")
@@ -23,12 +23,10 @@ class UserProfile(AbstractUser):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
     def get_image(self):
         if self.image:
             return f'{base.MEDIA_URL}{self.image}'
         return f'{base.STATIC_URL}/no_picture.svg'
-
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login'])

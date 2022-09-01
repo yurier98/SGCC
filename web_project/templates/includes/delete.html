@@ -57,8 +57,8 @@
                                             {% endif %}
 
                                             <p class="text-center font-weight-bold mt-3">
-                                                <i class="bi bi-trash fa-2x"> ¿Estas seguro de eliminar el registro N° {{ object.id }}?</i><br><br>
-                                                Usted va a eliminar {{ object.name }}
+                                                <i class="bi bi-trash fa-2x"> ¿Estas seguro de eliminar este registro?</i><br><br>
+                                                Usted va a eliminar el {{ object }}
                                             </p>
 
                                             {% for field in form.visible_fields %}

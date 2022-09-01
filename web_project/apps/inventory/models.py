@@ -89,3 +89,17 @@ class Product(models.Model):
         ordering = ["-created"]
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
+
+        permissions = (
+            # ("producto", "Puede hacer TODAS las operaciones de productos"),
+            # ("producto_index", "Puede ver el index de productos"),
+            # ("producto_add", "Puede agregar producto"),
+            # ("producto_edit", "Puede actualizar productos"),
+            # ("producto_delete", "Puede eliminar productos"),
+            ("report_product", "Puede reportar productos"),
+            # ("producto_state", "Puede inactivar y reactivar productos"),
+            # Pa agregar más permissions solo vuelva a hacer >python manage.py syncdb y no tiene que borrar la db
+            # ("producto_list", "xPuede listar productos"),
+            # ("producto_json", "xPuede listar productos en formato JSON"),
+            # ("producto_edit_precio", "Puede actualizar precio venta de productos"),
+        )

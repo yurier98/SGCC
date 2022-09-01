@@ -146,22 +146,11 @@ class ChangePasswordView(FormView):
         context['login_url'] = settings.LOGIN_URL
         return context
 
-
-class UserChooseGroup(LoginRequiredMixin, View):
-
-    def get(self, request, *args, **kwargs):
-        try:
-            request.session['group'] = Group.objects.get(pk=self.kwargs['pk'])
-        except:
-            pass
-        return HttpResponseRedirect(reverse_lazy('home'))
-
-
 #   Vistas de los Usuarios que solo tiene acceso el admin ######
 class UserListView(ValidatePermissionRequiredMixin, ListView):
     model = UserProfile
     template_name = 'user/list.html'
-    permission_required = 'view_user'
+    permission_required = 'view_userprofile'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -191,7 +180,8 @@ class UserCreateView(ValidatePermissionRequiredMixin, CreateView):
     form_class = UserForm
     template_name = 'user/create.html'
     success_url = reverse_lazy('user_list')
-    permission_required = 'add_user'
+    permission_required = 'add_userprofile'
+    url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -309,6 +299,7 @@ class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
         context['action'] = 'edit'
         return context
 
+
 class UserDetailProfileView(LoginRequiredMixin, DetailView):
     model = UserProfile
     template_name = 'user/profile_details.html'
@@ -320,7 +311,6 @@ class UserDetailProfileView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Detalles del perfil'
@@ -328,6 +318,7 @@ class UserDetailProfileView(LoginRequiredMixin, DetailView):
         # context['list_url'] = self.success_url
 
         return context
+
 
 class UserChangePasswordView(LoginRequiredMixin, FormView):
     model = UserProfile
