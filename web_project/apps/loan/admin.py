@@ -7,12 +7,12 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Loan, Manifestation, LoanProduct
+from .models import Loan
 
 
-class LoanItemInline(admin.TabularInline):
-    model = LoanProduct
-    raw_id_fields = ['product']
+# class LoanItemInline(admin.TabularInline):
+#     model = LoanProduct
+#     raw_id_fields = ['order']
 
 
 def export_to_csv(modeladmin, request, queryset):
@@ -46,14 +46,12 @@ order_detail.allow_tags = True
 
 
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ('user', 'start_date', 'end_date', 'manifestation', 'state',
-                    order_detail)
-    list_filter = ('manifestation', 'state', 'updated',)
-    list_editable = ('manifestation', 'state',)
-    autocomplete_fields = ['user']
-    inlines = [LoanItemInline]
+    list_display = ('state', order_detail)
+    list_filter = ('state', )
+    # list_editable = ('state',)
+    # autocomplete_fields = ['user']
+    # inlines = [LoanItemInline]
     actions = [export_to_csv]
 
 
 admin.site.register(Loan, LoanAdmin)
-admin.site.register(Manifestation)

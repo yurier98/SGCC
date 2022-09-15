@@ -1,7 +1,8 @@
 import datetime
 
 from crum import get_current_request
-from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -11,7 +12,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import HttpResponseRedirect
 from django.utils import timezone
 from django.views import View
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView, DetailView
 from swapper import load_model
 
 from .forms import EmailForm, NotificationFilterForm
@@ -158,10 +159,7 @@ class NotificationListViewFilter(FormView):
                 data = []
                 for i in Notification.objects.filter(id=request.POST['id']):
                     data.append(i.toJSON())
-                    #Toamar el objeto y cambiarle el estado a eliminado
-
-
-
+                    # Toamar el objeto y cambiarle el estado a eliminado
 
 
             elif action == 'search_products_detail':
@@ -182,6 +180,7 @@ class NotificationListViewFilter(FormView):
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Notificaciones'
         return context
+
 
 # class NotificationViewSet(viewsets.ModelViewSet):
 #     queryset = Notification.objects.all()
@@ -236,3 +235,45 @@ class NotificationListViewFilter(FormView):
 #         results = request.user.notifications.filter(unread=True)
 #         results.update(unread=False)
 #         return Response({'status': status.HTTP_200_OK})
+class NotificationDetailView(LoginRequiredMixin, DetailView):
+    model = Notification
+    template_name = 'notifications/detail.html'
+    success_url = reverse_lazy('notifications_list')
+    url_redirect = success_url
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        notify = Notification.objects.get(pk=self.kwargs['pk'])
+        try:
+            notify.read = True
+            notify.save()
+        except:
+            pass
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    # def post(self, request, *args, **kwargs):
+    #     form = DetailForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         # Write Your Logic here
+    #
+    #         self.object = self.get_object()
+    #         context = super(Detail, self).get_context_data(**kwargs)
+    #         context['form'] = DetailForm
+    #         return self.render_to_response(context=context)
+    #
+    #     else:
+    #         self.object = self.get_object()
+    #         context = super(NotificationDetailView, self).get_context_data(**kwargs)
+    #         context['form'] = form
+    #         return self.render_to_response(context=context)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalles de la notificación'
+        context['entity'] = 'Notificaciones'
+        context['list_url'] = self.success_url
+        # context['action'] = 'edit'
+        # context['products'] = self.get_details_product()
+        return context

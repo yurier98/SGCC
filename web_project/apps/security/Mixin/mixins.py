@@ -45,31 +45,15 @@ class ValidatePermissionRequiredMixin(object):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         request = get_current_request()
-
-        if request.user.is_superuser:
-            return super().get(request, *args, **kwargs)
-        # metodo obsoleto
-        # if 'group' in request.session:
-        #     group = request.session['group']
-        #     print(group)
-        #     perms = self.get_perms()
-        #     for p in perms:
-        #         if not group.permissions.filter(codename=p).exists():
-        #             messages.error(request, 'No tiene permiso para ingresar a este módulo')
-        #             return HttpResponseRedirect(self.get_url_redirect())
+        '''No se le puede asignar los permisos al super usuario q acceda a todos los modulos solo a los roles'''
+        # if request.user.is_superuser:
         #     return super().get(request, *args, **kwargs)
-        # messages.error(request, 'No tiene permiso para ingresar a este módulo')
-        # return HttpResponseRedirect(self.get_url_redirect())
-
-        '''get_all_permissions => Devuelve una lista con los permisos que tiene 
-            concedidos un usuario, ya sea a través de los grupos 
-            a los que pertenece o bien asignados directamente.'''
+        '''get_all_permissions => Devuelve una lista con los permisos que tiene concedidos un usuario, ya sea 
+        a través de los grupos a los que pertenece o bien asignados directamente.'''
         perms_user = request.user.get_all_permissions()
-
         if perms_user:
             perms_required = self.get_perms()
             # print(request.user.has_perms(perms_required))
-
             if request.user.has_perms(perms_required) == False:
                 messages.error(request, 'No tiene permiso para ingresar a este módulo')
                 return HttpResponseRedirect(self.get_url_redirect())
@@ -82,5 +66,5 @@ class ExistsInventaryMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if Product.objects.all().filter(active=True).exists():
             return super().dispatch(request, *args, **kwargs)
-        messages.error(request, 'No se puede continuar si no hay productos en el inventario')
+        messages.warning(request, 'No se puede continuar si no hay productos en el inventario')
         return redirect('home')

@@ -43,6 +43,10 @@ settings.AUTH_LDAP_USER_ATTR_MAP = {
     'facultad': 'department',
     'foto': 'thumbnailphoto',
     'LOGON_COUNT': 'logoncount',
+
+    'area': 'department',
+    # 'phone': 'telephoneNumber',
+    'phone': 'otherTelephone',
 }
 # This is the default, but I like to be explicit.
 settings.UTH_LDAP_ALWAYS_UPDATE_USER = True

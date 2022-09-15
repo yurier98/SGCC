@@ -5,8 +5,9 @@ from . import views
 from ..inventory.views import CategoryListView, CategoryCreateView, CategoryDeleteView, CategoryUpdateView
 from ..accounts.views import UserListView, UserCreateView, UserUpdateView, UserDeleteView
 from ..security.views import GroupListView, json, PermissionListView, GroupCreateView, GroupDeleteView, GroupUpdateView
-from ..loan.views import ManifestationListView, ManifestationCreateView, ManifestationUpdateView, \
-    ManifestationDeleteView
+
+# from ..order.views import ManifestationListView, ManifestationCreateView, ManifestationUpdateView, \
+#     ManifestationDeleteView
 
 # app_name = "admin"
 
@@ -29,10 +30,10 @@ urlpatterns = [
     # path('delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
 
     #################  Manifestation   #####################################
-    path('manifestation', ManifestationListView.as_view(), name='manifestation_list'),
-    path('manifestation/add', ManifestationCreateView.as_view(), name='manifestation_create'),
-    path('manifestation/update/<int:pk>/', ManifestationUpdateView.as_view(), name='manifestation_update'),
-    path('manifestation/delete/<int:pk>/', ManifestationDeleteView.as_view(), name='manifestation_delete'),
+    path('manifestation', views.ManifestationListView.as_view(), name='manifestation_list'),
+    path('manifestation/add', views.ManifestationCreateView.as_view(), name='manifestation_create'),
+    path('manifestation/update/<int:pk>/', views.ManifestationUpdateView.as_view(), name='manifestation_update'),
+    path('manifestation/delete/<int:pk>/', views.ManifestationDeleteView.as_view(), name='manifestation_delete'),
 
     #################  Category   #####################################
     path('category', CategoryListView.as_view(), name='category_list'),

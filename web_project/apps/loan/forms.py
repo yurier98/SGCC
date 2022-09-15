@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib import admin
-from .models import Loan, Manifestation
+from .models import Loan
 from ..accounts.models import UserProfile
 from datetime import datetime
 
@@ -62,28 +62,3 @@ class LoanForm(ModelForm):
 
         }
 
-
-class ManifestationForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['autofocus'] = True
-
-    class Meta:
-        model = Manifestation
-        fields = '__all__'
-        widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Ingrese un nombre'}),
-        }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                instance = form.save()
-                data = instance.toJSON()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data

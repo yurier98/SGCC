@@ -3,6 +3,7 @@ import os
 from bootstrap_modal_forms.generic import BSModalReadView, BSModalDeleteView, BSModalFormView, BSModalCreateView, \
     BSModalUpdateView
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
@@ -18,8 +19,8 @@ from django.views.generic import ListView, CreateView, UpdateView, FormView, Del
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
 
 from apps.accounts.models import UserProfile
-from .forms import ReportForm, LoanForm, ManifestationForm
-from .models import Loan, LoanProduct, Manifestation
+from .forms import ReportForm, LoanForm
+from .models import Loan
 from apps.inventory.models import Product
 
 
@@ -50,10 +51,12 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
                     queryset = queryset.filter(created__range=[start_date, end_date])
                 for i in queryset:
                     data.append(i.toJSON())
+
+
             elif action == 'search_products_detail':
                 data = []
-                for i in LoanProduct.objects.filter(loan_id=request.POST['id']):
-                    data.append(i.toJSON())
+                # for i in LoanProduct.objects.filter(loan_id=request.POST['id']):
+                #     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -78,7 +81,6 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
     url_redirect = success_url
     permission_required = 'add_loan'
     success_message = 'Préstamo creado correctamente.'
-
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -128,13 +130,15 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                     loan.manifestation_id = int(request.POST['manifestation'])
                     loan.save()
                     for i in products:
-                        detail = LoanProduct()
-                        detail.loan_id = loan.id
-                        detail.product_id = int(i['id'])
-                        detail.cant = int(i['cant'])
-                        detail.save()
-                        detail.product.stock -= detail.cant
-                        detail.product.save()
+                        print('Arreglar')
+                    # detail = LoanProduct()
+                    # detail.loan_id = loan.id
+                    # detail.product_id = int(i['id'])
+                    # detail.cant = int(i['cant'])
+                    # detail.save()
+                    # detail.product.stock -= detail.cant
+                    # detail.product.save()
+                    messages.success(request, '¡Préstamo guardado con éxito!')
                     data = {'id': loan.id}
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -252,14 +256,15 @@ class LoanUpdateView(UpdateView):
                         loan.save()
                         loan.loanproduct_set.all().delete()
                         for i in products:
-                            detail = LoanProduct()
-                            detail.loan_id = loan.id
-                            detail.product_id = int(i['id'])
-                            detail.cant = int(i['cant'])
-
-                            detail.save()
-                            detail.product.stock -= detail.cant
-                            detail.product.save()
+                            pass
+                            # detail = LoanProduct()
+                            # detail.loan_id = loan.id
+                            # detail.product_id = int(i['id'])
+                            # detail.cant = int(i['cant'])
+                            #
+                            # detail.save()
+                            # detail.product.stock -= detail.cant
+                            # detail.product.save()
                         data = {'id': loan.id}
                     data = {'id': loan.id}
             else:
@@ -300,134 +305,3 @@ class LoanPdfView(View):
 
 #################### FIN Vistas de Préstamos##################
 
-####################Vistas de Manifestación##################
-
-class ManifestationListView(ValidatePermissionRequiredMixin, ListView):
-    model = Manifestation
-    template_name = 'manifestation/list.html'
-    permission_required = 'view_manifestation'
-    url_redirect = reverse_lazy('home')
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'search':
-                data = []
-                for i in Manifestation.objects.all():
-                    data.append(i.toJSON())
-            elif action == 'create_manifestation':
-                with transaction.atomic():
-                    form = ManifestationForm(request.POST)
-                    print(form)
-                    data = form.save()
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            print(str(e))
-            data['error'] = str(e)
-
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Manifestaciones'
-        context['create_url'] = reverse_lazy('manifestation_create')
-        context['list_url'] = reverse_lazy('manifestation_list')
-        context['entity'] = 'Manifestaciones'
-        context['frmManifestation'] = ManifestationForm()
-        return context
-
-
-class ManifestationCreateView(ValidatePermissionRequiredMixin, CreateView):
-    model = Manifestation
-    form_class = ManifestationForm
-    template_name = 'manifestation/create.html'
-    success_url = reverse_lazy('manifestation_list')
-    url_redirect = success_url
-    permission_required = 'add_manifestation'
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'add':
-                form = self.get_form()
-                data = form.save()
-            else:
-                data['error'] = 'No ha ingresado a ninguna opción'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear manifestación'
-        context['entity'] = 'Manifestaciones'
-        context['list_url'] = self.success_url
-        context['action'] = 'add'
-        return context
-
-
-class ManifestationUpdateView(ValidatePermissionRequiredMixin, UpdateView):
-    model = Manifestation
-    form_class = ManifestationForm
-    template_name = 'manifestation/create.html'
-    success_url = reverse_lazy('manifestation_list')
-    url_redirect = success_url
-    permission_required = 'change_manifestation'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'edit':
-                form = self.get_form()
-                data = form.save()
-            else:
-                data['error'] = 'No ha ingresado a ninguna opción'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Modificar Categoría'
-        context['entity'] = 'Manifestation'
-        context['list_url'] = self.success_url
-        context['action'] = 'edit'
-        return context
-
-
-class ManifestationDeleteView(ValidatePermissionRequiredMixin, BSModalDeleteView):
-    model = Manifestation
-    template_name = 'manifestation/delete.html'
-    success_url = reverse_lazy('manifestation_list')
-    url_redirect = success_url
-    permission_required = 'delete_manifestation'
-    success_message = 'Reservación creada correctamente.'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Manifestación'
-        context['entity'] = 'Manifestación'
-        context['list_url'] = self.success_url
-        return context
-
-#################### FIN Vistas de Manifestación##################

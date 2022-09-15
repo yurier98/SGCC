@@ -268,7 +268,7 @@ class UserDeleteView(ValidatePermissionRequiredMixin, DeleteView):
 class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
-    template_name = 'user/profile.html'
+    template_name = 'user/profile_update.html'
     success_url = reverse_lazy('user_update_profile')
 
     def get_object(self, queryset=None):

@@ -1,7 +1,11 @@
 {% load static %}
+{% load pwa %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    {% progressive_web_app_meta %}
+
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     {% block meta %}
@@ -20,7 +24,8 @@
     <title>{{ title }}</title>
     {% block stylesheets %}
         <!-- App CSS -->
-        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">
+{#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
+        <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
         <link href="{% static 'assets/plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
         <!-- Favicons -->
         <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
@@ -51,16 +56,17 @@
     <!-- Block head -->
     {% block head %}
     {% endblock %}
+
 </head>
 
 <body class="app">
-{% if request.resolver_match.url_name == 'admin' %}
-    {% include "includes/../admin/admin_header.html" %}
-{% endif %}
+{#{% if request.resolver_match.url_name == 'admin' %}#}
+{#    {% include "includes/../admin/admin_header.html" %}#}
+{#{% endif %}#}
 
 {% include 'includes/header.html' %}
 {% include "includes/_modal.html" %}
-<!-- Contenido de la pagina -->
+<!-- Contenido de la página -->
 {% block content %}
 {% endblock %}
 
@@ -83,28 +89,51 @@
 
 {% block javascript %}
 {% endblock %}
+
+
 {% if messages %}
     {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            {{ message | safe }}
+
+        <div class="position-fixed bottom-0  end-0 p-3" style="z-index: 11">
+            <div id="liveToast" class="toast align-items-center text-white
+                    {% if message.tags == 'success' %} bg-primary
+                     {% elif message.tags == 'error' %} bg-danger
+                     {% elif message.tags == 'info' %} bg-info
+                     {% elif message.tags == 'warning' %} bg-warning
+                     {% else %} bg-info
+                     {% endif %}
+                     border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message | safe }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                </div>
+            </div><!-- toast -->
         </div>
+
     {% endfor %}
 {% endif %}
+
 <script>
+    {#    {% if messages %}#}
+    {#        var html = '<p>';#}
+    {#        {% for message in messages %}#}
+    {#            html += '{{ message }}<br>';#}
+    {#        {% endfor %}#}
+    {#        html += '</p>';#}
+    {#        Swal.fire({#}
+    {#            title: 'Error!',#}
+    {#            html: html,#}
+    {#            icon: 'error'#}
+    {#        });#}
+    {#    {% endif %}#}
+
+    var toastLiveExample = document.getElementById('liveToast')
     {% if messages %}
-        var html = '<p>';
-        {% for message in messages %}
-            html += '{{ message }}<br>';
-        {% endfor %}
-        html += '</p>';
-        Swal.fire({
-            title: 'Error!',
-            html: html,
-            icon: 'error'
-        });
+        var toast = new bootstrap.Toast(toastLiveExample)
+        toast.show()
     {% endif %}
 
 

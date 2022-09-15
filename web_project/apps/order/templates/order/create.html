@@ -58,14 +58,14 @@
                                                         {#                                                        <i class="bi bi-box-seam fa-2x" style="line-height: 0;"></i>#}
                                                         <i class="fas fa-boxes"></i>
                                                     </div>
-                                                    Detalle de los productos
+                                                    Detalles de los productos
                                                 </h3>
                                                 <hr>
                                             </div>
                                             <div class="app-card-body w-100">
                                                 <div class="container-fluid settings-section">
                                                     <div class="form-group settings-form">
-                                                        <label class="form-label">Buscador de productos:</label>
+                                                        <label class="form-label">Buscador de productos</label>
                                                         <div class="input-group">
                                                             <select class="form-control select2"
                                                                     name="search_product"></select>
@@ -106,8 +106,8 @@
                                                             <th class="cell">Imagen</th>
                                                             <th class="cell">Producto</th>
                                                             <th class="cell">Categoría</th>
-                                                            <th class="cell">Stock</th>
-                                                            <th class="cell">Cantidad</th>
+                                                            <th class="cell">Cantidad disponible</th>
+                                                            <th class="cell">Cantidad deseada</th>
                                                             <th class="cell">Estado</th>
                                                         </tr>
                                                         </thead>
@@ -136,11 +136,11 @@
                                                 <div class="container-fluid">
                                                     <input type="hidden" name="action" value="{{ action }}">
                                                     <div class="form-group py-1">
-                                                        <label class="form-label">Rango de fecha:</label>
+                                                        <label class="form-label">Rango de fecha</label>
                                                         {{ form.date_range }}
                                                     </div>
                                                     <div class="form-group py-1">
-                                                        <label class="form-label">Usuario:</label>
+                                                        <label class="form-label">Usuario</label>
                                                         <div class="input-group">
                                                             {{ form.user }}
                                                             {#                                                            <div class="input-group-append">#}
@@ -152,16 +152,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group py-1">
-                                                        <label class="form-label">Manifestación:</label>
+                                                        <label class="form-label">Manifestación</label>
                                                         {{ form.manifestation }}
                                                     </div>
                                                     <div class="form-group py-1">
-                                                        <label class="form-label">Descripción:</label>
+                                                        <label class="form-label">Descripción - (Opcional)</label>
                                                         {{ form.description }}
                                                     </div>
                                                     {% if form.state %}
                                                         <div class="form-group py-1">
-                                                            <label class="form-label">Estado:</label>
+                                                            <label class="form-label">Estado</label>
                                                             {{ form.state }}
                                                         </div>
                                                     {% endif %}
@@ -220,7 +220,7 @@
                         <tr>
                             <th class="cell">Producto</th>
                             <th class="cell">Imagen</th>
-                            <th class="cell">Stock</th>
+                            <th class="cell">Cantidad disponible</th>
                             <th class="cell">Categoría</th>
                             <th class="cell">Opciones</th>
                         </tr>

@@ -18,8 +18,8 @@ urlpatterns = [
 
     path('', views.LoanListView.as_view(), name='loan_list'),
     path('add', views.LoanCreateView.as_view(), name='loan_create'),
-    path('delete/<int:pk>/', views.LoanDeleteView.as_view(), name='loan_delete'),
-    path('update/<int:pk>/', views.LoanUpdateView.as_view(), name='loan_update'),
+    path('delete/<uuid:pk>/', views.LoanDeleteView.as_view(), name='loan_delete'),
+    path('update/<uuid:pk>/', views.LoanUpdateView.as_view(), name='loan_update'),
 
-    path('invoice/pdf/<int:pk>/', views.LoanPdfView.as_view(), name='sale_invoice_pdf'),
+    path('invoice/pdf/<uuid:pk>/', views.LoanPdfView.as_view(), name='sale_invoice_pdf'),
 ]

@@ -61,6 +61,7 @@ class Create(ValidatePermissionRequiredMixin, CreateView):
     success_message = 'Producto creada correctamente.'
     success_url = reverse_lazy('inventory:inventory')
     url_redirect = success_url
+    permission_required = 'inventory.add_product'
 
 
 class Detail(BSModalReadView, DetailBreadcrumbMixin):

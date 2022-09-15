@@ -15,6 +15,7 @@ class UserProfile(AbstractUser):
                               default='no_picture.svg')
     token = models.UUIDField(primary_key=False, editable=False, null=True, blank=True)
     solapin = models.CharField(max_length=7)
+    ocupacion = models.CharField(max_length=100,blank=True)
     area = models.CharField(verbose_name="Área", max_length=50)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{8,11}$',
                                  message="El número de teléfono debe ingresarse en el formato: '+5399999999'. de hasta "

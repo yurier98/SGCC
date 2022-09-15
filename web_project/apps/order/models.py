@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.dispatch import receiver
 from django.forms import model_to_dict
@@ -8,8 +9,7 @@ from django.db.models.signals import post_save, m2m_changed
 # Create your models here.
 from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
-from apps.loan.models import Manifestation
-
+from apps.core.models import Manifestation
 
 class Order(models.Model):
     """Pedido model. """
@@ -19,7 +19,7 @@ class Order(models.Model):
         ('Aprobado', 'Aprobado'),
         ('No Aprobado', 'No Aprobado'),
     )
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
     end_date = models.DateField("Fecha de devolución")
@@ -29,6 +29,7 @@ class Order(models.Model):
     state = models.CharField("Estado", max_length=11, choices=ESTADO, default='Pendiente')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_delete = models.BooleanField(default=False)
 
     def __str__(self):
         """Return title and username."""
@@ -90,21 +91,3 @@ class OrderProduct(models.Model):
 #
 # post_save.connect(notify_post, sender=Order)
 
-
-# @receiver(post_save, sender=Loan)
-# def create_loan(sender, instance, **kwargs):
-#     id_order = instance.order.id
-#     user = instance.order.user_id
-#     start_date = instance.order.start_date
-#     end_date = instance.order.end_date
-#     description = instance.order.description
-#     manifestation = instance.order.manifestation_id
-#     state = instance.order.state
-#     print(state)
-#
-#     loan = Loan(user, start_date, end_date, description, manifestation)
-#     loan.save()
-#
-#     if state.__eq__('Aprobado'):
-#         loan = Loan(user, start_date, end_date, description, manifestation)
-#         loan.save()

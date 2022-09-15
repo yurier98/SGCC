@@ -103,8 +103,9 @@
                                                             class="truncate">{{ object.user }}</span>
                                                     </td>
                                                     <td class="cell">{{ object.user.area }}</td>
-                                                    <td class="cell"><span>{{ object.created |date:"j F, Y" }}</span><span
-                                                            class="note">{{ object.created|date:' H:i'  }}</span>
+                                                    <td class="cell">
+                                                        <span>{{ object.created |date:"j F, Y" }}</span><span
+                                                            class="note">{{ object.created|date:' H:i' }}</span>
                                                     </td>
                                                     <td class="cell">
                                                         {% if object.state  == 'PR' %}
@@ -316,9 +317,7 @@
                             <div class="box">
                                 <h3> Lo sentimos 😢</h3>
                                 <p>Usted no ha reservado aún, haga su priemra reservación en
-
                                     <a href="" class="text-primary">Reservar</a>
-
                             </div>
                         </header>
                     </div>

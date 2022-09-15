@@ -3,6 +3,7 @@ import os
 
 from crum import get_current_request
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Q
@@ -12,14 +13,14 @@ from django.template.loader import get_template
 from django_filters.views import FilterView
 from weasyprint import HTML, CSS
 from django.urls import reverse_lazy, resolve
-from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View
+from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin, IsSuperuserMixin
 from apps.accounts.models import UserProfile
-from apps.loan.models import Loan, LoanProduct
+from apps.loan.models import Loan
 from .filters import OrderFilter
 from .forms import ReportForm, OrderForm, OrderFormApprove
-from .models import Order, OrderProduct
+from .models import Order, OrderProduct, Manifestation
 from apps.inventory.models import Product
 from apps.notification.signals import notificar
 
@@ -56,7 +57,7 @@ class OrderListView(ExistsInventaryMixin, LoginRequiredMixin, FilterView):
     # Modificar el metodo getQuery para hacer una comprobacion de q sea los pedidos del usuario autenticado
 
     def get_queryset(self):
-        queryset = Order.objects.filter(user__username=get_current_request().user)
+        queryset = Order.objects.filter(user__username=get_current_request().user, is_delete=False)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -169,6 +170,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, CreateView):
                     user = Order.objects.get(pk=order.pk).user
                     notificar.send(user, destiny=user, verb='Se ha creado un pedido a su usuario exitosamente.',
                                    level='info')
+                    messages.success(request, 'Se ha creado el pedido exitosamente.')
                     data = {'id': order.id}
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -266,6 +268,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
                             detail.product.stock -= detail.cant
                             detail.product.save()
                         data = {'id': order.id}
+                    messages.success(request, 'Se ha modificado el pedido exitosamente.')
                     data = {'id': order.id}
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -277,6 +280,31 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Aprobación del pedido'
+        context['entity'] = 'Pedidos'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        context['products'] = self.get_details_product()
+        return context
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'order/detail.html'
+    success_url = reverse_lazy('order_list')
+    url_redirect = success_url
+    permission_required = 'view_order'
+
+    def get_details_product(self):
+        data = []
+        order = self.get_object()
+        for i in order.orderproduct_set.all():
+            item = i.product.toJSON()
+            item['cant'] = i.cant
+            data.append(item)
+        return json.dumps(data)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalles del pedido'
         context['entity'] = 'Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
@@ -369,6 +397,7 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
                         if state.__eq__('No Aprobado'):
                             notificar.send(user, destiny=user, verb='😕 Se denegado la aprobación de su pedido.',
                                            level='info')
+                            messages.error(request, 'El pedido no ha sido aprobado 😕.')
                         if state.__eq__('Aprobado'):
                             lo = Loan.objects.create(user_id=int(request.POST['user']),
                                                      start_date=request.POST['start_date'],
@@ -377,15 +406,14 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
                                                      state='PR',
                                                      manifestation_id=int(request.POST['manifestation']),
                                                      )
-                            LoanProduct.objects.create(loan=lo,
-                                                       product_id=int(i['id']),
-                                                       cant=int(i['cant']),
-                                                       )
+                            # LoanProduct.objects.create(loan=lo, product_id=int(i['id']), cant=int(i['cant']), )
                             notificar.send(user, destiny=user, verb='😀 Se ha aprobado su pedido.',
                                            level='success')
+                            messages.success(request, 'El pedido ha sido aprobado 😀.')
 
                         data = {'id': order.id}
                     data = {'id': order.id}
+
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -436,7 +464,6 @@ class OrderDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class OrderPdfView(LoginRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         try:
             template = get_template('order/invoice.html')
@@ -467,25 +494,20 @@ class ApproveView(ValidatePermissionRequiredMixin, View):
             # if request.user.has_perm('order.approve_order'):
             if request.user.has_perm('order.approve_order'):
                 if current_url.__eq__('order_approve'):
-
                     order.state = 'Aprobado'
                     order.save()
-                    lo = Loan.objects.create(user_id=order.user_id, start_date=order.start_date,
-                                             end_date=order.end_date,
-                                             description=order.description, state='PR',
-                                             manifestation_id=order.manifestation_id,
-                                             )
-                    orderProduct = OrderProduct.objects.get(order=order)
-                    LoanProduct.objects.create(loan=lo, product_id=orderProduct.product_id, cant=orderProduct.cant)
+                    Loan.objects.create(state='PE', order_id=order.id, )
                     notificar.send(user, destiny=user, verb='😀 Se ha aprobado su pedido.',
                                    level='success')
+                    messages.success(request, 'El pedido ha sido aprobado 😀.')
                     print('😀 Se ha aprobado ...')
                 elif current_url.__eq__('order_deny'):
                     order.state = 'No Aprobado'
                     order.save()
                     notificar.send(user, destiny=user, verb='😕 Se denegado la aprobación de su pedido.',
                                    level='info')
-                    print('😕 Se denegado la aprobación de su pedido.')
+                    messages.error(request, 'El pedido no ha sido aprobado 😕.')
+
         except:
             pass
         return HttpResponseRedirect(reverse_lazy('all_order_list'))

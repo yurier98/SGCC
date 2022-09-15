@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Order, OrderProduct
+from .models import Order, OrderProduct, Manifestation
 
 
 class OrderItemInline(admin.TabularInline):
@@ -54,3 +54,4 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Manifestation)

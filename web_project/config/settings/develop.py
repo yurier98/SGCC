@@ -12,6 +12,7 @@ SECRET_KEY = 'django-insecure-0nnk7ek=1k2az6c@viwosjb5v^41w)lb8ne^!uj29ih0$-16(4
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ["10.8.92.217", "ec2-54-528-27-21.compute-1.amazonaws.com"]
 
 # media files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

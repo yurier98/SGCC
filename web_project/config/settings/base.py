@@ -36,9 +36,9 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'widget_tweaks',
     'bootstrap_modal_forms',
+    'pwa',
     # "view_breadcrumbs",
     # 'django_extensions',
-
 ]
 
 LOCAL_APPS = [
@@ -54,11 +54,6 @@ LOCAL_APPS = [
     'apps.security',
     # 'apps.audit',
     'apps.notification',
-
-
-
-
-
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -154,10 +149,10 @@ LANGUAGES = [
 ADMINS = [("Admin del sitio", "admin@localhost.to"), ]
 
 # ***********************AUTENTICACION*********************
-#Esta opcion permite convertir la session serializable para q pueda obtener los grupos desde la session
+# Esta opcion permite convertir la session serializable para q pueda obtener los grupos desde la session
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-#AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
+# AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
 AUTH_USER_MODEL = 'accounts.UserProfile'
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
@@ -172,16 +167,16 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'config.urls'
 LOGIN_REDIRECT_URL = '/'  # Route defined in home/urls.py
-#LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
+# LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
 LOGIN_URL = reverse_lazy('login')
 
 LOGOUT_REDIRECT_URL = '/login/'
-#LOGIN_URL = '/login/'
+# LOGIN_URL = '/login/'
 
 # ***********************CONFIG EMAIL*********************
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.uci.cu'
-#EMAIL_HOST = 'smtp.estudiantes.uci.cu'
+# EMAIL_HOST = 'smtp.estudiantes.uci.cu'
 EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 # EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
@@ -193,9 +188,8 @@ EMAIL_HOST_PASSWORD = '2021guf@'
 EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 DOMAIN = ''
-#eliminar esto despues
-DEBUG = True
 # *********************** END CONFIG EMAIL*********************
 
+
+from .pwa import *

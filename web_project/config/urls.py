@@ -23,9 +23,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
 
-   # path("", include("apps.accounts.urls")),
+    # path("", include("apps.accounts.urls")),
 
-    path('',  include('apps.core.urls')),
+    #URL para hacer la app compatible con pwa
+    path('', include('pwa1.urls')),
+
+    path('', include('apps.core.urls')),
     path('admin/', admin.site.urls),
     # path('', views.index, name='home'),
     # path('', TemplateView.as_view(template_name="index.html"), name='home'),
