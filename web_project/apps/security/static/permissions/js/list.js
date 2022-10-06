@@ -20,7 +20,7 @@ var permission = {
                 {"data": "id"},
                 {"data": "name"},
                 // {"data": "name"},
-                {"data": "content_type"},
+                {"data": "content_type_id"},
                 {"data": "codename"},
                 {"data": "id"},
             ],
@@ -31,9 +31,9 @@ var permission = {
                     class: 'text-center',
                     render: function (data, type, row) {
 
-                        console.log(row.content_type);
+                        console.log(row.content_type_id);
 
-                        var html = '<span class="">' + row.codename + '</span> ';
+                        var html = '<span class="">' + row.content_type_id + '</span> ';
 
                         return html
                     }

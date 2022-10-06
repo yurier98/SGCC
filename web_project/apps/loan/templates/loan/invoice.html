@@ -58,22 +58,22 @@
     </p>
     <div class="mt-2 row justify-content-between">
         <div class="col-auto">
-            <b>Nombre y apellidos:</b> {{ loan.user.get_full_name }} {{ loan.user.apellidos }}<br>
-            <b>Usuario:</b> {{ loan.user }}<br>
-            <b>Area:</b> {{ loan.user.area }}<br>
-            <b>Teléfono:</b> {{ loan.user.phone }}<br>
+            <b>Nombre y apellidos:</b> {{ loan.order.user.get_full_name }} {{ loan.order.user.apellidos }}<br>
+            <b>Usuario:</b> {{ loan.order.user }}<br>
+            <b>Area:</b> {{ loan.order.user.area }}<br>
+            <b>Teléfono:</b> {{ loan.order.user.phone }}<br>
             {#            <b>Número:</b> {{ loan.get_number }}<br>#}
 
         </div>
         <div class=" col-auto">
-            <b>Fecha de registro:</b> {{ loan.created }}<br>
-            <b>Manifestación:</b> {{ loan.manifestation.name }}<br>
+            <b>Fecha de registro:</b> {{ loan.order.created }}<br>
+            <b>Manifestación:</b> {{ loan.order.manifestation.name }}<br>
 
-            <b>Fecha de inicio:</b> {{ loan.start_date }}<br>
-            <b>Fecha de entrega:</b> {{ loan.end_date }}<br>
+            <b>Fecha de inicio:</b> {{ loan.order.start_date }}<br>
+            <b>Fecha de entrega:</b> {{ loan.order.end_date }}<br>
         </div>
         <div class=" col-auto">
-            <b>Descripción:</b> {{ loan.description }}<br>
+            <b>Descripción:</b> {{ loan.order.description }}<br>
         </div>
         <hr>
 
@@ -89,7 +89,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for det in loan.loanproduct_set.all %}
+        {% for det in loan.order.orderproduct_set.all %}
             <tr>
                 <td>{{ det.product }}</td>
                 <td class="text-center">{{ det.cant }}</td>
@@ -98,7 +98,7 @@
 
         <tr class="text-uppercase font-weight-bold text-right mt-3">
             <td >Total de productos:</td>
-            <td class="text-center"> {{ loan.loanproduct_set.all.count }}</td>
+            <td class="text-center"> {{ loan.order.orderproduct_set.all.count }}</td>
 
         </tr>
         <tr>

@@ -21,12 +21,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
 
     # path("", include("apps.accounts.urls")),
 
     #URL para hacer la app compatible con pwa
-    path('', include('pwa1.urls')),
+    path('', include('config.pwa1.urls')),
 
     path('', include('apps.core.urls')),
     path('admin/', admin.site.urls),

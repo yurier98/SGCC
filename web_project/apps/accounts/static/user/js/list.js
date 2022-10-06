@@ -29,12 +29,12 @@ var user = {
             ],
             columnDefs: [
                 {
-                    targets: [2],
+                    targets: [1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         var html = '';
-                        html += '<div class="card-header-action"><a href="' + pathname + '/update/' + row.id + '/" class="">' + row.username + '</a></div>';
+                        html += '<div class="card-header-action"><a href="' + pathname + '/update/' + row.id + '/" class="">' + row.full_name + '</a></div>';
 
                         return html;
                     }

@@ -14,11 +14,12 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import get_template
 from weasyprint import HTML, CSS
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View
+from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
 
 from apps.accounts.models import UserProfile
+from apps.order.models import Order, OrderProduct
 from .forms import ReportForm, LoanForm
 from .models import Loan
 from apps.inventory.models import Product
@@ -46,17 +47,22 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
                 data = []
                 start_date = request.POST['start_date']
                 end_date = request.POST['end_date']
-                queryset = Loan.objects.all()
+                loan = Loan.objects.all()
+
+                # queryset = loan.get(order__created=)
+                # queryset = loan.filter(order__created__range=[start_date, end_date])
+                # queryset = Order.objects.all()
+
                 if len(start_date) and len(end_date):
-                    queryset = queryset.filter(created__range=[start_date, end_date])
+                    queryset = loan.filter(order__created__range=[start_date, end_date])
+                    # queryset = queryset.filter(created__range=[start_date, end_date])
                 for i in queryset:
                     data.append(i.toJSON())
-
-
+                    print(data)
             elif action == 'search_products_detail':
                 data = []
-                # for i in LoanProduct.objects.filter(loan_id=request.POST['id']):
-                #     data.append(i.toJSON())
+                for i in OrderProduct.objects.filter(order_id=request.POST['order.id']):
+                    data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -76,11 +82,10 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
 class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, CreateView):
     model = Loan
     form_class = LoanForm
-    template_name = 'loan/create.html'
+    template_name = 'loan/create_loan.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
     permission_required = 'add_loan'
-    success_message = 'Préstamo creado correctamente.'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -104,7 +109,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text': term})
                 products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                for i in products.exclude(id__in=ids_exclude)[0:10]:
+                for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
                     item['text'] = i.__str__()
                     data.append(item)
@@ -121,25 +126,41 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
             elif action == 'add':
                 with transaction.atomic():
                     products = json.loads(request.POST['products'])
+                    order = Order()
+                    order.start_date = request.POST['start_date']
+                    order.end_date = request.POST['end_date']
+                    order.user_id = int(request.POST['user'])
+                    order.description = request.POST['description']
+                    order.state = request.POST['state']
+                    order.manifestation_id = int(request.POST['manifestation'])
+                    order.save()
+
                     loan = Loan()
-                    loan.start_date = request.POST['start_date']
-                    loan.end_date = request.POST['end_date']
-                    loan.user_id = int(request.POST['user'])
-                    loan.description = request.POST['description']
-                    loan.state = request.POST['state']
-                    loan.manifestation_id = int(request.POST['manifestation'])
+                    loan.order_id = order.id
+                    loan.state = request.POST['state_loan']
                     loan.save()
+
                     for i in products:
-                        print('Arreglar')
-                    # detail = LoanProduct()
-                    # detail.loan_id = loan.id
+                        order_product = OrderProduct()
+                        order_product.order_id = order.id
+                        order_product.product_id = i['id']
+                        order_product.quantity = i['cant']
+                        order_product.save()
+                        product = Product.objects.get(pk=i['id'])
+                        product.stock = int(product.stock) - int(i['cant'])
+                        if product.stock == 0:
+                            product.state = 'P'
+                        product.save()
+                        messages.success(request, '¡Préstamo guardado con éxito!')
+                    data['id'] = order.id
+                    # detail = OrderProduct()
+                    # detail.order_id = order.id
                     # detail.product_id = int(i['id'])
                     # detail.cant = int(i['cant'])
                     # detail.save()
                     # detail.product.stock -= detail.cant
                     # detail.product.save()
-                    messages.success(request, '¡Préstamo guardado con éxito!')
-                    data = {'id': loan.id}
+                    # data = {'id': loan.id}
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -156,52 +177,26 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
         return context
 
 
-class LoanDeleteView(DeleteView):
-    model = Loan
-    template_name = 'loan/delete.html'
-    success_url = reverse_lazy('loan_list')
-    url_redirect = success_url
-    permission_required = 'delete_loan'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Préstamo'
-        context['entity'] = 'Préstamos'
-        context['list_url'] = self.success_url
-        return context
-
-
 class LoanUpdateView(UpdateView):
     model = Loan
     form_class = LoanForm
-    template_name = 'loan/create.html'
+    template_name = 'loan/create_loan.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
     permission_required = 'change_loan'
 
     def get_form(self, form_class=None):
-        instance = self.get_object()
+        instance = self.get_object().order
         form = LoanForm(instance=instance)
         form.fields['user'].queryset = UserProfile.objects.filter(id=instance.user.id)
+        form.fields['state_loan'].initial = self.get_object().state
 
         return form
 
     def get_details_product(self):
         data = []
         loan = self.get_object()
-        for i in loan.loanproduct_set.all():
+        for i in loan.order.orderproduct_set.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -247,26 +242,25 @@ class LoanUpdateView(UpdateView):
                     with transaction.atomic():
                         products = json.loads(request.POST['products'])
                         loan = self.get_object()
-                        loan.start_date = request.POST['start_date']
-                        loan.end_date = request.POST['end_date']
-                        loan.user_id = int(request.POST['user'])
-                        loan.description = request.POST['description']
-                        loan.state = request.POST['state']
-                        loan.manifestation_id = int(request.POST['manifestation'])
+                        loan.state = request.POST['state_loan']
                         loan.save()
-                        loan.loanproduct_set.all().delete()
+
                         for i in products:
-                            pass
-                            # detail = LoanProduct()
-                            # detail.loan_id = loan.id
-                            # detail.product_id = int(i['id'])
-                            # detail.cant = int(i['cant'])
-                            #
-                            # detail.save()
-                            # detail.product.stock -= detail.cant
-                            # detail.product.save()
-                        data = {'id': loan.id}
-                    data = {'id': loan.id}
+                            order_product = OrderProduct()
+                            order_product.order_id = loan.order.id
+                            order_product.product_id = i['id']
+                            order_product.quantity = i['cant']
+                            order_product.save()
+                            product = Product.objects.get(pk=i['id'])
+                            if loan.state == 'E':
+                                product.stock = int(product.stock) + int(i['cant'])
+                                product.state = 'D'
+                            product.save()
+
+                            messages.success(request, '¡Préstamo editado con éxito!')
+                        data['id'] = loan.id
+                        # data = {'id': loan.id}
+                    data['id'] = loan.id
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -282,6 +276,59 @@ class LoanUpdateView(UpdateView):
         context['action'] = 'edit'
         context['products'] = self.get_details_product()
         # context['frmClient'] = ClientForm()
+        return context
+
+
+class LoanDeleteView(DeleteView):
+    model = Loan
+    template_name = 'loan/delete.html'
+    success_url = reverse_lazy('loan_list')
+    url_redirect = success_url
+    permission_required = 'delete_loan'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminar Préstamo'
+        context['entity'] = 'Préstamos'
+        context['list_url'] = self.success_url
+        return context
+
+
+class LoanDetailView(ValidatePermissionRequiredMixin, DetailView):
+    model = Order
+    template_name = 'loan/detail_loan.html'
+    success_url = reverse_lazy('loan_list')
+    url_redirect = success_url
+    permission_required = 'view_loan'
+
+    def get_details_product(self):
+        data = []
+        order = self.get_object()
+        for i in order.orderproduct_set.all():
+            item = i.product.toJSON()
+            item['cant'] = i.cant
+            data.append(item)
+        return json.dumps(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalles del pedido'
+        context['entity'] = 'Pedidos'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        context['products'] = self.get_details_product()
         return context
 
 
@@ -302,6 +349,4 @@ class LoanPdfView(View):
             pass
         return HttpResponseRedirect(reverse_lazy('loan_list'))
 
-
 #################### FIN Vistas de Préstamos##################
-

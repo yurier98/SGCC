@@ -26,7 +26,7 @@ class HomePage(TemplateView):
         loanp = Loan.objects.all().filter(state='PR')
         cont = 0
         for i in loanp:
-            date = i.end_date
+            date = i.order.end_date
             if date.today() > date:
                 cont += 1
         context['title'] = 'Inicio'

@@ -11,22 +11,23 @@ from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
 from apps.core.models import Manifestation
 
+
 class Order(models.Model):
     """Pedido model. """
 
-    ESTADO = (
+    STATE = (
         ('Pendiente', 'Pendiente'),
         ('Aprobado', 'Aprobado'),
         ('No Aprobado', 'No Aprobado'),
     )
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
     end_date = models.DateField("Fecha de devolución")
     description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
                                    null=True, blank=True)
     manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
-    state = models.CharField("Estado", max_length=11, choices=ESTADO, default='Pendiente')
+    state = models.CharField("Estado", max_length=11, choices=STATE, default='Pendiente')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_delete = models.BooleanField(default=False)
@@ -35,12 +36,9 @@ class Order(models.Model):
         """Return title and username."""
         return 'Pedido de {}'.format(self.user.username)
 
-    def get_number(self):
-        return f'{self.id:06d}'
-
     def toJSON(self):
         item = model_to_dict(self)
-        item['number'] = self.get_number()
+        # item['id'] = self.id
         item['start_date'] = self.start_date.strftime('%Y-%m-%d')
         item['end_date'] = self.end_date.strftime('%Y-%m-%d')
         item['created'] = self.created.strftime('%Y-%m-%d')
@@ -83,11 +81,9 @@ class OrderProduct(models.Model):
         default_permissions = ()
         ordering = ['id']
 
-
 # def notify_post(sender, instance, created, **kwargs):
 #     notificar.send(instance.user, destiny=instance.user, verb='Se ha creado un pedido a su usuario exitosamente.',
 #                    level='success')
 #
 #
 # post_save.connect(notify_post, sender=Order)
-

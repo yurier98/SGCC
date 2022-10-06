@@ -21,7 +21,8 @@
     {% block stylesheets %}
         <!-- App CSS -->
         {#        <link id="theme-style" rel="stylesheet" href="assets/css/portal.css">#}
-        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">
+{#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
+        <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
         <!-- Favicons -->
         <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
         <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
@@ -58,6 +59,7 @@
 
                         </div>
                         <a class="btn app-btn-primary" href="javascript:location.reload()">Recargar página</a>
+{#                        <button class="btn app-btn-primary" type="button">⤾ Reload</button>#}
                     </div>
                 </div><!--//col-->
             </div><!--//row-->
@@ -75,11 +77,44 @@
 <!-- JavaScript -->
 {% block scripts %}
     <!-- FontAwesome JS-->
-    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+{#    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>#}
+{#    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>#}
+{#    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>#}
     <!-- Page Specific JS -->
-    <script src="{% static 'assets/js/app.js' %}"></script>
+{#    <script src="{% static 'assets/js/app.js' %}"></script>#}
+
+    <!-- Inline the page's JavaScript file. -->
+    <script>
+        document.querySelector('button').addEventListener('click', () => {
+            window.location.reload();
+        });
+
+        // Listen to changes in the network state, reload when online.
+        // This handles the case when the device is completely offline.
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        // Check if the server is responding & reload the page if it is.
+        // This handles the case when the device is online, but the server
+        // is offline or misbehaving.
+        async function checkNetworkAndReload() {
+            try {
+                const response = await fetch('.');
+                // Verify we get a valid response from the server
+                if (response.status >= 200 && response.status < 500) {
+                    window.location.reload();
+                    return;
+                }
+            } catch {
+                // Unable to connect to the server, ignore.
+            }
+            window.setTimeout(checkNetworkAndReload, 2500);
+        }
+
+        checkNetworkAndReload();
+
+    </script>
 {% endblock scripts %}
 
 

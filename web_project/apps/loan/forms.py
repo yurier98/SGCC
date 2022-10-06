@@ -3,8 +3,10 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib import admin
+
+from apps.order.models import Order
 from .models import Loan
-from ..accounts.models import UserProfile
+from apps.accounts.models import UserProfile
 from datetime import datetime
 
 
@@ -21,16 +23,27 @@ class LoanForm(ModelForm):
         'autocomplete': 'off'
     }))
 
+    state_loan = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select',
+                                                              # 'style': 'width: 100%'
+                                                              }))
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['user'].queryset = UserProfile.objects.all().filter(is_active=True)
         self.fields['description'].widget.attrs['rows'] = 3
+        self.fields['state_loan'].choices = Loan.STATE
+        self.fields['state'].choices = Order.STATE[1:2]
 
     class Meta:
-        model = Loan
-        # fields = '__all__'
-        exclude = ['created', 'updated']
+        model = Order
+        fields = '__all__'
+        # exclude = ['created', 'updated']
         widgets = {
+            'state': forms.Select(attrs={
+                'class': 'form-select',
+                # 'style': 'width: 100%'
+            }),
+
             'user': forms.Select(attrs={
                 'class': 'custom-select select2',
                 # 'style': 'width: 100%'
@@ -39,10 +52,6 @@ class LoanForm(ModelForm):
                 'class': 'custom-select select2',
                 'style': 'width: 100%'
             }),
-            'state': forms.Select(attrs={
-                'class': 'form-select',
-                # 'style': 'width: 100%'
-            }),
             'description': forms.Textarea(attrs={
                 'placeholder': 'Ingrese una descripción',
                 'class': 'form-control',
@@ -50,15 +59,4 @@ class LoanForm(ModelForm):
                 'rows': 3,
                 'cols': 3
             }),
-
-            # 'date_joined': forms.DateInput(format='%Y-%m-%d', attrs={
-            #     'value': datetime.now().strftime('%Y-%m-%d'),
-            #     'autocomplete': 'off',
-            #     'class': 'form-control datetimepicker-input',
-            #     'id': 'date_joined',
-            #     'data-target': '#date_joined',
-            #     'data-toggle': 'datetimepicker'
-            # }),
-
         }
-

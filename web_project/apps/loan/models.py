@@ -23,7 +23,7 @@ from apps.order.models import Order
 class Loan(models.Model):
     """Préstamo model."""
 
-    ESTADO = (
+    STATE = (
         ('PE', 'Pendiente a autorización'),
         ('PR', 'Prestado'),
         ('EN', 'Entregado'),
@@ -36,8 +36,8 @@ class Loan(models.Model):
     # manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    state = models.CharField("Estado", max_length=2, choices=ESTADO, default='PR')
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    state = models.CharField("Estado", max_length=2, choices=STATE, default='PR')
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -72,7 +72,8 @@ class Loan(models.Model):
 
 
 def notify_post(sender, instance, created, **kwargs):
-    notificar.send(instance.user, destiny=instance.user, verb='Se ha creado un préstamo a su usuario exitosamente.',
+    user = instance.order.user
+    notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente.',
                    level='success')
 
 

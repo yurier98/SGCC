@@ -38,7 +38,7 @@ export_to_csv.short_description = 'Export to CSV'
 
 def order_detail(obj):
     # return '<a href="{}">View</a>'.format(reverse('loan:admin_order_detail', args=[obj.id]))
-    return format_html('<a class="button" href="{}">Ver</a>'.format(reverse('order_update', args=[obj.id])))
+    return format_html('<a class="button" href="{}">Ver</a>'.format(reverse('order_detail', args=[obj.id])))
 
 
 order_detail.allow_tags = True

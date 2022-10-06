@@ -51,11 +51,8 @@ class ProductListView(ValidatePermissionRequiredMixin, ListView):
         return context
 
 
-class Create(ValidatePermissionRequiredMixin, CreateView):
-    # model = Product
-    # exclude = ['created', 'updated']
-    # fields = ['name', 'category', 'img','state','active','stock','available']
-    # fields = '__all__'
+class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
+
     form_class = ProductoForm
     template_name = 'inventory/create_product.html'
     success_message = 'Producto creada correctamente.'

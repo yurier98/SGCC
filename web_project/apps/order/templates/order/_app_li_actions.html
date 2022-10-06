@@ -58,18 +58,18 @@
         {% elif object.state == 'Aprobado' %}
             {% if request.user|has_group:"Técnico" %}
                 <li><a class="dropdown-item" href="{% url 'order_detail' object.pk %}">
-                    <span><i class="bi bi-eye"></i>Ver</span>
+                    <span><i class="bi bi-eye"></i> Ver</span>
                 </a></li>
                 <li><a class="dropdown-item" href="{% url 'order_invoice_pdf' object.pk %}" target="_blank">
-                    <span><i class="bi bi-file-earmark-pdf"></i>Descargar pdf</span>
+                    <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>
                 </a></li>
 
             {% else %}
                 <li><a class="dropdown-item" href="{% url 'order_detail' object.pk %}">
-                    <span><i class="bi bi-eye"></i>Ver</span>
+                    <span><i class="bi bi-eye"></i> Ver</span>
                 </a></li>
                 <li><a class="dropdown-item" href="{% url 'order_invoice_pdf' object.pk %}" target="_blank">
-                    <span><i class="bi bi-file-earmark-pdf"></i>Descargar pdf</span>
+                    <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>
                 </a></li>
                 <li>
                     <hr class="dropdown-divider">
@@ -89,18 +89,18 @@
         {% else %}
             {% if request.user|has_group:"Técnico" %}
                 <li><a class="dropdown-item" href="{% url 'order_detail' object.pk %}">
-                    <span><i class="bi bi-eye"></i>Ver</span>
+                    <span><i class="bi bi-eye"></i> Ver</span>
                 </a></li>
                 <li><a class="dropdown-item" href="{% url 'order_invoice_pdf' object.pk %}" target="_blank">
-                    <span><i class="bi bi-file-earmark-pdf"></i>Descargar pdf</span>
+                    <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>
                 </a></li>
 
             {% else %}
                 <li><a class="dropdown-item" href="{% url 'order_detail' object.pk %}">
-                    <span><i class="bi bi-eye"></i>Ver</span>
+                    <span><i class="bi bi-eye"></i> Ver</span>
                 </a></li>
                 <li><a class="dropdown-item" href="{% url 'order_invoice_pdf' object.pk %}" target="_blank">
-                    <span><i class="bi bi-file-earmark-pdf"></i>Descargar pdf</span>
+                    <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>
                 </a></li>
                 <li>
                     <hr class="dropdown-divider">

@@ -25,42 +25,46 @@
             <h5 class="dropdown-menu-title mb-0">Notificaciones</h5>
         </div><!--//dropdown-menu-title-->
         <div class="dropdown-menu-content">
+            {% if notifys %}
+                {% for notify in notifys %}
+                    <div class="item p-3">
+                        <div class="row gx-2 justify-content-between align-items-center">
+                            <div class="col-auto">
+                                {% if notify.level == 'info' %}
+                                    <div class="">
+                                        <i class="bi bi-info-circle me-1 text-info fa-2x" style="line-height: 0;"></i>
+                                    </div><!--//app-icon-holder-->
+                                {% elif notify.level == 'success' %}
+                                    <div class="">
+                                        <i class="bi bi-check-circle text-primary fa-2x" style="line-height: 0;"></i>
+                                    </div><!--//app-icon-holder-->
+                                {% else %}
+                                    <div class="">
+                                        <i class="bi bi-exclamation-octagon  text-warning fa-2x"
+                                           style="line-height: 0;"></i>
+                                    </div><!--//app-icon-holder-->
+                                {% endif %}
 
-
-            {% for notify in notifys %}
+                            </div><!--//col-->
+                            <div class="col">
+                                <div class="info">
+                                    <div class="desc">{{ notify.actor }}</div>
+                                    <div class="desc">{{ notify.verbo }}</div>
+                                    <div class="meta"> {{ notify.timestamp| timesince }}</div>
+                                </div>
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <a class="link-mask" href="{% url 'notifications_detail' notify.pk %}"></a>
+                    </div><!--//item-->
+                {% endfor %}
+            {% else %}
                 <div class="item p-3">
-                    <div class="row gx-2 justify-content-between align-items-center">
-                        <div class="col-auto">
-                            {% if notify.level == 'info' %}
-                                <div class="">
-                                    <i class="bi bi-info-circle me-1 text-info fa-2x" style="line-height: 0;"></i>
-                                </div><!--//app-icon-holder-->
-                            {% elif notify.level == 'success' %}
-                                <div class="">
-                                    <i class="bi bi-check-circle text-primary fa-2x" style="line-height: 0;"></i>
-                                </div><!--//app-icon-holder-->
-                            {% else %}
-                                <div class="">
-                                    <i class="bi bi-exclamation-octagon  text-warning fa-2x" style="line-height: 0;"></i>
-                                </div><!--//app-icon-holder-->
-                            {% endif %}
-
-                        </div><!--//col-->
-                        <div class="col">
-                            <div class="info">
-                                <div class="desc">{{ notify.actor }}</div>
-                                <div class="desc">{{ notify.verbo }}</div>
-                                <div class="meta"> {{ notify.timestamp| timesince }}</div>
-                            </div>
-                        </div><!--//col-->
-                    </div><!--//row-->
-                    <a class="link-mask" href="{% url 'notifications_detail' notify.pk %}"></a>
+                    No hay notificaciones sin leer.
                 </div><!--//item-->
-            {% endfor %}
-
+            {% endif %}
         </div><!--//dropdown-menu-content-->
         <div class="dropdown-menu-footer p-2 text-center">
-            <a href="{% url 'notifications_list' %}">Ver más</a>
+            <a href="{% url 'notifications_list' %}">Ver todas</a>
         </div>
 
     </div><!--//dropdown-menu-->

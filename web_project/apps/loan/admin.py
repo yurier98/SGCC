@@ -37,17 +37,17 @@ def export_to_csv(modeladmin, request, queryset):
 export_to_csv.short_description = 'Export to CSV'
 
 
-def order_detail(obj):
+def order_detail(instance):
     # return '<a href="{}">View</a>'.format(reverse('loan:admin_order_detail', args=[obj.id]))
-    return format_html('<a class="button" href="{}">Ver</a>'.format(reverse('loan_update', args=[obj.id])))
+    return format_html('<a class="button" href="{}">Ver</a>'.format(reverse('order_detail', args=[instance.order.pk])))
 
 
 order_detail.allow_tags = True
 
 
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ('state', order_detail)
-    list_filter = ('state', )
+    list_display = ('order', 'state', order_detail)
+    list_filter = ('state',)
     # list_editable = ('state',)
     # autocomplete_fields = ['user']
     # inlines = [LoanItemInline]

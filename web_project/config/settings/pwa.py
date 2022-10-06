@@ -1,6 +1,6 @@
 # project/settings.py
 import os.path
-from settings.base import BASE_DIR
+from .base import BASE_DIR
 
 PWA_APP_NAME = 'GEPRE'
 PWA_APP_DESCRIPTION = "Sistema para la gestión de préstamos en la Dirección de Extensión Universitaria de la UCI "
@@ -32,6 +32,6 @@ PWA_APP_SPLASH_SCREEN = [
     }
 ]
 PWA_APP_DIR = 'ltr'
-PWA_APP_LANG = 'en-US'
+PWA_APP_LANG = 'es'
 
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, "static/assets/js/serviceworker.js")

@@ -18,6 +18,7 @@ var loan = {
             // autoWidth: false,
             destroy: true,
             deferRender: true,
+            rowId: 'staffId',
             ajax: {
                 url: pathname,
                 type: 'POST',
@@ -28,13 +29,13 @@ var loan = {
                 }
             },
             columns: [
-                {"data": "number"},
-                {"data": "user.username"},
-                {"data": "user.solapin"},
-                {"data": "user.area"},
-                {"data": "created"},
+                {"data": "id"},
+                {"data": "order.user.username"},
+                {"data": "order.user.solapin"},
+                {"data": "order.user.area"},
+                {"data": "order.created"},
                 {"data": "state"},
-                {"data": "manifestation.name"},
+                {"data": "order.manifestation.name"},
                 {"data": "id"},
             ],
             order: [[0, "desc"], [2, "desc"]],
@@ -59,19 +60,38 @@ var loan = {
                         return '<div class="badge bg-success ">Entregado</div>'
                     }
                 },
-
+                // {
+                //     targets: [-1],
+                //     class: 'text-center',
+                //     orderable: false,
+                //     render: function (data, type, row) {
+                //         var buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                //         // buttons = '<a href="delete" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
+                //         buttons += '<a href="' + pathname + 'update/' + row.id + '/" class="btn-sm app-btn-secondary btn-warning"><i class="fas fa-edit"></i></a> ';
+                //         buttons += '<a href="' + pathname + 'detail/' + row.id + '/" class="btn-sm app-btn-secondary btn-warning"><i class="fas fa-search"></i></a> ';
+                //         buttons += '<a rel="details" class="btn-sm app-btn-secondary"><i class="fas fa-search"></i></a> ';
+                //         buttons += '<a href="' + pathname + 'invoice/pdf/' + row.id + '/" target="_blank" class="btn-sm app-btn-secondary"><i class="fas fa-file-pdf"></i></a> ';
+                //         return buttons;
+                //     }
+                // },
                 {
                     targets: [-1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        var
-                            buttons = '<a href="' + pathname + 'delete/' + row.id + '/" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
-                        // buttons = '<a href="delete" class="btn-sm app-btn-secondary"><i class="fas fa-trash-alt"></i></a> ';
-                        buttons += '<a href="' + pathname + 'update/' + row.id + '/" class="btn-sm app-btn-secondary btn-warning"><i class="fas fa-edit"></i></a> ';
-                        buttons += '<a rel="details" class="btn-sm app-btn-secondary"><i class="fas fa-search"></i></a> ';
-                        buttons += '<a href="' + pathname + 'invoice/pdf/' + row.id + '/" target="_blank" class="btn-sm app-btn-secondary"><i class="fas fa-file-pdf"></i></a> ';
-                        return buttons;
+                        var html = ' <div class="dropdown-icon">\n' +
+                            '    <button type="button"\n' +
+                            '            class="btn p-0 hide-arrow"\n' +
+                            '            data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>\n' +
+                            '      <ul class="dropdown-menu" style="font-size: 14px;">\n' +
+                            '        <li><a class="dropdown-item" href="' + pathname + 'detail/' + row.id + '/"> <span><i class="bi bi-eye"></i>  Ver</span></a></li>\n' +
+                            '        <li><a class="dropdown-item" href="' + pathname + 'update/' + row.id + '/"> <span><i class="bi bi-pencil"></i>  Modificar</span></a></li>\n' +
+                            '        <li><hr class="dropdown-divider"></li>\n' +
+                            '        <li><a class="dropdown-item" href="' + pathname + 'invoice/pdf/' + row.id + '/" target="_blank"> <span><i class="bi bi-file-pdf"></i>  Descargar pdf</span></a></li>\n' +
+                            // '        <li><a class="dropdown-item" href="' + pathname + 'delete/' + row.id + '/"> <span><i class="bi bi-trash"></i>  Eliminar</span></a></li>\n' +
+                            '      </ul>\n' +
+                            '</div>';
+                        return html;
                     }
                 },
             ],
@@ -94,7 +114,7 @@ var loan = {
         html += '<th class="cell" scope="col">Cantidad</th>';
         html += '</thead>';
         html += '<tbody>';
-        $.each(d.loanproduct, function (key, value) {
+        $.each(d.order.orderproduct, function (key, value) {
             html += '<tr>'
             html += '<td>' + value.product.name + '</td>'
             html += '<td>' + value.product.category.name + '</td>'
@@ -120,8 +140,8 @@ $(function () {
         });
 
 
-    var start = moment().subtract(6, 'days');
-    var end = moment();
+    var start = moment().subtract(5, 'days');
+    var end = moment().add(1, 'days');
 
     function cb(start, end) {
         $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
@@ -131,7 +151,7 @@ $(function () {
         startDate: start,
         endDate: end,
         ranges: {
-            'Hoy': [moment(), moment()],
+            'Hoy': [moment(), moment().add(1, 'days')],
             'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
             'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
             'Últimos 30 días': [moment().subtract(29, 'days'), moment()],

@@ -23,7 +23,7 @@
                                 <div class="app-card-footer p-3 align-items-center">
                                     <h3>{{ request.user.get_short_name }}</h3>
                                     <div class="info ">
-                                        {% if request.user.groups.all.count > 1 %}
+                                        {% if request.user.groups.all.count > 0 %}
                                             {% for g in request.user.groups.all %}
                                                 <span class="badge bg-secondary"> {{ g.name }} </span>
                                             {% endfor %}

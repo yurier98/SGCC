@@ -52,7 +52,8 @@
                     {% for notify in object_list %}
                         {% if notify.level == 'info' %}
                             <a class="" href="{% url 'notifications_detail' notify.pk %}">
-                                <div class="app-card alert alert-dismissible shadow-sm mb-4 "
+                                <div class="app-card alert alert-dismissible shadow-sm mb-4 
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
                                      role="alert">
                                     <div class="inner">
                                         <div class="app-card-body p-0 ">
@@ -94,7 +95,8 @@
                             </a>
                         {% elif notify.level == 'success' %}
                             <a class="" href="{% url 'notifications_detail' notify.pk %}">
-                                <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout border-left-decoration "
+                                <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
                                      role="alert">
                                     <div class="inner">
                                         <div class="app-card-body p-0 ">
@@ -136,7 +138,8 @@
                             </a>
                         {% else %}
                             <a class="" href="{% url 'notifications_detail' notify.pk %}">
-                                <div class="app-card alert alert-dismissible shadow-sm mb-4 "
+                                <div class="app-card alert alert-dismissible shadow-sm mb-4 
+                                {% if  not notify.read %} border-left-decoration {% endif %}"
                                      role="alert">
                                     <div class="inner">
                                         <div class="app-card-body p-0 ">
