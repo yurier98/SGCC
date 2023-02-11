@@ -61,6 +61,21 @@ Para instalar las dependencias solo debe ejecutar:
 
     pip install -r requirements/develop.txt
 
+Este proyecto utiliza diferentes librerias que son necesarias instalarlas con anterioridad para su correcta ejecución.
+
+Instalar Weasyprint => es una libreria para la creación de pdf
+
+You can install WeasyPrint directly on your system or in a virtual environment using pip:
+
+
+    brew install weasyprint
+virtual environment
+
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install weasyprint
+    weasyprint --info
+
 ### Base de datos
 Este proyecto en modo desarrollo usa SQlite por lo que solo tienes que ejecutar las migraciones:
 
@@ -118,3 +133,8 @@ Si desea contribuir con el proyecto por favor, lea nuestra [Guía de contribuci�
 
 ## Código de conducta
 [Código de conducta](CODE_OF_CONDUCT.md)
+
+
+Instalar esta libreria: 
+
+    brew install weasyprint

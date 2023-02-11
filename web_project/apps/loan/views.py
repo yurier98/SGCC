@@ -16,13 +16,13 @@ from weasyprint import HTML, CSS
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
-from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
+from ..security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
 
-from apps.accounts.models import UserProfile
-from apps.order.models import Order, OrderProduct
+from ..accounts.models import UserProfile
+from ..order.models import Order, OrderProduct
 from .forms import ReportForm, LoanForm
 from .models import Loan
-from apps.inventory.models import Product
+from ..inventory.models import Product
 
 
 @login_required(login_url="/login/")

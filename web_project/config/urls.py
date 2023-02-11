@@ -24,8 +24,6 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
 
-    # path("", include("apps.accounts.urls")),
-
     #URL para hacer la app compatible con pwa
     path('', include('config.pwa1.urls')),
 
@@ -40,7 +38,8 @@ urlpatterns = [
     path('loan/', include('apps.loan.urls')),
     path('order/', include('apps.order.urls')),
     path('notification/', include('apps.notification.urls')),
-    path('reports/', include('apps.reports.urls')),
+    path('reports/', include(('apps.reports.urls','reports'))),
+    # path('report/', include(('apps.report.urls', 'report'))),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,8 +1,7 @@
 {% load groups_tags %}
 {% load static %}
 
-{% if request.user|has_group:"Técnico" %}
-
+{% if request.user|has_group:"Tecnico" %}
 
     <li class="nav-item">
         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
@@ -70,23 +69,22 @@
         </a>
         <!--//nav-link-->
         <div id="submenu-2" class="collapse submenu submenu-2
-                                            {% if request.resolver_match.url_name == 'report_loan' %} show
+                                            {% if request.resolver_match.url_name == 'reports:report_loan' %} show
                                             {% elif request.resolver_match.url_name == 'report_inventory' %} show
                                             {% endif %}" data-bs-parent="#menu-accordion">
 
             <ul class="submenu-list list-unstyled">
                 <li class="submenu-item"><a class="submenu-link
-                                        {% if request.resolver_match.url_name == 'report_loan' %} active {% endif %}"
-                                            href="{% url 'report_loan' %}">Préstamos</a></li>
+                                        {% if request.resolver_match.url_name == 'reports:report_loan' %} active {% endif %}"
+                                            href="{% url 'reports:report_loan' %}">Préstamos</a></li>
                 <li class="submenu-item">
                     <a class="submenu-link
-                                    {% if request.resolver_match.url_name == 'report_inventory' %} active {% endif %}"
-                       href="{% url 'report_inventory' %}">Inventario</a>
+                                    {% if request.resolver_match.url_name == 'reports:report_inventory' %} active {% endif %}"
+                       href="{% url 'reports:report_inventory' %}">Inventario</a>
                 </li>
             </ul>
         </div>
     </li><!--//nav-item-->
-
 
 {% elif request.user|has_group:"Admin" %}
 
@@ -130,7 +128,7 @@
     <li class="nav-item has-submenu">
         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
         <a class="nav-link submenu-toggle
-                        {% if request.resolver_match.url_name == 'report_loan' %} active
+                        {% if request.resolver_match.url_name == 'reports:report_loan' %} active
                         {% elif request.resolver_match.url_name == 'report_inventory' %} active
                         {% endif %}" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-2"
            aria-expanded="false" aria-controls="submenu-2">
@@ -156,22 +154,21 @@
         </a>
         <!--//nav-link-->
         <div id="submenu-2" class="collapse submenu submenu-2
-                                            {% if request.resolver_match.url_name == 'report_loan' %} show
-                                            {% elif request.resolver_match.url_name == 'report_inventory' %} show
+                                            {% if request.resolver_match.url_name == 'reports:report_loan' %} show
+                                            {% elif request.resolver_match.url_name == 'reports:report_inventory' %} show
                                             {% endif %}" data-bs-parent="#menu-accordion">
 
             <ul class="submenu-list list-unstyled">
                 <li class="submenu-item"><a class="submenu-link
-                                        {% if request.resolver_match.url_name == 'report_loan' %} active {% endif %}"
-                                            href="{% url 'report_loan' %}">Préstamos</a></li>
+                                        {% if request.resolver_match.url_name == 'reports:report_loan' %} active {% endif %}"
+                                            href="{% url 'reports:report_loan' %}">Préstamos</a></li>
                 <li class="submenu-item">
                     <a class="submenu-link
-                                    {% if request.resolver_match.url_name == 'report_inventory' %} active {% endif %}"
-                       href="{% url 'report_inventory' %}">Inventario</a>
+                                    {% if request.resolver_match.url_name == 'reports:report_inventory' %} active {% endif %}"
+                       href="{% url 'reports:report_inventory' %}">Inventario</a>
                 </li>
             </ul>
         </div>
     </li><!--//nav-item-->
-
 
 {% endif %}

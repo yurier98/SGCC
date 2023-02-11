@@ -131,6 +131,7 @@ dmypy.json
 # Editors
 .idea/
 .vscode
+.DS_Store
 
 # staticfiles
 web_project/staticfiles
