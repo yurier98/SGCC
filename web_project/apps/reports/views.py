@@ -1,20 +1,15 @@
-from django.shortcuts import render
-import json
 # Create your views here.
-from django.db.models import Sum, FloatField
-from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import FormView, ListView
-from django.db.models import Q
-from django.db import transaction
+from django.views.generic import FormView
 from django_filters.views import FilterView
 
 from apps.loan.models import Loan
-from apps.inventory.models import Product, Category
-from apps.reports.forms import ReportForm, ReportFilter
+from apps.inventory.models import Product
+from apps.reports.forms import ReportForm
 from apps.inventory.filters import ProductFilter
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
+from apps.reports.report import report
 
 
 class ReportLoanView(ValidatePermissionRequiredMixin, FormView):
@@ -69,7 +64,7 @@ class ReportLoanView(ValidatePermissionRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte de Préstamos'
         context['entity'] = 'Reportes'
-        context['list_url'] = reverse_lazy('report_loan')
+        context['list_url'] = reverse_lazy('reports:report_loan')
         return context
 
 
@@ -82,5 +77,26 @@ class ReportInventoryView(ValidatePermissionRequiredMixin, FilterView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte de Inventario'
         context['entity'] = 'Reportes'
-        context['list_url'] = reverse_lazy('report_inventory')
+        context['list_url'] = reverse_lazy('reports:report_inventory')
         return context
+
+
+def exportProductPDF(request):
+    """Example of ExportPDF"""
+    products = Product.objects.all()
+
+    products_list = []
+    for product in products:
+        products_list.append({
+            'name': product.name,
+            'category': product.category.name,
+            'state': product.state
+        })
+
+    # person = Person.objects.filter(id=1).first()
+    data = {
+        'products': products_list,
+        # 'image': convert_to_64(person.image.url)
+    }
+
+    return report(request, 'products', data)

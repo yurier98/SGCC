@@ -16,6 +16,7 @@
             type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.25/plugins/buttons-1.7.1/js/buttons.html5.min.js' %}"
             type="text/javascript"></script>
+
     {% block head_report %}
 
     {% endblock %}
@@ -23,12 +24,16 @@
 
 {% block content %}
     <div class="app-wrapper">
+    <div>
+
+    </div>
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl app-card-settings">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
                     <div class="col-auto">
                         <h1 class="app-page-title mb-0">{{ entity }}</h1>
                         {% include "includes/_breadcrumbs.html" %}
+
                     </div>
                     <div class="col-auto">
                         <div class="page-utilities">
@@ -42,6 +47,8 @@
                     </div><!--//col-auto-->
                     <hr>
                 </div>
+
+
 
                 <div class="container-fluid">
                     <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start ">

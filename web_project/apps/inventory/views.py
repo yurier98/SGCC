@@ -2,7 +2,7 @@ from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalReadView, BS
 from django.db import transaction
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
-from view_breadcrumbs import DetailBreadcrumbMixin, ListBreadcrumbMixin
+# from view_breadcrumbs import DetailBreadcrumbMixin, ListBreadcrumbMixin
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -10,7 +10,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
 
-from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
+# from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
+from ..security.Mixin.mixins import ValidatePermissionRequiredMixin
 from .filters import ProductFilter
 from .forms import ProductoForm, CategoryForm
 from .models import Product, Category
@@ -61,10 +62,10 @@ class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
     permission_required = 'inventory.add_product'
 
 
-class Detail(BSModalReadView, DetailBreadcrumbMixin):
-    model = Product
-    home_label = _("My new home")
-    template_name = 'inventory/detail_product.html'
+# class Detail(BSModalReadView, DetailBreadcrumbMixin):
+#     model = Product
+#     home_label = _("My new home")
+#     template_name = 'inventory/detail_product.html'
 
 
 class Update(ValidatePermissionRequiredMixin, UpdateView):
