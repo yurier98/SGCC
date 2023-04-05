@@ -1,0 +1,33 @@
+{% extends 'includes/list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'groups/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th class="cell" scope="col" style="width: 10%;">Nro</th>
+        <th class="cell " scope="col" style="width: 80%;">Nombres</th>
+        <th class="cell" scope="col" style="width: 10%;"></th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block form-group %}
+    <div class="form-group settings-form ">
+        <div class=" mb-3">
+            <a href="{{ create_url }}" class="create btn app-btn-primary">
+                <i class="fas fa-plus"></i> Nuevo registro
+            </a>
+            <a href="{{ list_url }}" class="btn app-btn-secondary">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

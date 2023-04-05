@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <img alt="" src="{% static 'assets/images/app-logo.svg' %}" class="img-fluid d-block mx-auto img-logo">
+    <h1 class="name-company">Dirección de Extensión Universitaria</h1>
+    <p class="text-center">
+        {{ loan.company.ruc }}Reporte de Préstamos <br>
+        {#        {{ loan.company.address }}<br>#}
+        Celular: {{ loan.company.mobile }}<br>
+        Teléfono: {{ loan.company.phone }}<br>
+        Web: {{ sale.company.website }}<br>
+    </p>
+    <div class="mt-2 row justify-content-between">
+        <div class="col-auto">
+            <b>Nombre y apellidos:</b> {{ loan.order.user.get_full_name }} {{ loan.order.user.apellidos }}<br>
+            <b>Usuario:</b> {{ loan.order.user }}<br>
+            <b>Area:</b> {{ loan.order.user.area }}<br>
+            <b>Teléfono:</b> {{ loan.order.user.phone }}<br>
+            {#            <b>Número:</b> {{ loan.get_number }}<br>#}
+
+        </div>
+        <div class=" col-auto">
+            <b>Fecha de registro:</b> {{ loan.order.created }}<br>
+            <b>Manifestación:</b> {{ loan.order.manifestation.name }}<br>
+
+            <b>Fecha de inicio:</b> {{ loan.order.start_date }}<br>
+            <b>Fecha de entrega:</b> {{ loan.order.end_date }}<br>
+        </div>
+        <div class=" col-auto">
+            <b>Descripción:</b> {{ loan.order.description }}<br>
+        </div>
+        <hr>
+
+    </div>
+
+
+    <table class="table app-table-hover mb-0 text-left" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="cell" style="width: 80%;">Producto</th>
+            <th class="cell" style="width: 20%;">Cantidad</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in loan.order.orderproduct_set.all %}
+            <tr>
+                <td>{{ det.product }}</td>
+                <td class="text-center">{{ det.cant }}</td>
+            </tr>
+        {% endfor %}
+
+        <tr class="text-uppercase font-weight-bold text-right mt-3">
+            <td >Total de productos:</td>
+            <td class="text-center"> {{ loan.order.orderproduct_set.all.count }}</td>
+
+        </tr>
+        <tr>
+            <td colspan="4">
+                <p class="text-uppercase font-weight-bold text-center mt-3">
+
+
+                    Una vez que usted a recibido el pedido<br>
+                    Recuerde devolver el producto en el plazo de entrega establecido<br>
+                    Que tenga un excelente día
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

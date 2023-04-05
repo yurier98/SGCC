@@ -1,0 +1,269 @@
+{% extends "layouts/base.html" %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+    <div class="app-wrapper">
+
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto">
+                                    <form method="get" class="docs-search-form row gx-1 align-items-center">
+                                        <div class="col-auto">
+                                            {% render_field filter.form.name class="form-control search-docs" placeholder="Buscar" %}
+                                        </div>
+                                        <div class="col-auto">
+                                            {% render_field filter.form.category class="form-select  w-auto" %}
+                                        </div>
+                                        <div class="col-auto">
+                                            {% render_field filter.form.state class="form-select w-auto" %}
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn app-btn-secondary">
+                                                <i class="bi bi-search"></i> Buscar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div><!--//col-auto-->
+                                <div class="col-auto">
+                                    <a class="create-product btn app-btn-primary" href="{% url 'inventory:create' %}">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload me-2"
+                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd"
+                                                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                            <path fill-rule="evenodd"
+                                                  d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                                        </svg>
+                                        Publicar producto
+                                    </a>
+                                </div><!--//col-auto-->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div><!--//row-->
+
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </symbol>
+                    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                    </symbol>
+                    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </symbol>
+                </svg>
+
+                <nav id="orders-table-tab"
+                     class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                    <a class="flex-sm-fill text-sm-center nav-link active" id="product-all-tab" data-bs-toggle="tab"
+                       href="#product-all" role="tab" aria-controls="product-all" aria-selected="true">Todos</a>
+                    <a class="flex-sm-fill text-sm-center nav-link" id="product-disponible-tab" data-bs-toggle="tab"
+                       href="#product-disponible" role="tab" aria-controls="product-disponible" aria-selected="false">Disponibles</a>
+                    <a class="flex-sm-fill text-sm-center nav-link" id="product-prestado-tab" data-bs-toggle="tab"
+                       href="#product-prestado" role="tab" aria-controls="product-prestado" aria-selected="false">Prestados</a>
+                </nav>
+
+                {% if filter.qs %}
+                    <div class="tab-content" id="orders-table-tab-content">
+                        <div class="tab-pane fade show active" id="product-all" role="tabpanel"
+                             aria-labelledby="product-all-tab">
+                            <div class="row g-4">
+                                {% for object in filter.qs %}
+                                    <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
+                                        <div class="app-card app-card-doc shadow-sm h-100">
+                                            <div class="app-card-thumb-holder p-3">
+                                                <div class="app-card-thumb">
+                                                    <img class="thumb-image"
+                                                         src="{% url 'home' %}media/{{ object.img }}" alt="">
+                                                </div>
+                                                {% if object.state  == 'D' %}
+                                                    <span class="badge bg-success"> DISPONIBLE </span>
+                                                {% elif object.state  == 'P' %}
+                                                    <span class="badge bg-warning"> PRESTADO </span>
+                                                {% endif %}
+                                                <a class="app-card-link-mask"
+                                                   href="{% url 'inventory:update' object.pk %}"></a>
+                                            </div>
+                                            <div class="app-card-body p-3 has-card-actions">
+
+                                                <h4 class="app-doc-title truncate mb-0"><a
+                                                        href="#file-link">{{ object.name }}</a>
+                                                </h4>
+                                                <div class="app-doc-meta">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li><span
+                                                                class="text-muted">Categoría:</span> {{ object.category }}
+                                                        </li>
+                                                        <li><span class="text-muted">Unidades:</span> <span
+                                                                class="badge rounded-pill bg-secondary"> {{ object.stock }} </span>
+                                                        </li>
+                                                        <li>
+                                                            <span class="text-muted">Estado:</span>
+                                                            {% if object.state  == 'D' %}
+                                                                <span class="badge rounded-pill  bg-success"> Disponible </span>
+                                                            {% elif object.state  == 'P' %}
+                                                                <span class="badge  rounded-pill bg-warning"> Prestado </span>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div><!--//app-doc-meta-->
+
+                                                {% include 'inventory/_app_card_actions.html' %}
+
+                                            </div><!--//app-card-body-->
+
+                                        </div><!--//app-card-->
+                                    </div><!--//col-->
+                                {% endfor %}
+                            </div>
+
+                        </div><!--//tab-pane-->
+
+                        <div class="tab-pane fade" id="product-disponible" role="tabpanel"
+                             aria-labelledby="product-disponible-tab">
+                            <div class="app-card-orders-table  mb-5">
+                                <div class="app-card-body">
+                                    <div class="row g-4">
+                                        {% for object in filter.qs %}
+                                            {% if object.state == 'D' %}
+                                                <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
+                                                    <div class="app-card app-card-doc shadow-sm h-100">
+                                                        <div class="app-card-thumb-holder p-3">
+                                                            <div class="app-card-thumb">
+                                                                <img class="thumb-image"
+                                                                     src="{% url 'home' %}media/{{ object.img }}"
+                                                                     alt="">
+                                                            </div>
+                                                            {% if object.state  == 'D' %}
+                                                                <span class="badge bg-success"> DISPONIBLE </span>
+                                                            {% elif object.state  == 'P' %}
+                                                                <span class="badge bg-warning"> PRESTADO </span>
+                                                            {% endif %}
+                                                            <a class="app-card-link-mask"
+                                                               href="{% url 'inventory:update' object.pk %}"></a>
+                                                        </div>
+                                                        <div class="app-card-body p-3 has-card-actions">
+
+                                                            <h4 class="app-doc-title truncate mb-0"><a
+                                                                    href="#file-link">{{ object.name }}</a>
+                                                            </h4>
+                                                            <div class="app-doc-meta">
+                                                                <ul class="list-unstyled mb-0">
+                                                                    <li><span
+                                                                            class="text-muted">Categoría:</span> {{ object.category }}
+                                                                    </li>
+                                                                    <li><span class="text-muted">Unidades:</span> <span
+                                                                            class="badge bg-secondary"> {{ object.stock }} </span>
+                                                                    </li>
+                                                                    <li>
+                                                                        <span class="text-muted">Estado:</span>
+                                                                        {% if object.state  == 'D' %}
+                                                                            <span class="badge bg-success"> Disponible </span>
+                                                                        {% elif object.state  == 'P' %}
+                                                                            <span class="badge bg-warning"> Prestado </span>
+                                                                        {% endif %}
+                                                                    </li>
+                                                                </ul>
+                                                            </div><!--//app-doc-meta-->
+
+                                                            {% include 'inventory/_app_card_actions.html' %}
+
+                                                        </div><!--//app-card-body-->
+
+                                                    </div><!--//app-card-->
+                                                </div><!--//col-->
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+
+                        <div class="tab-pane fade" id="product-prestado" role="tabpanel"
+                             aria-labelledby="product-prestado-tab">
+                            <div class="row g-4">
+                                {% for object in filter.qs %}
+                                    {% if object.state == 'P' %}
+                                        <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
+                                            <div class="app-card app-card-doc shadow-sm h-100">
+                                                <div class="app-card-thumb-holder p-3">
+                                                    <div class="app-card-thumb">
+                                                        <img class="thumb-image"
+                                                             src="{% url 'home' %}media/{{ object.img }}" alt="">
+                                                    </div>
+                                                    {% if object.state  == 'D' %}
+                                                        <span class="badge bg-success"> DISPONIBLE </span>
+                                                    {% elif object.state  == 'P' %}
+                                                        <span class="badge bg-warning"> PRESTADO </span>
+                                                    {% endif %}
+                                                    <a class="app-card-link-mask"
+                                                       href="{% url 'inventory:update' object.pk %}"></a>
+                                                </div>
+                                                <div class="app-card-body p-3 has-card-actions">
+
+                                                    <h4 class="app-doc-title truncate mb-0"><a
+                                                            href="#file-link">{{ object.name }}</a>
+                                                    </h4>
+                                                    <div class="app-doc-meta">
+                                                        <ul class="list-unstyled mb-0">
+                                                            <li><span
+                                                                    class="text-muted">Categoría:</span> {{ object.category }}
+                                                            </li>
+                                                            <li><span class="text-muted">Unidades:</span> <span
+                                                                    class="badge bg-secondary"> {{ object.stock }} </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="text-muted">Estado:</span>
+                                                                {% if object.state  == 'D' %}
+                                                                    <span class="badge bg-success"> Disponible </span>
+                                                                {% elif object.state  == 'P' %}
+                                                                    <span class="badge bg-warning"> Prestado </span>
+                                                                {% endif %}
+                                                            </li>
+                                                        </ul>
+                                                    </div><!--//app-doc-meta-->
+
+                                                    {% include 'inventory/_app_card_actions.html' %}
+
+                                                </div><!--//app-card-body-->
+
+                                            </div><!--//app-card-->
+                                        </div><!--//col-->
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div><!--//tab-pane-->
+
+                    </div><!--//tab-content-->
+                {% else %}
+                    <div class="col-md-6 col-lg-12" data-aos="zoom-in" data-aos-delay="200">
+                        <header class="section-header">
+                            <div class="box">
+                                <h3> Lo sentimos 😢</h3>
+                                <p>No encontramos ningún producto,
+                                    <a href="{% url 'inventory:create' %} " class="text-primary">Registre un
+                                        producto</a>
+                            </div>
+                        </header>
+                    </div>
+                {% endif %}
+
+            </div><!--//container-fluid-->
+
+        </div><!--//app-content-->
+
+        {% include 'includes/footer.html' %}
+    </div><!--//app-wrapper-->
+
+{% endblock %}

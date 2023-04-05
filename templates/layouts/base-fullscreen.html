@@ -1,0 +1,50 @@
+<!--
+=========================================================
+* GEPRE - v1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+
+    <title>
+        GEPRE - {% block title %}{% endblock %}
+    </title>
+    <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+{#    <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
+   <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
+
+    <!-- Specific CSS goes HERE -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="">
+
+
+{% block content %}{% endblock content %}
+
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}
+<script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
+
+</body>
+</html>

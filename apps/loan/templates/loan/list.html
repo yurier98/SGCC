@@ -1,0 +1,157 @@
+{% extends 'includes/list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
+    <script src="{% static 'loan/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th class="cell" scope="col" style="width: 5%;">Nro</th>
+        <th class="cell" scope="col" style="width: 15%;">Usuario</th>
+        <th class="cell" scope="col" style="width: 10%;">Solapín</th>
+        <th class="cell" scope="col" style="width: 20%;">Área</th>
+        <th class="cell" scope="col" style="width: 10%;">Fecha de registro</th>
+        <th class="cell" scope="col" style="width: 10%;">Estado</th>
+        <th class="cell" scope="col" style="width: 10%;"> Manifestación</th>
+        <th class="cell" scope="col" style="width: 5%;"></th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block form-group %}
+    <div class="form-group settings-form ">
+        <div class=" mb-3">
+            <a href="{{ create_url }}" class="create btn app-btn-primary">
+                <i class="fas fa-plus"></i> Nuevo registro
+            </a>
+            <a href="{{ list_url }}" class="btn app-btn-secondary">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <div class="modal fade" id="myModalProducts" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start"
+             role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class=" bi bi-search"></i> Detalle del préstamo
+                    </h5>
+                </div>
+
+
+                <div class="modal-body">
+                    <table class="table app-table-hover mb-0 text-left" id="tblProducts">
+                        <thead>
+                        <tr>
+                            <th class="cell">Producto</th>
+                            <th class="cell">Categoría</th>
+                            <th class="cell">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start"
+             role="document">
+            <form method="post" action=".">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-trash"></i> <b>{{ title }}</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="{{ action }}">
+                            {% if form.errors %}
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <p class="text-center font-weight-bold mt-3">
+                                <i class="fas fa-trash fa-3x"></i><br><br>
+                                ¿Estás seguro de eliminar el registro N° {{ object.id }}?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer card-footer">
+                        <button type="submit" class="btn btn-primary btn-flat">
+                            <i class="fas fa-save"></i> Si, aceptar
+                        </button>
+                        <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </div>
+            </form>
+            <script>
+                $('form').on('submit', function (e) {
+                    e.preventDefault();
+                    var parameters = new FormData(this);
+                    submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de eliminar el siguiente registro?', parameters, function () {
+                        Swal.fire({
+                            title: 'Alerta',
+                            text: 'Registro eliminado correctamente',
+                            icon: 'success',
+                            timer: 2000,
+                            onClose: () => {
+                                location.href = '{{ list_url }}';
+                            }
+                        }).then((result) => {
+
+                        });
+                    });
+                });
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_list_before %}
+    <div class="form-group settings-form ">
+        <label class="form-label">Rangos de fechas de creado:</label>
+        <div class="input-group mb-3">
+            {{ form.date_range }}
+
+{#            <div id="reportrange"#}
+{#                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">#}
+{#                <i class="fa fa-calendar"></i>&nbsp;#}
+{#                <span></span> <i class="fa fa-caret-down"></i>#}
+{#            </div>#}
+
+
+            <div class="input-group-append ">
+                <button class="btn app-btn-primary btnSearch" type="button">
+                    <i class="fa-regular fa-calendar-check"></i> Buscar por rangos
+                </button>
+                <button class="btn app-btn-secondary  btnSearchAll" type="button">
+                    <i class="fa-regular fa-calendar-check"></i> Ver todos
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

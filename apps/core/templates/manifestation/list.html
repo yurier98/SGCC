@@ -1,0 +1,52 @@
+{% extends 'includes/list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'manifestation/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th class="cell" scope="col" style="width: 10%;">Nro</th>
+        <th class="cell" scope="col" style="width: 70%;">Nombre</th>
+        <th class="cell" scope="col" style="width: 20%;"></th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block form-group %}
+    {% if messages %}
+        {% for message in messages %}
+            <div style="border-radius:10px;" {% if message.tags %}
+                 class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
+                 role="alert" {% endif %}>
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <div class="form-group settings-form ">
+        <div class=" mb-3">
+            <a href="{{ create_url }}" class="create btn app-btn-primary">
+                <i class="fas fa-plus"></i> Nuevo registro
+            </a>
+            <button class="btnCreate btn app-btn-primary" type="button">
+                <i class="fas fa-plus"></i> Adicionar
+            </button>
+            <a href="{{ list_url }}" class="btn app-btn-secondary">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
+

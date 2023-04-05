@@ -1,0 +1,365 @@
+{% load groups_tags %}
+{% load static %}
+<!-- ======= Header ======= -->
+<header id="header" class="app-header fixed-top">
+
+    <div class="app-header-inner">
+        <div class="container-fluid py-2">
+            <div class="app-header-content">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                        <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"
+                                 role="img">
+                                <title>Menu</title>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10"
+                                      stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <!--//col-->
+
+                    <div class="app-utilities col-auto">
+                        {% include 'includes/_app_notifications_dropdown.html' %}
+                        {% if user.is_authenticated %}
+                            <div class="app-utility-item app-user-dropdown dropdown">
+                                <a class="dropdown-toggle align-content-center" id="user-dropdown-toggle"
+                                   data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                    <img src="{{ request.user.get_image }}" class="rounded-circle" alt="user profile">
+                                    <span class="">{{ request.user.get_short_name }}</span>
+                                </a>
+
+                                <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+                                <span class="dropdown-header" style="font-size: 12px;">
+                                    <div class="info">
+                                        <a class="d-block">{{ request.user.get_full_name }}</a>
+                                    </div>
+                                    Sú último acceso fue {{ request.user.last_login }}
+                                </span>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'user_details_profile' %}">
+                                        <span style="font-size: 15px;">
+                                            <i class="bi bi-person"></i> Mi Perfil
+                                        </span>
+                                        </a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'user_change_password' %}">
+                                        <span style="font-size: 15px;">
+                                            <i class="bi bi-key"></i> Cambiar contraseña
+                                        </span> </a>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item align-items-center"
+                                            {#href="{% url 'logout' %}?next={{ request.path | urlencode }}">#}
+                                           href="{% url 'logout' %}?next={{ request.path }}">
+                                        <span style="font-size: 15px;">
+                                            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                        </span>
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div><!--//app-user-dropdown-->
+                        {% endif %}
+                    </div><!--//app-utilities-->
+                </div><!--//row-->
+            </div><!--//app-header-content-->
+        </div><!--//container-fluid-->
+    </div><!--//app-header-inner-->
+
+    <div id="app-sidepanel" class="app-sidepanel">
+        <div id="sidepanel-drop" class="sidepanel-drop"></div>
+        <div class="sidepanel-inner d-flex flex-column">
+            <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+            <div class="app-branding">
+                <a class="app-logo" href="/">
+                    <img class="logo-icon me-2" src="{% static 'assets/images/app-logo.svg' %}" alt="logo">
+                    <span class="logo-text">GEPRE</span>
+                </a>
+            </div>
+            <!--//app-branding-->
+
+            <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="{% if request.resolver_match.url_name == 'home' %} active {% endif %} nav-link"
+                           href="/">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M7.646 1.146a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-4H7v4a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4h3.5V7.707L8 2.207l-5.5 5.5z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Inicio</span>
+                        </a>
+                        <!--//nav-link-->
+                    </li><!--//nav-item-->
+
+                    {% if request.user|has_group:"Tecnico" %}
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link {% if request.resolver_match.url_name == 'order_all_list' %} active {% endif %}"
+                               href="{% url 'order_all_list' %}">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z"/>
+                                    <path
+                                            d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </span>
+                                <span class="nav-link-text">Pedidos</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+                    {% elif request.user.is_superuser %}
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link {% if request.resolver_match.url_name == 'order_all_list' %} active {% endif %}"
+                               href="{% url 'order_all_list' %}">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z"/>
+                                    <path
+                                            d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </span>
+                                <span class="nav-link-text">Pedido</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+                    {% else %}
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link {% if request.resolver_match.url_name == 'order_list' %} active {% endif %}"
+                               href="{% url 'order_list' %}">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z"/>
+                                    <path
+                                            d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </span>
+                                <span class="nav-link-text"> Mis Pedidos</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+                    {% endif %}
+
+                    {% include 'includes/_app_li_opcion_group.html' %}
+
+                    <li class="nav-item has-submenu ">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link submenu-toggle
+                        {% if request.resolver_match.url_name == 'user_details_profile' %} active
+                        {% elif request.resolver_match.url_name == 'user_update_profile' %} active
+                        {% endif %}" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-1"
+                           aria-expanded="false" aria-controls="submenu-1">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z">
+                                    </path>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Mi Perfil</span>
+                            <span class="submenu-arrow">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </span>
+                            <!--//submenu-arrow-->
+                        </a>
+                        <!--//nav-link-->
+                        <div id="submenu-1" class="collapse submenu submenu-1
+                                            {% if request.resolver_match.url_name == 'user_details_profile' %} show
+                                            {% elif request.resolver_match.url_name == 'user_update_profile' %} show
+                                            {% endif %}" data-bs-parent="#menu-accordion">
+
+
+                            <ul class="submenu-list list-unstyled">
+                                <li class="submenu-item ">
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_details_profile' %} active {% endif %}"
+                                       href="{% url 'user_details_profile' %}">Ver perfil
+                                    </a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_update_profile' %} active {% endif %} "
+                                       href="{% url 'user_update_profile' %}">Editar perfil</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_change_password' %} active {% endif %}"
+                                       href="{% url 'user_change_password' %}">Cambiar contraseña
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li><!--//nav-item-->
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link {% if request.resolver_match.url_name == 'notifications_list' %} active {% endif %}"
+                           href="{% url 'notifications_list' %}">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bell icon"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2z"></path>
+                                    <path fill-rule="evenodd"
+                                          d="M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
+                                    </path>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Notificaciones</span>
+                        </a>
+                        <!--//nav-link-->
+                    </li><!--//nav-item-->
+                </ul><!--//app-menu-->
+            </nav><!--//app-nav-->
+
+            <div class="app-sidepanel-footer">
+                <nav class="app-nav app-nav-footer">
+                    <ul class="app-menu footer-menu list-unstyled">
+
+                        {% if request.user|has_group:"Admin" %}
+                            <li class="nav-item has-submenu">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link submenu-toggle
+                                                    {% if request.resolver_match.url_name == 'manifestation_list' %} active
+                                                    {% elif request.resolver_match.url_name == 'category_list' %} active
+                                                    {% endif %}" href="#" data-bs-toggle="collapse"
+                                   data-bs-target="#submenu-3"
+                                   aria-expanded="false" aria-controls="submenu-3">
+                                            <span class="nav-icon">
+                                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z"/>
+                                                    <path
+                                                            d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z"/>
+                                                </svg>
+                                            </span>
+                                    <span class="nav-link-text">Nomencaldores</span>
+                                    <span class="submenu-arrow">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                     class="bi bi-chevron-down"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </span>
+                                    <!--//submenu-arrow-->
+                                </a>
+                                <!--//nav-link-->
+                                <div id="submenu-3" class="collapse submenu submenu-3
+                                                            {% if request.resolver_match.url_name == 'manifestation_list' %} show
+                                                            {% elif request.resolver_match.url_name == 'category_list' %} show
+                                                            {% endif %}" data-bs-parent="#menu-accordion">
+                                    <ul class="submenu-list list-unstyled">
+                                        <li class="submenu-item">
+                                            <a class="submenu-link
+                                                             {% if request.resolver_match.url_name == 'manifestation_list' %} active
+                                                            {% endif %}"
+                                               href="{% url 'manifestation_list' %}">Manifestaciones</a>
+                                        </li>
+                                        <li class="submenu-item">
+                                            <a class="submenu-link" href="{% url 'manifestation_list' %}">
+                                                Tipo de Producto</a>
+                                        </li>
+                                        <li class="submenu-item">
+                                            <a class="submenu-link
+                                                            {% if request.resolver_match.url_name == 'category_list' %} active
+                                                            {% endif %}" href="{% url 'category_list' %}">Categoría del
+                                                Producto
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li><!--//nav-item-->
+                        {% endif %}
+                        {% if request.user.is_superuser %}
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link {% if request.resolver_match.url_name == 'user_list' %} active {% endif %}"
+                                   href="{% url 'user_list' %}">
+                                            <span class="nav-icon">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z">
+                                                    </path>
+                                                </svg>
+
+                                            </span>
+
+                                    <span class="nav-link-text">Usuarios</span>
+                                </a>
+                                <!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link {% if request.resolver_match.url_name == 'group_list' %} active
+                                                {% endif %}" href="{% url 'group_list' %}">
+                                            <span class="nav-icon">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                     class="bi bi-columns-gap"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M6 1H1v3h5V1zM1 0a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm14 12h-5v3h5v-3zm-5-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5zM6 8H1v7h5V8zM1 7a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H1zm14-6h-5v7h5V1zm-5-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1h-5z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                    <span class="nav-link-text">Roles</span>
+                                </a>
+                                <!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link {% if request.resolver_match.url_name == 'permission_list' %} active {% endif %}"
+                                   href="{% url 'permission_list' %}">
+                                            <span class="nav-icon">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                     class="bi bi-shield-check"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M5.443 1.991a60.17 60.17 0 0 0-2.725.802.454.454 0 0 0-.315.366C1.87 7.056 3.1 9.9 4.567 11.773c.736.94 1.533 1.636 2.197 2.093.333.228.626.394.857.5.116.053.21.089.282.11A.73.73 0 0 0 8 14.5c.007-.001.038-.005.097-.023.072-.022.166-.058.282-.111.23-.106.525-.272.857-.5a10.197 10.197 0 0 0 2.197-2.093C12.9 9.9 14.13 7.056 13.597 3.159a.454.454 0 0 0-.315-.366c-.626-.2-1.682-.526-2.725-.802C9.491 1.71 8.51 1.5 8 1.5c-.51 0-1.49.21-2.557.491zm-.256-.966C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815z">
+                                                    </path>
+                                                    <path fill-rule="evenodd"
+                                                          d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                    <span class="nav-link-text">Permisos</span>
+                                </a>
+                                <!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/admin">
+                                            <span class="nav-icon fs-5">
+                                                <i class="bi bi-sliders "></i>
+                                            </span>
+                                    <span class="nav-link-text">Administración</span>
+                                </a>
+                                <!--//nav-link-->
+                            </li><!--//nav-item-->
+                        {% endif %}
+                    </ul><!--//footer-menu-->
+                </nav>
+            </div><!--//app-sidepanel-footer-->
+
+        </div>
+        <!--//sidepanel-inner-->
+    </div>
+    <!--//app-sidepanel-->
+
+
+</header><!-- #header -->

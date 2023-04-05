@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    {% block meta %}
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta content="" name="keywords">
+        <meta name="author" content="Yurier Herrera Lugo">
+
+    {% endblock meta %}
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>{{ title }}</title>
+    {% block stylesheets %}
+        <!-- App CSS -->
+        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">
+        <link href="{% static 'assets/plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+        <!-- Favicons -->
+        <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
+        <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+        <!-- CSS File  -->
+        <link href="{% static 'assets/css/agregos.css' %}" rel="stylesheet">
+
+        <!-- jQuery -->
+        <script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
+        {#        <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>#}
+        <!-- Bootstrap 4 -->
+        <script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>
+        <script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
+        <!-- Sweetalert2 -->
+        <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+        <!-- Jquery Confirm -->
+        <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
+        <script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+        <!-- Moment -->
+        <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+        <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+        <!-- Functions -->
+        <script src="{% static 'assets/js/main.js' %}"></script>
+        <script src="{% static 'assets/js/functions.js' %}"></script>
+    {% endblock stylesheets %}
+    <!-- Block head -->
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body class="app">
+
+{% include "admin/admin_header.html" %}
+
+{% include "includes/_modal.html" %}
+<!-- Contenido de la pagina -->
+{% block content %}
+{% endblock %}
+
+
+
+<!-- JavaScript -->
+{% block scripts %}
+    <!-- FontAwesome JS-->
+    {#    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>#}
+    <script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Page Specific JS -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+    <script src="{% static 'assets/js/drag&drop.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery.bootstrap.modal.forms.js' %}"></script>
+    {#    <script src="{% static 'admin/js/vendor/select2/select2.full.js' %}"></script>#}
+    {#    <script src="{% static 'admin/js/autocomplete.js' %}"></script>#}
+    {#    <script src="{% static 'admin/js/jquery.init.js' %}"></script>#}
+
+{% endblock scripts %}
+
+{% block javascript %}
+{% endblock %}
+<script>
+    {% if messages %}
+        var html = '<p>';
+        {% for message in messages %}
+            html += '{{ message }}<br>';
+        {% endfor %}
+        html += '</p>';
+        Swal.fire({
+            title: 'Error!',
+            html: html,
+            icon: 'error'
+        });
+    {% endif %}
+</script>
+</body>
+
+</html>

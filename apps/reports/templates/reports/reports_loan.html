@@ -1,0 +1,50 @@
+{% extends 'reports/reports.html' %}
+{% load static %}
+{% block head_report %}
+    <script src="{% static 'loan/js/report.js' %}"></script>
+{% endblock %}
+
+{% block content_report %}
+
+    <table class="table app-table-hover mb-0 text-left" id="data">
+        <thead>
+        <tr>
+            <th class="cell" scope="col">Nro</th>
+            <th class="cell" scope="col">Nombre y Apellidos</th>
+            <th class="cell" scope="col">Facultad</th>
+            <th class="cell" scope="col">Teléfono</th>
+            <th class="cell" scope="col">Productos</th>
+            <th class="cell" scope="col">Cantidad</th>
+            <th class="cell" scope="col">Fecha de registro</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block content_list_before %}
+    <div class="form-group settings-form ">
+        <label class="form-label">Rangos de fechas:</label>
+        <div class="input-group mb-3">
+            {{ form.date_range }}
+            <div class="input-group-append ">
+                <button class="btn app-btn-primary btnSearch" type="button">
+                    <i class="fa-regular fa-calendar-check"></i> Buscar por rangos
+                </button>
+                <button class="btn app-btn-secondary  btnSearchAll" type="button">
+                    <i class="fa-regular fa-calendar-check"></i> Ver todos
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block form-group %}
+    <div class="form-group settings-form ">
+        <div class=" mb-3">
+            <button type="button" class="btn app-btn-secondary btnSearch">
+                <i class="fas fa-sync"></i> Actualizar
+            </button>
+        </div>
+    </div>
+{% endblock %}
