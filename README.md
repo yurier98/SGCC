@@ -2,7 +2,7 @@
 > Sistema para la Gestión del Centro Cultural en la Universidad de Ciencias Informáticas
 
 ![Django CI](https://github.com/JustShip/justshipto_core/actions/workflows/django.yml/badge.svg)
-
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 
 ## Estructura de carpetas:
 
@@ -91,6 +91,11 @@ Para instalar las dependencias solo debe ejecutar:
 
     pip install -r requirements/develop.txt
 
+Este proyecto para poderse conectar al LDAP de la UCI necesita la libreria  
+python-ldap==3.4.0, si usted es usuario de windows necesita instalar esta libreria de forma manual
+#### Para instalar esta dependencia en Windows debe moverse al directorio deploy y ejecutar:
+
+    pip install python_ldap-3.4.0-cp38-cp38-win_amd64.whl
 
 ### Base de datos
 Este proyecto en modo desarrollo usa SQlite por lo que solo tienes que ejecutar las migraciones:
