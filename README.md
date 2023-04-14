@@ -84,21 +84,30 @@
 
 
 
-## Ejecutar
-Ejecutar el proyecto localmente
-### Instalar dependencias
+
+## Instalar dependencias
 Para instalar las dependencias solo debe ejecutar:
 
     pip install -r requirements/develop.txt
 
-Este proyecto para poderse conectar al LDAP de la UCI necesita la libreria  
-**python-ldap==3.4.0**, si usted es usuario de windows necesita instalar esta libreria de forma manual
+Este proyecto utiliza diferentes librerias que son necesarias instalarlas con anterioridad para su correcta ejecución.
+
+Para poderse conectar al LDAP de la UCI necesita la libreria   **python-ldap==3.4.0**, si usted es usuario de windows necesita instalar esta libreria de forma manual
 #### Para instalar esta dependencia en Windows debe moverse al directorio deploy y ejecutar:
 
     pip install python_ldap-3.4.0-cp38-cp38-win_amd64.whl
 Esta dependencia python_ldap-3.4.0-**cp38-cp38**-win_amd64 es compatible con **python 3.8**
 
-### Base de datos
+
+
+#### Instalar Weasyprint => es una libreria para la creación de pdf
+
+Esta libreria se instala automaticamente con el requirements pero para los usuarios de windows necesitan instalar **GTK-for-Windows-Runtime-Environment-Installer**
+
+https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases
+
+
+## Base de datos
 Este proyecto en modo desarrollo usa SQlite por lo que solo tienes que ejecutar las migraciones:
 
     python manage.py migrate
@@ -106,6 +115,8 @@ Después creas un usuario administrador:
 
     python manage.py createsuperuser
 Rellenas toda la información que te pide y ya está listo para ejecutar:
+## Ejecutar
+Ejecutar el proyecto localmente
 
     python manage.py runserver
 Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose
