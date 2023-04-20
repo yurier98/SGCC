@@ -7,6 +7,7 @@ def create_groups():
     tecnico_group, created = Group.objects.get_or_create(name='tecnico')
 
     # Asignar permisos a los grupos
+    '''Nota:  Actualizar los permisos q va a tener el usuario administrador '''
     admin_permissions = Permission.objects.filter(codename__in=[
         'view_category',
 

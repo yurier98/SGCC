@@ -1,15 +1,5 @@
-from django.contrib.auth.models import User, Group
-
+from django.contrib.auth.models import Group
 from ...models import UserProfile
-
-
-
-def create_group():
-    # Crear grupos
-    admin_group, created = Group.objects.get_or_create(name='administrador')
-    tecnico_group, created = Group.objects.get_or_create(name='tecnico')
-    # user_group, created = Group.objects.get_or_create(name='usuario')
-
 
 
 def create_users():
@@ -43,11 +33,8 @@ def create_users():
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
-    help = 'Crea usuarios y grupos por defecto'
-    help = 'Crea grupos por defecto y les asigna permisos'
+    help = 'Crea usuarios por defecto'
 
     def handle(self, *args, **options):
-        create_group()
-        self.stdout.write(self.style.SUCCESS('Grupos creados con éxito!'))
         create_users()
         self.stdout.write(self.style.SUCCESS('Usuarios creados con éxito!'))
