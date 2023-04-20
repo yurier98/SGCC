@@ -1,12 +1,8 @@
-import os
-
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import FilteredSelectMultiple
-
-from django.contrib.auth.models import User, Group, Permission
-from django.forms import widgets, model_to_dict
-
+from django.contrib.auth.models import Group, Permission
+from django.forms import model_to_dict
 
 
 class GroupsForm(forms.ModelForm):
@@ -20,9 +16,9 @@ class GroupsForm(forms.ModelForm):
         self.fields['name'].widget.attrs['autofocus'] = True
 
     # class Media:
-        # css = {'all': ('/admin/css/widgets.css', '/admin/css/overrides.css'), }
-        # css = {'all': ( os.path.join(BASE_DIR, 'static') '/static/admin/css/widgets.css',), }
-        # js = ('/admin/jquery.js', '/admin/jsi18n/')
+    # css = {'all': ('/admin/css/widgets.css', '/admin/css/overrides.css'), }
+    # css = {'all': ( os.path.join(BASE_DIR, 'static') '/static/admin/css/widgets.css',), }
+    # js = ('/admin/jquery.js', '/admin/jsi18n/')
 
     class Meta:
         model = Group

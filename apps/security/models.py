@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import Group
+# from django.contrib.auth.models import Group
 from django.db.models import Q
 # from apps.fase.models import Fase
 # from apps..models import User

@@ -6,7 +6,7 @@ from web_project.apps.accounts import MyLDAPBackend
 
 """
 Backend de autenticación clásica
-Anulamos django.contrib.auth.backends.ModelBackend para garantizar que los usuarios ldap no puedan iniciar sesión 
+Anulamos django.contrib.custom_auth.backends.ModelBackend para garantizar que los usuarios ldap no puedan iniciar sesión 
 con este si MyLDAPBackend está disponible.
 """
 

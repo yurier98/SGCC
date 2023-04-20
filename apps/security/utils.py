@@ -1,0 +1,1 @@
+;base64,{base64.b64encode(image_file.read()).decode('utf-8')}"

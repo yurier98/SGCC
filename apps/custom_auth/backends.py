@@ -104,7 +104,6 @@ class MyLDAPBackend(LDAPBackend):
             #                              area=self.getArea(), foto=self.getFoto())
             #         perfil.save()
             #
-            #
             #     except:
             #         pass
 
