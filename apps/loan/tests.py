@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from apps.loan.models import Loan, Manifestation
+from apps.loan.models import Loan
 from apps.accounts.models import UserProfile
 
 
@@ -12,7 +12,7 @@ class LoanTest(TestCase):
 
     def setUp(self) -> None:
         self.usuario = UserProfile.objects.create_user(username='usertest', password='passtest', )
-        self.mani = Manifestation.objects.create(name='ManifPrueba')
+        # self.mani = Manifestation.objects.create(name='ManifPrueba')
         self.auth = self.client.login(username='usertest', password='passtest')
         # self.loan = Loan.objects.create(user=self.usuario,
         #                                 start_date='2022-08-01',
@@ -68,10 +68,10 @@ class LoanTest(TestCase):
 #
 #     def setUp(self) -> None:
 #         self.usuario = UserProfile.objects.create_user(username='usertest', password='passtest', )
-#         self.auth = self.client.login(username='usertest', password='passtest')
+#         self.custom_auth = self.client.login(username='usertest', password='passtest')
 #
 #     def test_view_manifestation(self):
-#         self.assertTrue(self.auth)
+#         self.assertTrue(self.custom_auth)
 #
 #         # res = self.client.get(reverse('loan_list'))
 #         # self.assertEqual(res.status_code, 200)

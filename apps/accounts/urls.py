@@ -7,12 +7,13 @@ from .views import *
 #app_name = 'accounts'
 
 urlpatterns = [
-    # path('login/', login_view, name="login"),
-    #path('login/', login_user, name="login"),
-    path('login/', LoginFormView.as_view(), name="login"),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('reset/password/', ResetPasswordView.as_view(), name='reset_password'),
-    path('change/password/<str:token>/', ChangePasswordView.as_view(), name='change_password'),
+
+    #################  Usuarios   #####################################
+    path('users', UserListView.as_view(), name='user_list'),
+    path('user/add', UserCreateView.as_view(), name='user_create'),
+    path('users/update/<int:pk>/', UserUpdateView.as_view(), name='user_update'),
+    path('users/delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
+
 
      # path('choose/profile/<int:pk>/', UserChooseGroup.as_view(), name='user_choose_profile'),
 

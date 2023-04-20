@@ -13,7 +13,7 @@ from django.views.generic import RedirectView, FormView
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from accounts.models import UserProfile
+from apps.accounts.models import UserProfile
 from config.settings import base as settings
 from .forms import LoginForm, ResetPasswordForm, ChangePasswordForm
 
@@ -34,12 +34,12 @@ class LoginFormView(LoginView):
         return context
 
 
-# class LogoutView(RedirectView):
-#     pattern_name = 'login'
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         logout(request)
-#         return super().dispatch(request, *args, **kwargs)
+class LogoutView(RedirectView):
+    pattern_name = 'login'
+
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ResetPasswordView(FormView):

@@ -1,7 +1,7 @@
 {% load groups_tags %}
 {% load static %}
 
-{% if request.user|has_group:"Tecnico" %}
+{% if request.user|has_group:"Tecnicos" %}
 
     <li class="nav-item">
         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
@@ -86,7 +86,7 @@
         </div>
     </li><!--//nav-item-->
 
-{% elif request.user|has_group:"Admin" %}
+{% elif request.user|has_group:"Administradores" %}
 
     <li class="nav-item">
         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->

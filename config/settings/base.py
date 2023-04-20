@@ -2,11 +2,9 @@
 Settings common to all instances of the project
 """
 import os
-import ldap
 from pathlib import Path
 
 from django.urls import reverse_lazy
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
@@ -46,6 +44,7 @@ LOCAL_APPS = [
     # 'justshipto_core.core.apps.CoreConfig',
     # 'justshipto_core.accounts.apps.AccountsConfig',
     'apps.accounts',
+    'apps.custom_auth',
     'apps.inventory',
     'apps.loan',
     'apps.order',
@@ -158,8 +157,8 @@ AUTH_USER_MODEL = 'accounts.UserProfile'
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
 AUTHENTICATION_BACKENDS = (
-    'apps.accounts.backends.MyLDAPBackend',
-    'apps.accounts.backends.MyAuthBackend',
+    'apps.custom_auth.backends.MyLDAPBackend',
+    'apps.custom_auth.backends.MyAuthBackend',
 
     # 'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',

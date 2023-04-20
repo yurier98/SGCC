@@ -4,7 +4,7 @@ import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 from django.conf import settings
 from django.contrib.auth.models import User
-from .models import UserProfile
+# from apps.accounts.models import UserProfile
 
 """
 Back-end de autenticación LDAP

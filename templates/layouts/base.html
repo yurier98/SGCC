@@ -1,4 +1,5 @@
 {% load static %}
+{% load groups_tags %}
 {% load pwa %}
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +25,7 @@
     <title>{{ title }}</title>
     {% block stylesheets %}
         <!-- App CSS -->
-{#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
+        {#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
         <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
         <link href="{% static 'assets/plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
         <!-- Favicons -->
@@ -63,8 +64,19 @@
 {#{% if request.resolver_match.url_name == 'admin' %}#}
 {#    {% include "includes/../admin/admin_header.html" %}#}
 {#{% endif %}#}
+{% if request.user.is_superuser %}
+    {% include 'includes/header_superuser.html' %}
 
-{% include 'includes/header.html' %}
+{% elif request.user|has_group:"Superusuario" %}
+
+    {% include 'includes/header_superuser.html' %}
+
+{% elif request.user|has_group:"tecnico" %}
+    {% include 'includes/header_tecnico.html' %}
+{% else %}
+    {% include 'includes/header.html' %}
+{% endif %}
+
 {% include "includes/_modal.html" %}
 <!-- Contenido de la página -->
 {% block content %}

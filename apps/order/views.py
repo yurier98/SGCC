@@ -15,7 +15,8 @@ from weasyprint import HTML, CSS
 from django.urls import reverse_lazy, resolve
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
-from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin, IsSuperuserMixin
+from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin, GroupRequiredMixin, \
+    IsSuperuserMixin, GroupNotAllowedMixin
 from apps.accounts.models import UserProfile
 from apps.loan.models import Loan
 from .filters import OrderFilter
@@ -26,12 +27,14 @@ from apps.notification.signals import notificar
 
 
 ####################Vistas de Pedidos##################
-class OrderListAllView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FilterView):
+class OrderListAllView(GroupRequiredMixin,ExistsInventaryMixin,  FilterView):
     """ Return all Order"""
     filterset_class = OrderFilter
     template_name = 'order/list_order.html'
-    permission_required = 'order.view_order'
+    # permission_required = 'order.view_all_order'
     url_redirect = reverse_lazy('order_list')
+    group_names = ['tecnico', 'admin']
+    redirect_field_name = 'order_list'
 
     # permission_required = 'view_order'
 
@@ -39,8 +42,8 @@ class OrderListAllView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Fi
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de pedidos'
         context['create_url'] = reverse_lazy('order_create')
-        context['list_url'] = reverse_lazy('order_list')
-        context['entity'] = 'Pedidos'
+        context['list_url'] = reverse_lazy('order_all_list')
+        context['entity'] = 'Todos los Pedidos'
         return context
 
 
@@ -108,13 +111,16 @@ class OrderListView2(ExistsInventaryMixin, LoginRequiredMixin, FormView):
         return context
 
 
-class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, CreateView):
+class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedMixin, CreateView):
     model = Order
     form_class = OrderForm
     template_name = 'order/create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
     permission_required = 'add_order'
+
+    disallowed_group = 'tecnico'
+    error_url = 'order_all_list'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -127,7 +133,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, CreateView):
                 products = Product.objects.filter(stock__gt=0)
                 if len(term):
                     products = products.filter(name__icontains=term)
-                    # filtrar por es estado prestado (P)
+                    # filtrar por estado prestado (P)
                 for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
                     item['value'] = i.__str__()
@@ -148,14 +154,8 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, CreateView):
                     order = Order()
                     order.start_date = request.POST['start_date']
                     order.end_date = request.POST['end_date']
-
-                    # user = UserProfile.objects.values().filter(id=get_current_request().user.id)
-                    # print(user)
-                    # order.user_id = int(user)
                     order.user_id = int(request.POST['user'])
-
                     order.description = request.POST['description']
-                    # loan.state = request.POST['state']
                     order.manifestation_id = int(request.POST['manifestation'])
 
                     order.save()
@@ -302,6 +302,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
             item['cant'] = i.cant
             data.append(item)
         return json.dumps(data)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Detalles del pedido'
@@ -483,7 +484,7 @@ class OrderPdfView(LoginRequiredMixin, View):
 #################### FIN Vistas de Pedido##################
 
 class ApproveView(ValidatePermissionRequiredMixin, View):
-    url_redirect = reverse_lazy('all_order_list')
+    url_redirect = reverse_lazy('order_all_list')
     permission_required = 'approve_order'
 
     def get(self, request, *args, **kwargs):
@@ -510,4 +511,4 @@ class ApproveView(ValidatePermissionRequiredMixin, View):
 
         except:
             pass
-        return HttpResponseRedirect(reverse_lazy('all_order_list'))
+        return HttpResponseRedirect(reverse_lazy('order_all_list'))

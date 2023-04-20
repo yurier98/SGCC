@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from apps.core import views
 
+handler403 = views.custom_permission_denied_view
 
 urlpatterns = [
 
@@ -28,18 +30,18 @@ urlpatterns = [
     path('', include('config.pwa1.urls')),
 
     path('', include('apps.core.urls')),
-    path('admin/', admin.site.urls),
-    # path('', views.index, name='home'),
-    # path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    # path('inventory/', TemplateView.as_view(template_name="inventory/inventory_list.html"), name='inventory'),
-
+    path('', include('apps.custom_auth.urls')),
     path('accounts/', include('apps.accounts.urls')),
+
     path('inventory/', include('apps.inventory.urls', namespace='inventory')),
     path('loan/', include('apps.loan.urls')),
     path('order/', include('apps.order.urls')),
+
     path('notification/', include('apps.notification.urls')),
     path('reports/', include(('apps.reports.urls','reports'))),
-    # path('report/', include(('apps.report.urls', 'report'))),
+
+    path('security/', include('apps.security.urls')),
+    path('admin/', admin.site.urls),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,15 +1,12 @@
 import uuid
 from django.db import models
-from django.dispatch import receiver
 from django.forms import model_to_dict
-# built-in signals
-from django.db.models.signals import post_save, m2m_changed
-# signals
-# from ..notification.signals import notificar
+
 # Create your models here.
 from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
 from apps.core.models import Manifestation
+
 
 
 class Order(models.Model):
@@ -22,6 +19,7 @@ class Order(models.Model):
     )
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
     end_date = models.DateField("Fecha de devolución")
     description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
@@ -59,6 +57,7 @@ class Order(models.Model):
         ordering = ["-created"]
         permissions = (
             ("approve_order", "Aprobar Pedido"),
+            ("view_all_order", "Ver todos los pedidos"),
         )
 
 

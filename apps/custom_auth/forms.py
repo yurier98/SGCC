@@ -1,7 +1,7 @@
 from django.forms import Form
 from django import forms
 
-from accounts.models import UserProfile
+from apps.accounts.models import UserProfile
 
 
 class LoginForm(Form):

@@ -33,7 +33,7 @@ def insert_products():
             p.save()
             print(p.name)
 
-#
+
 # def insert_sale():
 #     client = Client()
 #     client.names = 'Consumidor final'
