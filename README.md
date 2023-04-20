@@ -1,25 +1,8 @@
 # SGCC
-> Sistema para la Gestion del Centro Cultural en la Universidad de Ciencias Informáticas
+> Sistema para la Gestión del Centro Cultural en la Universidad de Ciencias Informáticas
 
 ![Django CI](https://github.com/JustShip/justshipto_core/actions/workflows/django.yml/badge.svg)
-![GitHub Repo stars](https://img.shields.io/github/stars/justship/justshipto_core)
-
-![GitHub Sponsors](https://img.shields.io/github/sponsors/JustShip?logo=sponsors)
-![GitHub](https://img.shields.io/github/license/justship/justshipto_core)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/JustShip/justshipto_core)
-![GitHub last commit](https://img.shields.io/github/last-commit/JustShip/justshipto_core)
-![GitHub contributors](https://img.shields.io/github/contributors/JustShip/justshipto_core)
-![GitHub issues](https://img.shields.io/github/issues/justship/justshipto_core)
-![GitHub repo size](https://img.shields.io/github/repo-size/justship/justshipto_core)
-
-Núcleo de [Just Ship](https://justship.to).
-
-Si deseas conocer sobre que va este proyecto te recomiendo que leas [este artículo](https://medium.com/justship/de-la-idea-al-producto-justship-fd5d9fd3ae83)
-o visites nuestras [redes sociales](https://bio.link/justship).
-
-## ¡Apoya este proyecto!
-Este proyecto es de la comunidad para la comunidad. Si deseas contribuir monetariamente puedes hacerlo a través de [Ko-fi](https://ko-fi.com/justship),
-[QvaPay](https://qvapay.com/payme/justshipto) o con cripto (ver en nuestra [web](https://justship.to)).
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 
 ## Estructura de carpetas:
 
@@ -29,112 +12,162 @@ Este proyecto es de la comunidad para la comunidad. Si deseas contribuir monetar
     │   │   ├── base.py             # contiene las configuraciones base
     │   │   ├── develop.py          # configuración específica para desarrollo
     │   │   ├── production.py       # configuración específica para producción
-    │   │   └── staging.py          # configuración específica para staging
+    │   │   ├── staging.py          # configuración específica para staging
+    │   │   └── pwa.py              # configuración específica para la compatibilidad de Aplicación web progresiva
     │   ├── asgi.py                 # configuración de despliegue asíncrono
     │   ├── wsgi.py                 # configuración de despliegue
     │   └── urls.py                 # raíz de las url del proyecto
-    ├── justship_core               # carpeta contenedora de aplicaciones
-    │   ├── accounts                # aplicación para gestionar cuentas
-    │   │   ├── admin.py
-    │   │   ├── apps.py
-    │   │   ├── models.py           # modelos
-    │   │   └── views.py            # vistas
-    │   └── core                    # aplicación núcleo del proyecto
-    │   │   ├── apps.py             
-    │   │   ├── middleware.py       # middlewares del núcleo
-    │   │   ├── models.py           # modelos básicos que pueden ser usados por cualquier aplicación
-    │   │   └── views.py
+    │ 
     ├── requirements                # carpeta que contiene los requerimientos del proyecto
     │   ├── base.txt                # requerimientos base
     │   ├── develop.txt             # requerimientos para desarrollo
     │   ├── production.txt          # requerimientos para producción
     │   ├── staging.txt             # requerimientos para staging
     │   └── test.txt                # requerimientos para testing
-    └── manage.py                   
+    ├── manage.py    
+    │ 
+    │ 
+    ├── apps                        # carpeta contenedora de aplicaciones
+    │   ├── accounts                # aplicación para gestionar cuentas
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   └── core                    # aplicación núcleo del proyecto
+    │   │   ├── apps.py             
+    │   │   ├── middleware.py       # middlewares del núcleo
+    │   │   ├── models.py           # modelos básicos que pueden ser usados por cualquier aplicación
+    │   │   └── views.py
+    │   │
+    │   ├── inventory                # aplicación para gestionar el inventario
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── loan                    # aplicación para gestionar los préstamos
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── order                   # aplicación para gestionar los pedidos
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── reports                # aplicación para gestionar los reportes
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── notification            # aplicación para gestionar las notificaciones y alertas
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── security                # aplicación para gestionar la seguridad del sistema
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
+    │   │
+    │   ├── traces                  # aplicación para gestionar las trazas
+    │   │   ├── admin.py
+    │   │   ├── apps.py
+    │   │   ├── models.py           # modelos
+    │   │   └── views.py            # vistas
 
 
 
-## Ejecutar
-Ejecutar el proyecto localmente
-### Instalar dependencias
+
+## Instalar dependencias
 Para instalar las dependencias solo debe ejecutar:
 
     pip install -r requirements/develop.txt
 
 Este proyecto utiliza diferentes librerias que son necesarias instalarlas con anterioridad para su correcta ejecución.
 
-Instalar Weasyprint => es una libreria para la creación de pdf
+Para poderse conectar al LDAP de la UCI necesita la libreria   **python-ldap==3.4.0**, si usted es usuario de windows necesita instalar esta libreria de forma manual
+#### Para instalar esta dependencia en Windows debe moverse al directorio deploy y ejecutar:
 
-You can install WeasyPrint directly on your system or in a virtual environment using pip:
+    pip install python_ldap-3.4.0-cp38-cp38-win_amd64.whl
+Esta dependencia python_ldap-3.4.0-**cp38-cp38**-win_amd64 es compatible con **python 3.8**
 
 
-    brew install weasyprint
-virtual environment
 
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install weasyprint
-    weasyprint --info
+#### Instalar Weasyprint => es una libreria para la creación de pdf
 
-### Base de datos
+Esta libreria se instala automaticamente con el requirements pero para los usuarios de windows necesitan instalar **GTK-for-Windows-Runtime-Environment-Installer**
+
+https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases
+
+
+## Base de datos
 Este proyecto en modo desarrollo usa SQlite por lo que solo tienes que ejecutar las migraciones:
 
-    python manage.py migrate
+`python manage.py migrate`
+
 Después creas un usuario administrador:
 
-    python manage.py createsuperuser
+`python manage.py createsuperuser`
+
 Rellenas toda la información que te pide y ya está listo para ejecutar:
+## Ejecutar
+Ejecutar el proyecto localmente
 
     python manage.py runserver
-Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose
+
+Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose, si está conectado a
+la red UCI podrá autenticarse mendiante su usuario y contraseña usando el LDAP de la universidad 
+
+## Cargar datos por defecto 
+
+Una vez montado el sistema es necesario crear los grupos o Roles definidos por defecto 
+en el sistema.
+
+Este sistema tiene definido hasta el momento 2 roles: **tecnico** y **administrador**
 
 
-## Desplegar
-Este proyecto está dockerizado por lo que solo se deben crear las variables de entorno y levantar el contenedor
+El rol de **tecnico** tiene permisos para:
+        
+        'add_product',
+        'change_product',
+        'delete_product',
+        'view_product',
+        'report_product',
 
-### Variables de entorno
-Crea un fichero `.env` en la raíz del proyecto y agrega estas variables de entorno:
+        'add_loan',
+        'change_loan',
+        'delete_loan',
+        'view_loan',
+        'report_loan',
 
-- `SECRET_KEY` Firma criptográfica que usa Django para encriptar contraseñas y otros elementos de seguridad
-- `DB_NAME` nombre de la base de datos
-- `DB_HOST` dirección del host de la base de datos
-- `DB_USER` nombre de usuario de la base de datos
-- `DB_PASSWORD` contraseña de la base de datos
-- `EMAIL_HOST` dirección del host email con el que se va a enviar correos electrónicos
-- `EMAIL_PORT` puerto del host email con el que se va a enviar correos electrónicos
-- `EMAIL_HOST_USER` dirección de correo del email con el que se va a enviar correos electrónicos
-- `EMAIL_HOST_PASSWORD` contraseña de correo del email con el que se va a enviar correos electrónicos
-- `EMAIL_USE_TLS` boolean que indica si se va a usar el correo sobre TLS o no
+        'approve_order',
+        'view_all_order',
+Además un usuario tecnico podrá ver en el menu los módulo: **Pedidos, Préstamos, Inventario y Reportes**
 
-### Ejecutar Docker
-Para crear la imagen de Docker:
-
-     docker-compose build --tag justshipto_core:1.0 .
-
-Para crear y correr la imagen de docker:
-
-    docker-compose up  # para ejecutarlo en segundo plano hay que agregar -d
-
-Para detener la imagen de docker:
-
-    docker-compose down  
-    
-Para hacer despliegue rápido:
-
-    ./build.sh
-
-## Contribuidores:
-
-## Licencia:
-[GPL-3.0](LICENSE)
-
-## Guía de contribución
-Si desea contribuir con el proyecto por favor, lea nuestra [Guía de contribución](CONTRIBUTING.md)
-
-## Código de conducta
-[Código de conducta](CODE_OF_CONDUCT.md)
+El módulo de Pedido al que tiene acceso el tecnico podrá ver todos los pedidos del sitema
+pero no puede crear un pedido. 
 
 
-Instalar esta libreria: 
+( _**Esta informacion necesita actualizarse**_ ) El rol de **administrador** tiene permisos para acceder:
 
-    brew install weasyprint
+         'view_category',
+### Cargar datos de los Grupos o Roles
+
+` python manage.py loadgroups`
+
+### Cargar datos de usuarios 
+
+Cargar datos de usuarios de prueba para el rol administrador y tecnico 
+
+` python manage.py loadusers`
+
+**username**='admin' y **password**='admin'
+
+**username**='tecnico' y **password**='tecnico'

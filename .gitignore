@@ -131,12 +131,11 @@ dmypy.json
 # Editors
 .idea/
 .vscode
-.DS_Store
+*.DS_Store
 
 # staticfiles
 web_project/staticfiles
 web_project/mediafiles
 
 #Carpeta excluida
-portal-theme-bs5-v2.0
-audit
+mediafiles/products

@@ -1,0 +1,62 @@
+{% extends 'reports/report_base.html' %}
+{#{% extends 'reports/reports.html' %}#}
+{% load static %}
+{% block head_report %}
+      <script type="text/javascript">
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    var csrftoken = $.cookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+    </script>
+{% endblock %}
+
+
+
+{% block body %}
+<div id="reportbro"></div>
+
+<script type="text/javascript">
+
+    var rb = null;
+
+    function saveReport() {
+        var report = rb.getReport();
+
+        // console.log(JSON.stringify(report));
+        $.ajax("{% url 'reports:report_save' report_type %}", {
+            data: JSON.stringify(report),
+            type: "PUT", contentType: "application/json",
+            success: function (data) {
+                // report definition saved successfully,
+                // set modified flag to false to disable save button
+                rb.setModified(false);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('saving report failed');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        rb = $('#reportbro').reportBro({
+            reportServerUrl: "{% url 'reports:report_run' %}",
+            saveCallback: saveReport
+        });
+        var report = {{ report_definition }};
+        if (report) {
+            rb.load(report);
+        }
+    });
+</script>
+{% endblock body %}
