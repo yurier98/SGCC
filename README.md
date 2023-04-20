@@ -110,13 +110,64 @@ https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releas
 ## Base de datos
 Este proyecto en modo desarrollo usa SQlite por lo que solo tienes que ejecutar las migraciones:
 
-    python manage.py migrate
+`python manage.py migrate`
+
 Después creas un usuario administrador:
 
-    python manage.py createsuperuser
+`python manage.py createsuperuser`
+
 Rellenas toda la información que te pide y ya está listo para ejecutar:
 ## Ejecutar
 Ejecutar el proyecto localmente
 
     python manage.py runserver
-Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose
+
+Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose, si está conectado a
+la red UCI podrá autenticarse mendiante su usuario y contraseña usando el LDAP de la universidad 
+
+## Cargar datos por defecto 
+
+Una vez montado el sistema es necesario crear los grupos o Roles definidos por defecto 
+en el sistema.
+
+Este sistema tiene definido hasta el momento 2 roles: **tecnico** y **administrador**
+
+
+El rol de **tecnico** tiene permisos para:
+        
+        'add_product',
+        'change_product',
+        'delete_product',
+        'view_product',
+        'report_product',
+
+        'add_loan',
+        'change_loan',
+        'delete_loan',
+        'view_loan',
+        'report_loan',
+
+        'approve_order',
+        'view_all_order',
+Además un usuario tecnico podrá ver en el menu los módulo: **Pedidos, Préstamos, Inventario y Reportes**
+
+El módulo de Pedido al que tiene acceso el tecnico podrá ver todos los pedidos del sitema
+pero no puede crear un pedido. 
+
+
+( _**Esta informacion necesita actualizarse**_ ) El rol de **administrador** tiene permisos para acceder:
+
+         'view_category',
+### Cargar datos de los Grupos o Roles
+
+` python manage.py loadgroups`
+
+### Cargar datos de usuarios 
+
+Cargar datos de usuarios de prueba para el rol administrador y tecnico 
+
+` python manage.py loadusers`
+
+**username**='admin' y **password**='admin'
+
+**username**='tecnico' y **password**='tecnico'
