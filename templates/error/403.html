@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    {% block title %}<title>Sistema de Gestión de Préstamos</title>{% endblock title %}
+
+    {% block meta %}
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta content="" name="keywords">
+        <meta name="author" content="Yurier Herrera Lugo">
+        <link rel="shortcut icon" href="favicon.ico">
+    {% endblock meta %}
+    {% block stylesheets %}
+        <!-- App CSS -->
+        {#        <link id="theme-style" rel="stylesheet" href="assets/css/portal.css">#}
+        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">
+        <!-- Favicons -->
+        <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+        <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+        <!-- CSS File  -->
+        {#        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">#}
+        {#        <link href="{% static 'assets/css/tabla.css' %}" rel="stylesheet">#}
+
+    {% endblock stylesheets %}
+</head>
+
+<body class="app">
+
+
+<!-- Contenido de la pagina -->
+{% block content %}
+
+    <div class="app app-404-page">
+
+        <div class="container mb-5">
+            <div class="row">
+                <div class="col-12 col-md-11 col-lg-7 col-xl-6 mx-auto">
+                    <div class="app-branding text-center mb-5">
+                        <a class="app-logo" href="{% url 'home' %}"><img class="logo-icon me-2"
+                                                                         src="{% static 'assets/images/app-logo.svg' %}"
+                                                                         alt="logo"><span
+                                class="logo-text">PORTAL</span></a>
+
+                    </div><!--//app-branding-->
+                    <div class="app-card p-5 text-center shadow-sm">
+                        <h1 class="page-title mb-4">403<br><span class="font-weight-light">Permiso denegado</span></h1>
+                        <div class="mb-4">
+                            Lo sentimos, no tiene permisos para acceder a esta página 😥.
+
+                        </div>
+                        {% if referer %}
+                            <a class="btn app-btn-primary" href="{{ referer }}">Regresar a la página anterior</a>
+                        {% endif %}
+
+                        <a class="btn app-btn-primary" href="{% url 'home' %}">Ir a la página de inicio </a>
+                    </div>
+                </div><!--//col-->
+            </div><!--//row-->
+        </div><!--//container-->
+
+        {% include 'includes/footer.html' %}<!--//app-footer-->
+
+
+    </div>
+
+{% endblock %}
+
+
+
+<!-- JavaScript -->
+{% block scripts %}
+    <!-- FontAwesome JS-->
+    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- Page Specific JS -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+{% endblock scripts %}
+
+
+</body>
+
+</html>

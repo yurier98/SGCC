@@ -13,21 +13,9 @@ from ..security.views import GroupListView, json, PermissionListView, GroupCreat
 
 
 urlpatterns = [
-    # path('', TemplateView.as_view(template_name="admin/admin.html"), name='admin'),
     path('', views.HomePage.as_view(), name='home'),
 
     path('json/', json, name='json'),
-
-    #################  Usuarios   #####################################
-    path('user', UserListView.as_view(), name='user_list'),
-    path('user/add', UserCreateView.as_view(), name='user_create'),
-    path('user/update/<int:pk>/', UserUpdateView.as_view(), name='user_update'),
-    path('user/delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
-
-    # path('', UserListView.as_view(), name='user_list'),
-    # path('add/', UserCreateView.as_view(), name='user_create'),
-    # path('update/<int:pk>/', UserUpdateView.as_view(), name='user_update'),
-    # path('delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
 
     #################  Manifestation   #####################################
     path('manifestation', views.ManifestationListView.as_view(), name='manifestation_list'),
@@ -41,12 +29,6 @@ urlpatterns = [
     path('category/update/<int:pk>/', CategoryUpdateView.as_view(), name='category_update'),
     path('category/delete/<int:pk>/', CategoryDeleteView.as_view(), name='manifestation_delete'),
 
-    #################  Roles   #####################################
-    path('rols', GroupListView.as_view(), name='group_list'),
-    path('rols/add', GroupCreateView.as_view(), name='group_create'),
-    path('rols/update/<int:pk>/', GroupUpdateView.as_view(), name='group_update'),
-    path('rols/delete/<int:pk>/', GroupDeleteView.as_view(), name='group_delete'),
 
-    path('permission', PermissionListView.as_view(), name='permission_list'),
 
 ]

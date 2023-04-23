@@ -1,13 +1,13 @@
+<<<<<<< HEAD
 from django.contrib.auth.models import Group, Permission
 from django.http import JsonResponse
-from django.shortcuts import render
-
-# Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from ..Forms.groups_forms import GroupsForm
+from ..Mixin.mixins import ValidatePermissionRequiredMixin
 
-from .Mixin.mixins import ValidatePermissionRequiredMixin
-from .forms import GroupsForm
+
+# Create your views here.
 
 
 def json(request, self=None):
@@ -145,35 +145,7 @@ class GroupDeleteView(ValidatePermissionRequiredMixin, DeleteView):
         context['entity'] = 'Roles'
         context['list_url'] = self.success_url
         return context
-
-
-class PermissionListView(ValidatePermissionRequiredMixin, ListView):
-    model = Permission
-    template_name = 'permissions/list.html'
-    permission_required = 'view_permission'
-    url_redirect = reverse_lazy('home')
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'search':
-                data = []
-                data = list(Permission.objects.values())
-                grupos = Group.objects.all()
-                # for i in grupos:
-                #
-                #     data.append(i.id,)
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Permisos'
-        context['create_url'] = reverse_lazy('group_create')
-        context['list_url'] = reverse_lazy('permission_list')
-        context['entity'] = 'Permisos'
-        return context
+=======
+from .Views.views_permission import *
+from .Views.views_groups import *
+>>>>>>> origin/main

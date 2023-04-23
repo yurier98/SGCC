@@ -569,7 +569,7 @@ ko.utils = (function () {
             var result = [];
             for (var i = 0, j = arrayLikeObject.length; i < j; i++) {
                 result.push(arrayLikeObject[i]);
-            };
+            }
             return result;
         },
 
@@ -590,7 +590,7 @@ ko.utils = (function () {
             for (var i = fields.length - 1; i >= 0; i--) {
                 if (isMatchingField(fields[i]))
                     matches.push(fields[i]);
-            };
+            }
             return matches;
         },
 
@@ -2588,12 +2588,12 @@ ko.exportSymbol('pureComputed', ko.pureComputed);
                 visitorCallback(propertyName);
             }
         }
-    };
+    }
 
     function objectLookup() {
         this.keys = [];
         this.values = [];
-    };
+    }
 
     objectLookup.prototype = {
         constructor: objectLookup,
@@ -3760,7 +3760,7 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
             'shouldBindDescendants': shouldBindDescendants,
             'bindingContextForDescendants': shouldBindDescendants && contextToExtend
         };
-    };
+    }
 
     ko.storedBindingContextForNode = function (node) {
         var bindingInfo = ko.utils.domData.get(node, boundElementDomDataKey);
@@ -4537,7 +4537,7 @@ ko.bindingHandlers['checked'] = {
                 }
                 ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'checked', elemValue, true);
             }
-        };
+        }
 
         function updateView() {
             // This updates the view value from the model value.
@@ -4557,7 +4557,7 @@ ko.bindingHandlers['checked'] = {
                 // Otherwise, being checked means that the checkbox or radio button's value corresponds to the model value
                 element.checked = (checkedValue() === modelValue);
             }
-        };
+        }
 
         var isCheckbox = element.type == "checkbox",
             isRadio = element.type == "radio";

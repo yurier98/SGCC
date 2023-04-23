@@ -1,7 +1,7 @@
 from datetime import date
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-
 # Create your views here.
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -14,12 +14,24 @@ from apps.order.models import Order
 from apps.core.models import Manifestation
 from apps.core.forms import ManifestationForm
 
-class HomePage(TemplateView):
-    template_name = 'index.html'
 
-    # cantProductos = Product.objects.all().count()
-    # totalLoan = Loan.objects.all().count()
-    # loanpendiente = Loan.objects.all().filter(state='PR').count()
+class HomePage(LoginRequiredMixin, TemplateView):
+    template_name = "index_default.html"
+
+    def get_template_names(self):
+        if self.request.user.is_authenticated:
+            if self.request.user.groups.filter(name='Administradores').exists():
+                template_name = 'admin_index.html'
+            elif self.request.user.groups.filter(name='Tecnicos').exists():
+                template_name = 'tecnicos_index.html'
+            elif self.request.user.groups.filter(name='Superusuario').exists():
+                template_name = 'superuser_index.html'
+            else:
+                template_name = 'unknown_group_index.html'
+        else:
+            template_name = 'anonymous_index.html'
+
+        return [template_name]
 
     def get_context_data(self, **kwargs):
         context = super(HomePage, self).get_context_data(**kwargs)
@@ -36,6 +48,19 @@ class HomePage(TemplateView):
         context['orderPendiente'] = Order.objects.all().filter(state='Pendiente').count()
         context['loanFaltantes'] = cont
         return context
+
+
+def custom_permission_denied_view(request, exception=None):
+    '''
+    Estamos obteniendo la URL de la página anterior usando request.META.get('HTTP_REFERER')
+    y guardándola en la variable referer. Luego, estamos creando un diccionario de contexto
+    que incluye la variable referer y pasándolo a la función render.
+    '''
+    referer = request.META.get('HTTP_REFERER')
+    context = {
+        'referer': referer,
+    }
+    return render(request, 'error/403.html', context, status=403)
 
 
 ####################Vistas de Manifestación##################

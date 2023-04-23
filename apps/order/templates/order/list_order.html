@@ -34,12 +34,17 @@
                                     </form>
                                 </div>
                                 <!--//col-auto-->
-                                <div class="col-auto">
-                                    <a href="{{ create_url }}" class="create btn app-btn-primary">
-                                        <i class="bi bi-plus-circle"></i> Hacer un pedido
-                                    </a>
-                                </div>
-                                <!--//col-auto-->
+
+                                {% if request.user|has_group:"tecnico" %}
+
+                                {% else %}
+                                    <div class="col-auto">
+                                        <a href="{{ create_url }}" class="create btn app-btn-primary">
+                                            <i class="bi bi-plus-circle"></i> Hacer un pedido
+                                        </a>
+                                    </div><!--//col-auto-->
+                                {% endif %}
+
                             </div>
                             <!--//row-->
                         </div>
@@ -152,7 +157,8 @@
                                                             <span>{{ object.created |date:"j F, Y" }}</span>
                                                             <span class="note">{{ object.created|date:' H:i' }}</span>
                                                         </td>
-                                                        <td class="cell">{{ object.description | truncatewords_html:30 }}</td>
+                                                        <td class="cell">
+                                                            {{ object.description | truncatewords_html:30 }}</td>
                                                         <td class="cell">
                                                             <span>{{ object.start_date |date:"j F, Y" }}</span>
                                                         </td>
@@ -212,7 +218,8 @@
                                                             <span>{{ object.created |date:"j F, Y" }}</span>
                                                             <span class="note">{{ object.created|date:' H:i' }}</span>
                                                         </td>
-                                                        <td class="cell">{{ object.description | truncatewords_html:30 }}</td>
+                                                        <td class="cell">
+                                                            {{ object.description | truncatewords_html:30 }}</td>
                                                         <td class="cell">
                                                             <span>{{ object.start_date |date:"j F, Y" }}</span>
                                                         </td>
@@ -270,7 +277,8 @@
                                                             <span>{{ object.created |date:"j F, Y" }}</span>
                                                             <span class="note">{{ object.created|date:' H:i' }}</span>
                                                         </td>
-                                                        <td class="cell">{{ object.description | truncatewords_html:30 }}</td>
+                                                        <td class="cell">
+                                                            {{ object.description | truncatewords_html:30 }}</td>
                                                         <td class="cell">
                                                             <span>{{ object.start_date |date:"j F, Y" }}</span>
                                                         </td>

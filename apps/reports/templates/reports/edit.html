@@ -34,7 +34,7 @@
         var report = rb.getReport();
 
         // console.log(JSON.stringify(report));
-        $.ajax("{% url 'report:report_save' report_type %}", {
+        $.ajax("{% url 'reports:report_save' report_type %}", {
             data: JSON.stringify(report),
             type: "PUT", contentType: "application/json",
             success: function (data) {
@@ -50,7 +50,7 @@
 
     $(document).ready(function () {
         rb = $('#reportbro').reportBro({
-            reportServerUrl: "{% url 'report:report_run' %}",
+            reportServerUrl: "{% url 'reports:report_run' %}",
             saveCallback: saveReport
         });
         var report = {{ report_definition }};

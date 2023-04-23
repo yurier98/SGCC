@@ -1,9 +1,9 @@
 # Django
-from .models import Loan, LoanProduct
-from apps.order.models import Order, OrderProduct
-from django.dispatch import Signal
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from .models import Loan, LoanProduct
+# from apps.order.models import Order, OrderProduct
+# from django.dispatch import Signal
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 
 
 # def metodo(self, order, orderproduct_set):

@@ -10,6 +10,7 @@ from apps.reports.forms import ReportForm
 from apps.inventory.filters import ProductFilter
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
 from apps.reports.report import report
+from apps.reports.utils import convert_to_64
 
 
 class ReportLoanView(ValidatePermissionRequiredMixin, FormView):
@@ -90,7 +91,8 @@ def exportProductPDF(request):
         products_list.append({
             'name': product.name,
             'category': product.category.name,
-            'state': product.state
+            'state': product.state,
+            'stock': product.stock
         })
 
     # person = Person.objects.filter(id=1).first()
