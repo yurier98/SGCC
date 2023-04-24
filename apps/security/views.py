@@ -1,10 +1,9 @@
-<<<<<<< HEAD
 from django.contrib.auth.models import Group, Permission
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from ..Forms.groups_forms import GroupsForm
-from ..Mixin.mixins import ValidatePermissionRequiredMixin
+from .Forms.groups_forms import GroupsForm
+from .Mixin.mixins import ValidatePermissionRequiredMixin
 
 
 # Create your views here.
@@ -145,7 +144,7 @@ class GroupDeleteView(ValidatePermissionRequiredMixin, DeleteView):
         context['entity'] = 'Roles'
         context['list_url'] = self.success_url
         return context
-=======
+
 from .Views.views_permission import *
 from .Views.views_groups import *
->>>>>>> origin/main
+
