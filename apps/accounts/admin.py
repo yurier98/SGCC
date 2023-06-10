@@ -6,7 +6,7 @@ from .models import UserProfile
 class PerfileAdmin(admin.ModelAdmin):
     search_fields = ('username'),
     ordering = ['username']
-    list_filter = ('area',)
+    list_filter = ['area', 'groups']
 
     # filter_horizontal = 'groups', 'permissions', 'any_other_m2m_field'
     # filter_horizontal = 'groups'

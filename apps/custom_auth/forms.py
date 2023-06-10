@@ -1,32 +1,48 @@
+from django.contrib.auth import authenticate
 from django.forms import Form
 from django import forms
-
+from widget_tweaks.templatetags.widget_tweaks import render_field, add_class
 from apps.accounts.models import UserProfile
+from django.contrib.auth.forms import AuthenticationForm
 
 
-class LoginForm(Form):
-    username = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control signin-email',
-                'id': 'signin-email',
-                'name': 'signin-email',
-                'type': 'text',
-                'placeholder': 'usuario'
-            }
-        )
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'form-control signin-password',
-                'id': 'signin-password',
-                'name': 'signin-password',
-                'type': 'password',
-                'placeholder': 'contraseña'
-            }
-        )
-    )
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(label='Usuario', required=False,
+                               widget=forms.TextInput(attrs={
+                                   'class': 'form-control ',
+                                   'placeholder': 'Ingrese su usuario',
+                                   'autocomplete': 'off',
+                               }))
+    password = forms.CharField(label='Contraseña', required=False,
+                               widget=forms.TextInput(attrs={
+                                   'class': 'form-control ',
+                                   'placeholder': 'Ingrese la contraseña',
+                                   'type': 'password',
+                                   'autocomplete': 'off',
+                               }))
+
+    # clean validation
+    def clean(self):
+        super(CustomLoginForm, self).clean()
+
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if not username:
+            self._errors['username'] = self.error_class([
+                'Por favor ingrese un nombre de usuario.'])
+            self.fields['username'].widget.attrs.update({'class': 'form-control is-invalid'})
+
+        if not password:
+            self._errors['password'] = self.error_class([
+                'Por favor ingrese la contraseña.'])
+            self.fields['password'].widget.attrs.update({'class': 'form-control is-invalid'})
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+
+        return self.cleaned_data
+
 
 
 class ResetPasswordForm(Form):

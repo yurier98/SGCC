@@ -11,39 +11,53 @@
             <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
                 <div class="d-flex flex-column align-content-end">
                     <div class="app-auth-body mx-auto">
-                        <div class="app-auth-branding mb-4"><a class="app-logo" href="index.html"><img
+                        <div class="app-auth-branding mb-4"><a class="app-logo" href="{% url 'home' %}"><img
                                 class="logo-icon me-2" src="{% static 'assets/images/app-logo.svg' %}" alt="logo"></a>
                         </div>
                         <h2 class="auth-heading text-center mb-5">Iniciar sesión en el sistema</h2>
                         <div class="auth-form-container text-start">
-                            <form class="auth-form login-form" role="form" method="post" action="">
+
+
+                            <form class="auth-form login-form needs-validation" novalidate role="form" method="post"
+                                  action="">
                                 {% csrf_token %}
-                                <div class="email mb-3">
-                                    <label class="sr-only" for="signin-email">Usuario</label>
-                                    {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su usuario' }}
-                                </div><!--//form-group-->
-                                <div class="password mb-3">
-                                    <label class="sr-only" for="signin-password">Contraseña</label>
-                                    {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su contraseña' }}
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                                {% endif %}
+                                <div class="mb-3">
+                                    {% render_field form.username class+="form-control" %}
+                                    {% if form.username.errors %}
+                                        {% for error in form.username.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {% render_field form.password class+="form-control" %}
+                                    {% if form.password.errors %}
+                                        {% for error in form.password.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
 
-                                    <div class="extra mt-3 row justify-content-between">
-                                        <div class="col-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                       id="RememberPassword">
-                                                <label class="form-check-label" for="RememberPassword">
-                                                    Recuerdame
-                                                </label>
-                                            </div>
-                                        </div><!--//col-6-->
-                                        <div class="col-6">
-                                            <div class="forgot-password text-end">
-                                                <a href="{% url 'reset_password' %}">¿Olvidaste la contraseña?</a>
-                                            </div>
-                                        </div><!--//col-6-->
-                                    </div><!--//extra-->
+                                </div>
+                                <div class="extra mt-3 row justify-content-between">
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                   id="RememberPassword">
+                                            <label class="form-check-label" for="RememberPassword">
+                                                Recuerdame
+                                            </label>
+                                        </div>
+                                    </div><!--//col-6-->
+                                    <div class="col-6">
+                                        <div class="forgot-password text-end">
+                                            <a href="{% url 'reset_password' %}">¿Olvidaste la contraseña?</a>
+                                        </div>
+                                    </div><!--//col-6-->
+                                </div><!--//extra-->
 
-                                </div><!--//form-group-->
                                 <div class="text-center">
                                     <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Iniciar
                                         sesión
@@ -51,12 +65,10 @@
                                 </div>
                             </form>
 
-
                         </div><!--//custom_auth-form-container-->
 
-                    </div><!--//custom_auth-body-->
 
-{#                    {% include 'includes/footer.html' %}#}
+                    </div><!--//custom_auth-body-->
 
                     <footer class="app-auth-footer">
                         <div class="container text-center py-3">
@@ -85,4 +97,6 @@
 
 {% endblock %}
 
+{% block javascript %}
 
+{% endblock %}
