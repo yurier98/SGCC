@@ -1,12 +1,12 @@
 from contextlib import nullcontext
-
 from django.db import models
 from django.db.models import ImageField
 from django.forms import model_to_dict
 from django.urls import reverse
-
-# Create your models here.
 from config.settings import base
+from apps.nomenclatures.models import Category
+# Create your models here.
+
 
 
 
@@ -24,25 +24,6 @@ class ProductAttribute(models.Model):
     def __str__(self):
         return self.atributo
 
-
-class Category(models.Model):
-    name = models.CharField("Categoría del producto", max_length=50, unique=True)
-
-    # slug = models.SlugField(max_length=200, default='null', db_index=True, unique=True)
-
-    class Meta:
-       # ordering = 'name'
-        verbose_name = 'Categoría'
-        verbose_name_plural = 'Categorías'
-
-    def __str__(self):
-        return self.name
-
-    # def get_absolute_url(self):
-    #     return reverse('shop:product_list_by_category', args=[self.slug])
-    def toJSON(self):
-        item = model_to_dict(self)
-        return item
 
 
 class Product(models.Model):

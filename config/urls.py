@@ -31,6 +31,7 @@ urlpatterns = [
 
     path('', include('apps.core.urls')),
     path('', include('apps.custom_auth.urls')),
+    path('nomenclatures/', include('apps.nomenclatures.urls')),
     path('accounts/', include('apps.accounts.urls')),
 
     path('inventory/', include('apps.inventory.urls', namespace='inventory')),

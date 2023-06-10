@@ -120,6 +120,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
     permission_required = 'add_order'
 
     disallowed_group = 'tecnico'
+
     error_url = 'order_all_list'
 
     def post(self, request, *args, **kwargs):
