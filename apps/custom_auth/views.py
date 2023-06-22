@@ -12,26 +12,39 @@ from django.views.generic import RedirectView, FormView
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+from django.contrib.auth import authenticate, login
 from apps.accounts.models import UserProfile
 from config.settings import base as settings
-from .forms import LoginForm, ResetPasswordForm, ChangePasswordForm
+from .forms import CustomLoginForm, ResetPasswordForm, ChangePasswordForm
+
 
 # Create your views here.
 
-
 class LoginFormView(LoginView):
     template_name = 'login/login.html'
+    form_class = CustomLoginForm
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(settings.LOGIN_REDIRECT_URL)
         return super().dispatch(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(self.request, user)
+            return redirect(settings.LOGIN_REDIRECT_URL)
+        else:
+            form.add_error(None, 'Por favor verifique sus credenciales.')
+            return self.form_invalid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Iniciar sesión'
         return context
+
 
 
 class LogoutView(RedirectView):

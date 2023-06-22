@@ -5,7 +5,7 @@ from django.forms import model_to_dict
 # Create your models here.
 from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
-from apps.core.models import Manifestation
+from apps.nomenclatures.models import Manifestation
 
 
 

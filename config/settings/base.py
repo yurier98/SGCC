@@ -45,6 +45,7 @@ LOCAL_APPS = [
     # 'justshipto_core.accounts.apps.AccountsConfig',
     'apps.accounts',
     'apps.custom_auth',
+    'apps.nomenclatures',
     'apps.inventory',
     'apps.loan',
     'apps.order',
