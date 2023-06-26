@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     'widget_tweaks',
     'bootstrap_modal_forms',
     'pwa',
+    'django_extensions',
     # "view_breadcrumbs",
     # 'django_extensions',
 ]
