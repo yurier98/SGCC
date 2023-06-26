@@ -8,7 +8,6 @@ from apps.inventory.models import Product
 from apps.nomenclatures.models import Manifestation
 
 
-
 class Order(models.Model):
     """Pedido model. """
 
@@ -17,7 +16,7 @@ class Order(models.Model):
         ('Aprobado', 'Aprobado'),
         ('No Aprobado', 'No Aprobado'),
     )
-    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
