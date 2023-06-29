@@ -1,4 +1,6 @@
 from django.urls import path
+from django.urls import path
+from django.contrib.auth.views import LogoutView
 from . import views
 from django.urls import path
 
@@ -7,6 +9,7 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
 
     # path('json/', views.json, name='json'),
+    path('groups', views.GroupListView.as_view(), name='groups_list'),
 
     #################  Roles   #####################################
     path('rols', views.GroupListView.as_view(), name='group_list'),

@@ -9,18 +9,6 @@ from ..Mixin.mixins import ValidatePermissionRequiredMixin
 # Create your views here.
 
 
-def json(request, self=None):
-    # data = list(Permission.objects.values())
-    # data = UserProfile.toJSON(self)
-    data = []
-    perm = Permission.objects.all()
-    for i in perm:
-        data.append(i)
-        print(data)
-
-    return JsonResponse(data, safe=False)
-
-
 class GroupListView(ValidatePermissionRequiredMixin, ListView):
     model = Group
     template_name = 'groups/list.html'

@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
-from ..security.views import json
+from apps.security.views import GroupListView, json
+
+
+
+
 
 
 urlpatterns = [
