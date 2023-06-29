@@ -51,36 +51,6 @@
                         <div class="app-card-body px-4 w-100">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
-                                            <div class="app-card-header p-2 border-bottom-0">
-                                                <h3 class="app-card-title">
-                                                    <div class="app-icon-holder"><i class="fas fa-boxes"></i></div>
-                                                    Artículos encargados
-                                                </h3>
-                                                <hr>
-                                            </div>
-                                            <div class="app-card-body">
-                                                <div class="table-responsive p-2">
-                                                    <table class="table app-table-hover mb-0 text-left "
-                                                           id="tblProducts">
-                                                        <thead>
-                                                        <tr>
-                                                            <th class="cell">Imagen</th>
-                                                            <th class="cell">Producto</th>
-                                                            <th class="cell">Categoría</th>
-                                                            <th class="cell">Cantidad disponible</th>
-                                                            <th class="cell">Cantidad deseada</th>
-                                                            <th class="cell">Estado</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div><!--//app-card-->
-                                    </div>
                                     <div class="col-lg-4">
                                         <div class="app-card shadow-sm mb-5 align-items-start">
                                             <div class="app-card-header p-3 border-bottom-0">
@@ -173,7 +143,8 @@
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Rango de fecha </strong>
                                                             </div>
-                                                            <div class="item-data"> {{ object.start_date |date:"D d M Y" }}
+                                                            <div class="item-data">
+                                                                {{ object.start_date |date:"D d M Y" }}
                                                                 - {{ object.end_date |date:"D d M Y" }}</div>
                                                         </div><!--//col-->
 
@@ -223,7 +194,7 @@
                                                         </div><!--//col-->
                                                         <div class="col text-end">
 
-                                                            {% if request.user|has_group:"Técnico" %}
+                                                            {% if request.user|has_group:"tecnico" %}
                                                                 {% if object.state == 'Pendiente' %}
                                                                     <div class="btn-group">
                                                                         <button type="button"
@@ -254,6 +225,37 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-lg-8">
+                                        <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
+                                            <div class="app-card-header p-2 border-bottom-0">
+                                                <h3 class="app-card-title">
+                                                    <div class="app-icon-holder"><i class="fas fa-boxes"></i></div>
+                                                    Artículos encargados
+                                                </h3>
+                                                <hr>
+                                            </div>
+                                            <div class="app-card-body">
+                                                <div class="table-responsive p-2">
+                                                    <table class="table app-table-hover mb-0 text-left "
+                                                           id="tblProducts">
+                                                        <thead>
+                                                        <tr>
+                                                            <th class="cell">Imagen</th>
+                                                            <th class="cell">Producto</th>
+                                                            <th class="cell">Categoría</th>
+                                                            <th class="cell">Cantidad disponible</th>
+                                                            <th class="cell">Cantidad deseada</th>
+                                                            <th class="cell">Estado</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div><!--//app-card-->
+                                    </div>
+
 
                                 </div>
                             </div>
@@ -265,11 +267,24 @@
 
                                 </div>
                                 <div class="col-auto">
-                                    <button type="submit" class="btn app-btn-primary btn-flat">
-                                        <i class="fas fa-save"></i> Guardar registro
-                                    </button>
+                                    {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
+                                    {% if object.state == 'Pendiente' %}
+                                        <a href="{% url 'order_update' object.pk %} "
+                                           class="btn app-btn-primary btn-flat">
+                                            Editar <i class="fas fa-pencil"></i>
+                                        </a>
+                                    {% endif %}
+
+
+
+                                    {% if next_object_url %}
+                                        <a href="{{ next_object_url }}" class="btn app-btn-secondary btn-flat">
+                                            Siguiente <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    {% endif %}
+
                                     <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
-                                        <i class="fas fa-times"></i> Cancelar
+                                        Cancelar <i class="fas fa-times"></i>
                                     </a>
                                 </div>
                             </div>

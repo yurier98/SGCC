@@ -69,6 +69,7 @@ class Update(ValidatePermissionRequiredMixin, UpdateView):
     template_name = 'inventory/editar.html'
     success_message = 'El producto se ha actualizado con exito'
     success_url = reverse_lazy('inventory:inventory')
+    permission_required = 'inventory.add_product'
 
 
 class Delete(SuccessMessageMixin, BSModalDeleteView):

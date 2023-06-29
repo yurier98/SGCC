@@ -1,0 +1,88 @@
+/*!
+ *  Drag&Drog file #####################################
+ */
+
+.avatar-4x3 {
+    position: relative;
+    display: inline-block;
+    width: 1.3333333333rem;
+    height: auto;
+    border-radius: 0;
+
+}
+
+.me-2 {
+    margin-right: .5rem !important;
+}
+
+
+/*#datatableSearch {*/
+/*  border: none;*/
+/*  border-bottom: 1px solid #ccc;*/
+/*  outline: none;*/
+/*}*/
+/*.input-group-prepend {*/
+/*  border: none;*/
+/*  background-color: transparent;*/
+/*    color: #747f94;*/
+/*}*/
+
+
+.input-group-prepend {
+    color: #747f94;
+    background-color: transparent;
+    border: none;
+    width: 40px; /* Ancho fijo del elemento */
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0;
+}
+
+#datatableSearch {
+    border: none;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0;
+    outline: none;
+    width: calc(100% - 40px); /* Ancho del elemento restante */
+}
+
+.app-card {
+    border-radius: 7px;
+}
+
+.dropdown-menu {
+    border-color: #dee2e6;
+    border-radius: 7px;
+}
+
+
+.app-btn-outline-danger {
+    color: #EE5D58;
+    border-color: #EE5D58;
+}
+
+.app-btn-outline-danger:hover {
+    color: #fff;
+    border-color: #EE5D58;
+    background: #EE5D58;
+}
+
+/*.thead-light {*/
+/*    background: rgba(231, 234, 243, 0.7);*/
+/*    color: #747f94;*/
+/*    border: #0a53be;*/
+
+/*    border-bottom: .0625rem solid rgba(231, 234, 243, .7);*/
+/*    border-top: .0625rem solid rgba(231, 234, 243, .7);*/
+
+/*}*/
+
+/*.table tr {*/
+/*    color: #677788;*/
+/*    color: #fff;*/
+/*    border-bottom: 1px solid #EE5D58;*/
+/*    border-top: 1px solid #EE5D58;*/
+/*}*/
+
+/*!
+ *  Drag&Drog file #####################################
+ */
