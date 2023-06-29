@@ -1,0 +1,42 @@
+<!-- Mostrar Pedidos aquí -->
+{% if page_obj %}
+  {% with offset=page_obj.start_index|add:0 %}
+
+      <tr>
+{#   <td>{{ forloop.counter }}</td>#}
+       <td>{{ offset|add:forloop.counter0 }}  </td>
+
+    <td class="cell">
+        <span>{{ object.created |date:"j F, Y" }}</span>
+        <span class="note">{{ object.created|date:' H:i' }}</span>
+    </td>
+    <td class="cell">
+        {{ object.description | truncatewords_html:30 }}</td>
+    <td class="cell">
+        <span>{{ object.start_date |date:"j F, Y" }}</span>
+    </td>
+    <td class="cell">
+        <span>{{ object.end_date |date:"j F, Y" }}</span>
+    </td>
+    <td class="cell">
+        <span class="truncate">{{ object.manifestation }}</span>
+    </td>
+    <td class="cell">
+        {% if object.state == 'Pendiente' %}
+            <span class="badge bg-warning"> Pendiente </span>
+        {% elif object.state == 'Aprobado' %}
+            <span class="badge bg-success"> Aprobado </span>
+        {% else %}
+            <span class="badge bg-danger"> No Aprobado </span>
+        {% endif %}
+    </td>
+    <td class="cell">
+        {% include 'order/_app_li_actions.html' %}
+    </td>
+</tr>
+
+  {% endwith %}
+{% endif %}
+
+
+

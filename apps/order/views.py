@@ -8,11 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 # Create your views here.
 from django.template.loader import get_template
+from django.views.generic.detail import SingleObjectMixin
 from django_filters.views import FilterView
 from weasyprint import HTML, CSS
-from django.urls import reverse_lazy, resolve
+from django.urls import reverse_lazy, resolve, reverse
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin, GroupRequiredMixin, \
@@ -27,10 +29,13 @@ from apps.notification.signals import notificar
 
 
 ####################Vistas de Pedidos##################
-class OrderListAllView(GroupRequiredMixin,ExistsInventaryMixin,  FilterView):
+class OrderListAllView(GroupRequiredMixin, ExistsInventaryMixin, FilterView, ListView):
     """ Return all Order"""
-    filterset_class = OrderFilter
+    model = Order
     template_name = 'order/list_order.html'
+    paginate_by = 4
+
+    filterset_class = OrderFilter
     # permission_required = 'order.view_all_order'
     url_redirect = reverse_lazy('order_list')
     group_names = ['tecnico', 'admin']
@@ -47,14 +52,17 @@ class OrderListAllView(GroupRequiredMixin,ExistsInventaryMixin,  FilterView):
         return context
 
 
-class OrderListView(ExistsInventaryMixin, LoginRequiredMixin, FilterView):
-    """ Return all Order"""
+class OrderListView(GroupNotAllowedMixin, ExistsInventaryMixin, LoginRequiredMixin, FilterView):
+    """ Return all Order of usuario"""
     filterset_class = OrderFilter
-    paginate_by = 2
+    paginate_by = 4
     is_paginated = True
     template_name = 'order/list_order.html'
     permission_required = 'order.view_order'
     url_redirect = reverse_lazy('order_list')
+
+    disallowed_group = 'tecnico'
+    error_url = 'order_all_list'
 
     # permission_required = 'view_order'
     # Modificar el metodo getQuery para hacer una comprobacion de q sea los pedidos del usuario autenticado
@@ -120,7 +128,6 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
     permission_required = 'add_order'
 
     disallowed_group = 'tecnico'
-
     error_url = 'order_all_list'
 
     def post(self, request, *args, **kwargs):
@@ -189,13 +196,15 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
         return context
 
 
-class OrderUpdateView(LoginRequiredMixin, UpdateView):
+class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
     model = Order
     form_class = OrderForm
     template_name = 'order/create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
     permission_required = 'change_order'
+    disallowed_group = 'tecnico'
+    error_url = 'order_all_list'
 
     def get_form(self, form_class=None):
         instance = self.get_object()
@@ -280,7 +289,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Aprobación del pedido'
+        context['title'] = 'Editar pedido'
         context['entity'] = 'Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
@@ -288,7 +297,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class OrderDetailView(LoginRequiredMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
     model = Order
     template_name = 'order/detail.html'
     success_url = reverse_lazy('order_list')
@@ -304,13 +313,47 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
             data.append(item)
         return json.dumps(data)
 
+    def get_next_object(self):
+        # Obtener el objeto actual
+        object = self.get_object()
+
+        # Obtener una lista de objetos con estado 'pendiente'
+        objects = Order.objects.filter(state='Pendiente').order_by('-created')
+
+        # Obtener el índice del objeto actual en la lista
+        current_index = 0
+        for i, obj in enumerate(objects):
+            if obj.id == object.id:
+                current_index = i
+                break
+        # Obtener el siguiente objeto en la lista
+        next_object = None
+        if current_index < len(objects) - 1:
+            next_object = objects[current_index + 1]
+
+        return next_object
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Detalles del pedido'
         context['entity'] = 'Pedidos'
-        context['list_url'] = self.success_url
-        context['action'] = 'edit'
+        # context['action'] = 'edit'
         context['products'] = self.get_details_product()
+
+        # context['list_url'] = self.success_url
+        user = self.request.user
+        if user.groups.filter(name='tecnico').exists():
+            context['list_url'] = reverse('order_all_list')
+
+            # Obtener el próximo objeto con estado 'pendiente'
+            next_object = self.get_next_object()
+            # Agregar la URL del próximo objeto al contexto
+            if next_object:
+                context['next_object_url'] = reverse('order_detail', args=[next_object.pk])
+
+        else:
+            context['list_url'] = reverse('order_list')
+
         return context
 
 
@@ -485,13 +528,14 @@ class OrderPdfView(LoginRequiredMixin, View):
 #################### FIN Vistas de Pedido##################
 
 class ApproveView(ValidatePermissionRequiredMixin, View):
-    url_redirect = reverse_lazy('order_all_list')
+    # url_redirect = reverse_lazy('order_all_list')
     permission_required = 'approve_order'
 
     def get(self, request, *args, **kwargs):
         current_url = resolve(request.path_info).url_name
         order = Order.objects.get(pk=self.kwargs['pk'])
         user = order.user
+        prev_url = request.META.get('HTTP_REFERER', reverse('order_all_list'))
         try:
             # if request.user.has_perm('order.approve_order'):
             if request.user.has_perm('order.approve_order'):
@@ -512,4 +556,4 @@ class ApproveView(ValidatePermissionRequiredMixin, View):
 
         except:
             pass
-        return HttpResponseRedirect(reverse_lazy('order_all_list'))
+        return redirect(prev_url)

@@ -20,6 +20,7 @@ var order = {
                 {"data": "cant"},
                 {"data": "state"},
             ],
+            "order": [],
             columnDefs: [
                 {
                     targets: [0],
@@ -32,7 +33,8 @@ var order = {
                 {
                     targets: [-1],
                     class: 'text-center',
-                    orderable: false, render: function (data, type, row) {
+                    orderable: false,
+                    render: function (data, type, row) {
                         if (row.state == 'D') {
                             return '<div class="badge  bg-success">Disponible</div>'
                         }

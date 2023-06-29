@@ -32,6 +32,7 @@
                                             </button>
                                         </div>
                                     </form>
+
                                 </div>
                                 <!--//col-auto-->
 
@@ -70,6 +71,7 @@
                        href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">No
                         Aprobados</a>
                 </nav>
+
                 {% if filter.qs %}
                     <div class="tab-content" id="orders-table-tab-content">
                         <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
@@ -80,6 +82,7 @@
                                         <table class="table app-table-hover mb-0 text-left">
                                             <thead>
                                             <tr>
+                                                <th class="cell">No</th>
                                                 <th class="cell">Fecha de registro</th>
                                                 <th class="cell">Descripción</th>
                                                 <th class="cell">Fecha de inicio</th>
@@ -91,45 +94,22 @@
                                             </thead>
                                             <tbody>
 
-                                            {% for object in filter.qs %}
-
+                                            {% for object in object_list %}
+                                                {% include 'order/row_order.html' %}
+                                              {% empty %}
                                                 <tr>
-                                                    <td class="cell">
-                                                        <span>{{ object.created |date:"j F, Y" }}</span>
-                                                        <span class="note">{{ object.created|date:' H:i' }}</span>
-                                                    </td>
-                                                    <td class="cell">
-                                                        {{ object.description | truncatewords_html:30 }}
-                                                    </td>
-                                                    <td class="cell">
-                                                        <span>{{ object.start_date |date:"j F, Y" }}</span>
-                                                    </td>
-                                                    <td class="cell">
-                                                        <span>{{ object.end_date |date:"j F, Y" }}</span>
-                                                    </td>
-                                                    <td class="cell">
-                                                        <span class="truncate">{{ object.manifestation }}</span>
-                                                    </td>
-                                                    <td class="cell">
-                                                        {% if object.state == 'Pendiente' %}
-                                                            <span class="badge bg-warning"> Pendiente </span>
-                                                        {% elif object.state == 'Aprobado' %}
-                                                            <span class="badge bg-success"> Aprobado </span>
-                                                        {% else %}
-                                                            <span class="badge bg-danger"> No Aprobado </span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td class="cell">
-                                                        {% include 'order/_app_li_actions.html' %}
-                                                    </td>
+                                                    <td colspan="3">No hay pedidos disponibles.</td>
                                                 </tr>
-
                                             {% endfor %}
+
                                             </tbody>
                                         </table>
                                     </div><!--//table-responsive-->
                                 </div><!--//app-card-body-->
                             </div><!--//app-card-->
+
+                            {% include 'includes/app_pagination.html' %}
+
                         </div><!--//tab-pane-->
 
                         <div class="tab-pane fade" id="orders-pending" role="tabpanel"
@@ -150,6 +130,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
+
                                             {% for object in filter.qs %}
                                                 {% if object.state == 'Pendiente' %}
                                                     <tr>
@@ -185,8 +166,8 @@
                                             {% endfor %}
                                             </tbody>
                                         </table>
-                                    </div>
-                                    <!--//table-responsive-->
+
+                                    </div><!--//table-responsive-->
                                 </div>
                                 <!--//app-card-body-->
                             </div>
@@ -309,7 +290,7 @@
                                 </div><!--//app-card-body-->
                             </div><!--//app-card-->
                         </div><!--//tab-pane-->
-                        {#                        {% include 'includes/app_pagination.html' %}#}
+
                     </div><!--//tab-content-->
                 {% else %}
                     <div class="app-card alert alert-dismissible shadow-sm mb-4 border-left-decoration" role="alert">
@@ -331,7 +312,10 @@
                         </div><!--//inner-->
                     </div><!--//app-card-->
                 {% endif %}
+
+
             </div><!--//container-fluid-->
         </div><!--//app-content-->
     </div><!--//app-wrapper-->
+
 {% endblock %}

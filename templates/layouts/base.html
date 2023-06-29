@@ -23,36 +23,36 @@
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
 
     <title>{{ title }}</title>
+
+    <!-- App CSS -->
+    {#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
+    <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <!-- Favicons -->
+    <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <!-- CSS File  -->
+    <link href="{% static 'assets/css/myStyles.css' %}" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
+    {#        <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>#}
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
+    <!-- Sweetalert2 -->
+    <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+    <!-- Jquery Confirm -->
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
+    <script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+    <!-- Moment -->
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+    <!-- Functions -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/functions.js' %}"></script>
+
     {% block stylesheets %}
-        <!-- App CSS -->
-        {#        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">#}
-        <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
-        <link href="{% static 'assets/plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-        <!-- Favicons -->
-        <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
-        <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-        <!-- CSS File  -->
-        <link href="{% static 'assets/css/agregos.css' %}" rel="stylesheet">
-
-        <!-- jQuery -->
-        <script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
-        {#        <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>#}
-        <!-- Bootstrap 4 -->
-        <script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>
-        <script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
-        <!-- Sweetalert2 -->
-        <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
-        <!-- Jquery Confirm -->
-        <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
-        <script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
-        <!-- Moment -->
-        <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
-        <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
-        <!-- Functions -->
-        <script src="{% static 'assets/js/main.js' %}"></script>
-        <script src="{% static 'assets/js/functions.js' %}"></script>
-
-
     {% endblock stylesheets %}
     <!-- Block head -->
     {% block head %}
