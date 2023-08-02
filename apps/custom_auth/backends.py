@@ -1,3 +1,6 @@
+import threading
+from urllib import request
+
 from django_auth_ldap.backend import LDAPBackend, _LDAPUser
 from django.contrib.auth import get_user_model
 import ldap
@@ -14,6 +17,12 @@ Guarde la contraseña del usuario en la base de datos de django, por lo que podr
 el backend de autenticación LDAP está deshabilitado;
 Forzar from_ldap campo a True cuando se crea un usuario de esta manera.
 
+"""
+
+"""
+    Se definen varias configuraciones de autenticación LDAP en la configuración de Django utilizando 
+    settings.AUTH_LDAP_*. Esto incluye la URL del servidor LDAP, el usuario y contraseña para la conexión LDAP, 
+    así como los atributos de usuario a mapear con los campos de usuario en Django.
 """
 
 settings.AUTH_LDAP_SERVER_URI = 'ldap://10.0.0.4'
@@ -59,7 +68,11 @@ settings.AUTH_LDAP_CACHE_TIMEOUT = 3600
 
 
 class MyLDAPBackend(LDAPBackend):
-    """ A custom LDAP authentication backend """
+    """ A custom LDAP authentication backend
+        El MyLDAPBackend es un backend personalizado que extiende el LDAPBackend proporcionado por django_auth_ldap.
+        Este backend anula el método authenticate_ldap_user para guardar la contraseña del usuario en la base de datos
+        de Django después de que la autenticación LDAP tenga éxito.
+        """
 
     def authenticate_ldap_user(self, username, password):
         """ Overrides LDAPBackend.authenticate to save user password in django """
@@ -85,32 +98,56 @@ class MyLDAPBackend(LDAPBackend):
 
         ]
 
-        self.conexion = None
+        # Inicia un hilo de autenticación LDAP
+        auth_thread = threading.Thread(target=LDAPBackend.authenticate_ldap_user, args=(self, username, password))
+        auth_thread.start()
 
-        user = LDAPBackend.authenticate_ldap_user(self, username, password)
+        # Espera hasta 10 segundos para que el hilo de autenticación termine
+        auth_thread.join(timeout=10)
 
-        # If user has successfully logged, save his password in django database
-        if user:
-            # try:
-            #     ent = self.Obtener_Resultado(username)
-            #     print(ent)
-            # except:
-            #     return None
-            # if ent[0]:
-            #     try:
-            #
-            #         perfil = UserProfile(user=user, solapin=self.getSolapin(), nombre=self.getNombre(),
-            #                              apellidos=self.getApellidos(), categoria=self.getCategoria(),
-            #                              area=self.getArea(), foto=self.getFoto())
-            #         perfil.save()
-            #
-            #     except:
-            #         pass
+        # Comprueba si el hilo de autenticación aún está en ejecución (es decir, ha superado el límite de tiempo)
+        if auth_thread.is_alive():
+            # Si el hilo de autenticación LDAP todavía está en ejecución después de 10 segundos, entonces recurre al método de autenticación de Django
+            user = ModelBackend().authenticate(request, username=username, password=password)
+            if user is not None:
+                # Guarda la contraseña en la base de datos de Django si el usuario ha iniciado sesión correctamente
+                user.set_password(password)
+                user.save()
+                return user
+        else:
+            # Si el hilo de autenticación LDAP ha terminado, procede como lo haría normalmente en tu método de autenticación
+            user = LDAPBackend.authenticate_ldap_user(self, username, password)
+            if user:
+                user.set_password(password)
+                user.save()
+                return user
 
-            user.set_password(password)
-            user.save()
+        return None
 
-        return user
+        # self.conexion = None
+        #
+        # user = LDAPBackend.authenticate_ldap_user(self, username, password)
+        # # If user has successfully logged, save his password in django database
+        # if user:
+        #     # try:
+        #     #     ent = self.Obtener_Resultado(username)
+        #     #     print(ent)
+        #     # except:
+        #     #     return None
+        #     # if ent[0]:
+        #     #     try:
+        #     #         perfil = UserProfile(user=user, solapin=self.getSolapin(), nombre=self.getNombre(),
+        #     #                              apellidos=self.getApellidos(), categoria=self.getCategoria(),
+        #     #                              area=self.getArea(), foto=self.getFoto())
+        #     #         perfil.save()
+        #     #     except:
+        #     #         pass
+        #     user.set_password(password)
+        #     user.save()
+        #
+        # return user
+
+
 
     def get_or_create_user(self, username, ldap_user):
         """ Overrides LDAPBackend.get_or_create_user to force from_ldap to True """
@@ -223,7 +260,11 @@ class MyAuthBackend(ModelBackend):
         return MyLDAPBackend in [b.__class__ for b in get_backends()]
 
     def authenticate(self, username, password):
-        """ Overrides ModelBackend to refuse LDAP users if MyLDAPBackend is activated """
+        """ Overrides ModelBackend to refuse LDAP users if MyLDAPBackend is activated
+        Este backend se utiliza para evitar que los usuarios autenticados mediante LDAP inicien sesión si el backend
+        de autenticación LDAP está activado. En otras palabras, solo se permitirá el inicio de sesión para usuarios
+        que no provengan de LDAP si el backend LDAP está activado.
+        """
 
         if self._is_ldap_backend_activated():
             user_model = get_user_model()
