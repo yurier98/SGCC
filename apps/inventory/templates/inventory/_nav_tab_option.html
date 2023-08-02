@@ -1,0 +1,13 @@
+<nav id="orders-table-tab"
+     class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+    <a class="flex-sm-fill text-sm-center nav-link
+                                   {% if request.resolver_match.url_name == 'product_detail' %} active {% endif %}"
+       id="orders-all-tab"
+       href="{% url 'product_detail' object.pk %}" aria-controls="detail-product"
+       aria-selected="true">Detalles del producto</a>
+    <a class="flex-sm-fill text-sm-center nav-link
+                                 {% if request.resolver_match.url_name == 'product_update' %} active {% endif %}"
+       id="orders-all-tab"
+       href=" {% url 'product_update' object.pk %}" aria-controls="detail-product"
+       aria-selected="true"> Editar producto</a>
+</nav>

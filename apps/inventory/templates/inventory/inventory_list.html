@@ -1,5 +1,82 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 {% load widget_tweaks %}
+
+{% block stylesheets %}
+
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block javascript %}
+
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const botonesEliminar = document.querySelectorAll('[id^="eliminar-"]');
+            const modal = $('#modal');
+            const confirmar = $('#confirmar');
+            const cancelar = $('#cancelar');
+            let objetoAEliminar;
+
+            botonesEliminar.forEach(function (boton) {
+                boton.addEventListener('click', function () {
+                    objetoAEliminar = this.parentNode;
+                    modal.removeClass('oculto');
+                });
+            });
+
+            confirmar.on('click', function () {
+                const objetoId = objetoAEliminar.querySelector('[id^="eliminar-"]').id.split('-')[1];
+                $.ajax({
+                    url: '{% url "product_delete" 0 %}'.replace('0', objetoId),
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.eliminado) {
+                            objetoAEliminar.remove();
+                            modal.addClass('oculto');
+                        }
+                    }
+                });
+            });
+
+            cancelar.on('click', function () {
+                modal.addClass('oculto');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $('.select2').select2({
+                theme: "bootstrap4",
+                language: 'es'
+            });
+
+            $.ajax({
+                url: '{% url "inventory_list" %}',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('Productos: ', data);
+                    $.each(data.productos, function (index, producto) {
+                        var html = '<div class="producto-card card">';
+                        html += '<img src="' + producto.imagen + '">';
+                        html += '<h3>' + producto.nombre + '</h3>';
+                        // Agregar aquí más campos que quieras mostrar en la tarjeta
+                        html += '</div>';
+                        $('#productos-container').append(html);
+                    });
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
 
 
 {% block content %}
@@ -22,7 +99,7 @@
                                             {% render_field filter.form.name class="form-control search-docs" placeholder="Buscar" %}
                                         </div>
                                         <div class="col-auto">
-                                            {% render_field filter.form.category class="form-select  w-auto" %}
+                                            {% render_field filter.form.category class="form-select custom-select select2  w-auto" %}
                                         </div>
                                         <div class="col-auto">
                                             {% render_field filter.form.state class="form-select w-auto" %}
@@ -35,7 +112,7 @@
                                     </form>
                                 </div><!--//col-auto-->
                                 <div class="col-auto">
-                                    <a class="create-product btn app-btn-primary" href="{% url 'inventory:create' %}">
+                                    <a class="create-product btn app-btn-primary" href="{% url 'product_create' %}">
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload me-2"
                                              fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
@@ -78,13 +155,13 @@
                         <div class="tab-pane fade show active" id="product-all" role="tabpanel"
                              aria-labelledby="product-all-tab">
                             <div class="row g-4">
-                                {% for object in filter.qs %}
+                                {% for object in object_list %}
                                     <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
                                         <div class="app-card app-card-doc shadow-sm h-100">
                                             <div class="app-card-thumb-holder p-3">
                                                 <div class="app-card-thumb">
                                                     <img class="thumb-image"
-                                                         src="{% url 'home' %}media/{{ object.img }}" alt="">
+                                                         src="{{ object.get_image }}" alt="">
                                                 </div>
                                                 {% if object.state  == 'D' %}
                                                     <span class="badge bg-success"> DISPONIBLE </span>
@@ -92,7 +169,7 @@
                                                     <span class="badge bg-warning"> PRESTADO </span>
                                                 {% endif %}
                                                 <a class="app-card-link-mask"
-                                                   href="{% url 'inventory:update' object.pk %}"></a>
+                                                   href="{% url 'product_detail' object.pk %}"></a>
                                             </div>
                                             <div class="app-card-body p-3 has-card-actions">
 
@@ -150,7 +227,7 @@
                                                                 <span class="badge bg-warning"> PRESTADO </span>
                                                             {% endif %}
                                                             <a class="app-card-link-mask"
-                                                               href="{% url 'inventory:update' object.pk %}"></a>
+                                                               href="{% url 'update' object.pk %}"></a>
                                                         </div>
                                                         <div class="app-card-body p-3 has-card-actions">
 
@@ -200,7 +277,7 @@
                                                 <div class="app-card-thumb-holder p-3">
                                                     <div class="app-card-thumb">
                                                         <img class="thumb-image"
-                                                             src="{% url 'home' %}media/{{ object.img }}" alt="">
+                                                             src="{{ object.img }}" alt="Imagen {{ object.name }}">
                                                     </div>
                                                     {% if object.state  == 'D' %}
                                                         <span class="badge bg-success"> DISPONIBLE </span>
@@ -208,7 +285,7 @@
                                                         <span class="badge bg-warning"> PRESTADO </span>
                                                     {% endif %}
                                                     <a class="app-card-link-mask"
-                                                       href="{% url 'inventory:update' object.pk %}"></a>
+                                                       href="{% url 'update' object.pk %}"></a>
                                                 </div>
                                                 <div class="app-card-body p-3 has-card-actions">
 
@@ -246,24 +323,53 @@
                         </div><!--//tab-pane-->
 
                     </div><!--//tab-content-->
+                    {% include 'includes/app_pagination.html' %}
                 {% else %}
-                    <div class="col-md-6 col-lg-12" data-aos="zoom-in" data-aos-delay="200">
-                        <header class="section-header">
-                            <div class="box">
-                                <h3> Lo sentimos 😢</h3>
-                                <p>No encontramos ningún producto,
-                                    <a href="{% url 'inventory:create' %} " class="text-primary">Registre un
-                                        producto</a>
-                            </div>
-                        </header>
-                    </div>
+
+                    {% include 'includes/_no_data.html' %}
+
                 {% endif %}
 
             </div><!--//container-fluid-->
 
         </div><!--//app-content-->
 
-        {% include 'includes/footer.html' %}
+        {#        {% include 'includes/footer.html' %}#}
     </div><!--//app-wrapper-->
+
+    <div id="productos-container"></div>
+
+{% endblock %}
+
+
+{% block modal %}
+
+    <div class="modal modal-alert position-static d-block bg-secondary py-5" tabindex="-1" role="dialog"
+         id="modalChoice">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-body p-4 text-center">
+                    <h5 class="mb-0">¿Habilitar esta configuración?</h5>
+                    <p class="mb-0">Siempre puedes cambiar de opinión en la configuración de tu cuenta.</p>
+                </div>
+                <div class="modal-footer flex-nowrap p-0">
+                    <button type="button"
+                            class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-right">
+                        <strong>Sí,
+                            habilitar</strong></button>
+                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0"
+                            data-bs-dismiss="modal">No gracias
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="oculto">
+        <div class="contenido">
+            <p>¿Estás seguro que deseas eliminar este objeto?</p>
+            <button id="confirmar">Confirmar</button>
+            <button id="cancelar">Cancelar</button>
+        </div>
+    </div>
 
 {% endblock %}

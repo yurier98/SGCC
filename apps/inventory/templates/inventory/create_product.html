@@ -3,21 +3,23 @@
 {% load widget_tweaks %}
 
 
+{% block stylesheets %}
+    <link href="{% static 'assets/css/drag_drog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
+
 {% block content %}
     <div class="app-wrapper">
-
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
-                <h1 class="app-page-title">Inventario</h1>
+                <h1 class="app-page-title mb-0">{{ entity }}</h1>
                 {% include "includes/_breadcrumbs.html" %}
                 <hr class="mb-4">
-                <div class="row g-4 settings-section">
-                    <div class="col-12 col-md-4">
-                        <h3 class="section-title">Crear producto</h3>
-                        <div class="section-intro">Settings section intro goes here. Lorem ipsum dolor sit amet,
-                            consectetur adipiscing elit. <a href="help.html">Learn more</a></div>
-                    </div>
-                    <div class="col-12 col-md-8">
+                <div class="settings-section row justify-content-lg-center">
+                    <div class="col-md-8">
                         <div class="app-card app-card-settings shadow-sm p-4">
                             <div class="app-card-body">
                                 <form enctype="multipart/form-data" method="post" action=""
@@ -39,14 +41,29 @@
                                         {% render_field form.name class="form-control" type="text" %}
                                         <span class="help-block valid-feedback">{{ form.name.error_messages }}</span>
                                     </div>
+
                                     <div class="col-md-2">
                                         <div class="drop-zone">
                                             <span class="drop-zone__prompt">  <i class="bi bi-card-image"></i></span>
                                             {% render_field form.img class="drop-zone__input" type="file" %}
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label for="" class="form-label">{{ form.img.label }} </label>
+                                            {% render_field form.img type="file" %}
+                                        </div>
+                                    </div>
+
+
                                     <div class="col-md-4">
                                         <label for="" class="form-label">Categoría</label>
+                                        <i class="bi-question-circle text-body ms-1" data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           aria-label="Displayed on public forums, such as Front."
+                                           data-bs-original-title="Displayed on public forums, such as Front."></i>
+
                                         {% render_field form.category class="form-select" placeholder="First Name" type="text" %}
                                     </div>
                                     <div class="col-md-4">
@@ -96,7 +113,8 @@
                                             <button type="submit" class="btn app-btn-primary">Guardar</button>
                                         </div>
                                         <div class="col-auto">
-                                            <a class="btn app-btn-secondary" href="{% url 'inventory:inventory' %}">Cancelar</a>
+                                            <a class="btn app-btn-secondary"
+                                               href="{% url 'inventory_list' %}">Cancelar</a>
                                         </div>
                                     </div>
                                 </form>
@@ -106,7 +124,5 @@
                 </div><!--//row-->
             </div><!--//container-fluid-->
         </div><!--//app-content-->
-
-
     </div><!--//app-wrapper-->
 {% endblock %}

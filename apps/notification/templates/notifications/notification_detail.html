@@ -1,9 +1,14 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
 {% block content %}
     <div class="app-wrapper">
-
         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
             <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
                 <path
@@ -186,5 +191,8 @@
             </div><!--//container-fluid-->
         </div><!--//app-content-->
     </div><!--//app-wrapper-->
+{% endblock %}
+
+{% block modal %}
 
 {% endblock %}
