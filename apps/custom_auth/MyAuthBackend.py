@@ -1,7 +1,7 @@
 from django.contrib.auth import get_backends, get_user_model
 from django.contrib.auth.backends import ModelBackend
 
-from custom_auth import MyLDAPBackend
+from apps.custom_auth import MyLDAPBackend
 
 """
 Backend de autenticación clásica
