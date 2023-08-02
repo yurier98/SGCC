@@ -1,0 +1,336 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+    {#    <link rel="stylesheet" type="text/css"#}
+    {#          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.css"/>  #}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#LoanTabla').DataTable({
+                select: {
+                    style: 'multi'
+                },
+                "order": [],
+                "columnDefs": [
+                    {"orderable": false, "targets": [0, -1]}
+                ],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                },
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+                "isResponsive": false,
+                "isShowPaging": false,
+                "pagination": "datatableWithPaginationPagination",
+
+                "initComplete": function () {
+                    var table = $('#LoanTabla').DataTable();
+                    var buttons = table.buttons([
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5',
+                        'print',
+                        'colvis'
+                    ], {
+                        dropup: true
+                    }).container();
+                    $(buttons).appendTo('#usersExportDropdown+.dropdown-menu');
+                }
+
+
+            });
+
+
+            $('#marcarTodos').click(function () {
+                $('input[name="checkbox[]"]').prop('checked', this.checked);
+                if (this.checked) {
+                    $('#eliminarFilas').show();
+                } else {
+                    $('#eliminarFilas').hide();
+                }
+                $('#datatableCounter').text($('input[name="checkbox[]"]:checked').length);
+                if ($('input[name="checkbox[]"]:checked').length > 0) {
+                    $('#datatableCounterInfo').show();
+                } else {
+                    $('#datatableCounterInfo').hide();
+                }
+            });
+
+            $('input[name="checkbox[]"]').click(function () {
+                if ($('input[name="checkbox[]"]:checked').length > 0) {
+                    $('#eliminarFilas').show();
+                } else {
+                    $('#eliminarFilas').hide();
+                }
+                $('#datatableCounter').text($('input[name="checkbox[]"]:checked').length);
+                if ($('input[name="checkbox[]"]:checked').length > 0) {
+                    $('#datatableCounterInfo').show();
+                } else {
+                    $('#datatableCounterInfo').hide();
+                }
+            });
+
+            $('.eliminarFilas').click(function () {
+                var fila = $(this).closest('tr');
+                var id = fila.find('input[name="checkbox[]"]').val();
+                $('#btnEliminar').attr('data-id', id);
+                $('#confirmarEliminar').modal('show');
+            });
+
+            $('#btnEliminar').click(function () {
+                var id = $(this).attr('data-id');
+                eliminarFila(id);
+                $('#confirmarEliminar').modal('hide');
+            });
+
+
+        });
+
+        function eliminarFilas(id) {
+            $.ajax({
+                url: '/eliminar_fila/' + id + '/',
+                type: 'POST',
+                success: function (data) {
+                    if (data.result == 'ok') {
+                        $('input[name="checkbox[]"][value="' + id + '"]').closest('tr').remove();
+                        $('#marcarTodos').prop('checked', false);
+                        $('#eliminarFilas').hide();
+                        $('#datatableCounterInfo').hide();
+                    } else {
+                        console.log(data.error);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto">
+                                    <form class="table-search-form row gx-1 align-items-center">
+                                        <div class="col-auto">
+                                            <input type="text" id="search-orders" name="searchorders"
+                                                   class="form-control search-orders" placeholder="Buscar">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn app-btn-secondary">Buscar</button>
+                                        </div>
+                                    </form>
+
+                                </div><!--//col-->
+                                <div class="col-auto">
+
+                                    <select class="form-select w-auto">
+                                        <option selected value="option-1">Todos</option>
+                                        <option value="option-2">Esta semana</option>
+                                        <option value="option-3">Este mes</option>
+                                        <option value="option-4">Últimos 3 meses</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <a class="btn app-btn-secondary" href="#">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1"
+                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd"
+                                                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                            <path fill-rule="evenodd"
+                                                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                        </svg>
+                                        Descargar CSV
+                                    </a>
+                                </div>
+                                <div class="col-auto">
+                                    <a class="btn app-btn-primary" href="{{ create_url }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                        </svg>
+                                        Realizar préstamo</a>
+                                </div>
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div><!--//row-->
+
+                {% if object_list %}
+                    <div class="app-card app-card-basic align-items-start shadow-sm">
+
+                        <div class="app-card-header p-3 border-bottom-0">
+                            <div class="row  justify-content-between align-items-center gx-3">
+                                <div class="col-auto">
+                                    <form>
+                                        <!-- Search -->
+                                        <div class="input-group input-group-merge input-group-flush">
+                                            <div class="input-group-prepend input-group-text">
+                                                <i class="bi-search"></i>
+                                            </div>
+                                            <input id="datatableSearch" type="search" class="form-control"
+                                                   placeholder="Search users" aria-label="Search users">
+                                        </div>
+                                        <!-- End Search -->
+                                    </form>
+
+
+                                </div><!--//col-->
+                                <div class="col-auto">
+                                    {% include 'loan/option_loan.html' %}
+                                </div><!--//col-->
+                            </div><!--//row-->
+                            <hr>
+                        </div><!--//app-card-header-->
+
+                        <div class="app-card-body app-card-orders-table px-3">
+                            <div class="table-responsive">
+                                <table id="LoanTabla" class="table app-table-hover mb-0 text-left">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th class="cell"><input type="checkbox" id="marcarTodos"></th>
+                                        <th class="cell">Usuario</th>
+                                        <th class="cell">Facultad</th>
+                                        <th class="cell">Fecha solicitud</th>
+                                        <th class="cell">Fecha de inicio</th>
+                                        <th class="cell">Fecha de devolucion</th>
+                                        <th class="cell">Estado</th>
+                                        <th class="cell">Manifestación</th>
+                                        <th class="cell"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for object in object_list %}
+
+                                        <tr>
+                                            <td class="cell">
+                                                <input type="checkbox" name="checkbox[]" value="{{ object.id }}">
+                                            </td>
+                                            <td class="cell"><span
+                                                    class="truncate">{{ object.order.user.username }}</span>
+                                            </td>
+                                            <td class="cell">{{ object.order.user.area }}</td>
+
+                                            <td class="cell">
+                                                <span>{{ object.order.created |date:"j F, Y" }}</span><span
+                                                    class="note">{{ object.order.created|date:' H:i' }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <span>{{ object.order.start_date |date:"j F, Y" }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <span>{{ object.order.end_date |date:"j F, Y" }}</span>
+                                            </td>
+
+                                            <td class="cell">
+                                                {% if object.state  == 'PR' %}
+                                                    <span class="badge bg-success"> Prestado </span>
+                                                {% elif object.state  == 'PE' %}
+                                                    <span class="badge bg-warning"> Pendiente </span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="cell">{{ object.order.manifestation }}</td>
+                                            <td class="cell"><a class="btn-sm app-btn-secondary"
+                                                                href="#">Ver</a>
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div><!--//table-responsive-->
+                        </div><!--//app-card-body-->
+
+                        <div class="app-card-footer p-4 mt-auto">
+                            <div class="row justify-content-between align-items-center ">
+                                <div class="col-auto">
+
+                                    <!-- Pagination -->
+                                    <div class="d-flex justify-content-center justify-content-sm-end">
+                                        <nav id="datatableWithPaginationPagination"
+                                             aria-label="Activity pagination"></nav>
+                                    </div>
+                                    <!-- End Pagination -->
+
+
+                                </div><!--//col-->
+                                <div class="col-auto">
+                                    {% include 'includes/app_pagination.html' %}
+                                </div><!--//col-->
+                            </div>
+                        </div><!--//app-card-footer-->
+
+                    </div>
+
+                {% else %}
+                    <div class="col-md-6 col-lg-12" data-aos="zoom-in" data-aos-delay="200">
+                        <header class="section-header">
+                            <div class="box">
+                                <h3> Lo sentimos 😢</h3>
+                                <p>Usted no ha reservado aún, haga su priemra reservación en
+                                    <a href="" class="text-primary">Reservar</a>
+                            </div>
+                        </header>
+                    </div>
+                {% endif %}
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+        {% include 'includes/footer.html' %}
+    </div><!--//app-wrapper-->
+{% endblock %}
+
+
+{% block modal %}
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmarEliminar" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar las filas seleccionadas?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnEliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

@@ -1,24 +1,33 @@
 {% extends 'includes/list.html' %}
 {% load static %}
 {% load widget_tweaks %}
-{% block head_list %}
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
     <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
-    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
     <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
     <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
     <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
-    <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
-    <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
     <script src="{% static 'order/js/form.js' %}"></script>
+
+    <script>
+        order.details.products = {{ products|safe }};
+        // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
+    </script>
 {% endblock %}
+
 
 
 {% block content %}
@@ -182,10 +191,10 @@
                                 </div>
                                 <div class="col-auto">
                                     <button type="submit" class="btn app-btn-primary btn-flat">
-                                        <i class="fas fa-save"></i> Guardar registro
+                                        <i class="bi-archive"></i> Guardar registro
                                     </button>
                                     <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
-                                        <i class="fas fa-times"></i> Cancelar
+                                        <i class="bi-x-lg"></i> Cancelar
                                     </a>
                                 </div>
                             </div>
@@ -196,9 +205,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
 
-    <!-- Modal -->
+{% block modal %}
     <div class="modal fade" id="myModalSearchProducts" tabindex="-1" role="dialog"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" data-bs-backdrop="false">
@@ -232,9 +242,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        order.details.products = {{ products|safe }};
-        // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
-    </script>
 {% endblock %}

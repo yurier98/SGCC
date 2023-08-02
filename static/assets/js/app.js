@@ -1,5 +1,10 @@
 'use strict';
 
+/* ===== Enable Bootstrap tooltip (on element  ====== */
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
 /* ===== Enable Bootstrap Popover (on element  ====== */
 
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="popover"]'))
@@ -15,28 +20,28 @@ alertList.forEach(function (alert) {
 
 
 /* ===== Responsive Sidepanel ====== */
-const sidePanelToggler = document.getElementById('sidepanel-toggler'); 
-const sidePanel = document.getElementById('app-sidepanel');  
-const sidePanelDrop = document.getElementById('sidepanel-drop'); 
-const sidePanelClose = document.getElementById('sidepanel-close'); 
+const sidePanelToggler = document.getElementById('sidepanel-toggler');
+const sidePanel = document.getElementById('app-sidepanel');
+const sidePanelDrop = document.getElementById('sidepanel-drop');
+const sidePanelClose = document.getElementById('sidepanel-close');
 
 window.addEventListener('load', function(){
-	responsiveSidePanel(); 
+	responsiveSidePanel();
 });
 
 window.addEventListener('resize', function(){
-	responsiveSidePanel(); 
+	responsiveSidePanel();
 });
 
 
 function responsiveSidePanel() {
     let w = window.innerWidth;
 	if(w >= 1200) {
-	    // if larger 
+	    // if larger
 	    //console.log('larger');
 		sidePanel.classList.remove('sidepanel-hidden');
 		sidePanel.classList.add('sidepanel-visible');
-		
+
 	} else {
 	    // if smaller
 	    //console.log('smaller');
@@ -50,7 +55,7 @@ sidePanelToggler.addEventListener('click', () => {
 		console.log('visible');
 		sidePanel.classList.remove('sidepanel-visible');
 		sidePanel.classList.add('sidepanel-hidden');
-		
+
 	} else {
 		console.log('hidden');
 		sidePanel.classList.remove('sidepanel-hidden');

@@ -3,6 +3,13 @@
 {% load widget_tweaks %}
 {% load groups_tags %}
 
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+
 {% block content %}
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">
@@ -23,6 +30,9 @@
                                         <div class="col-auto">
                                             {% render_field filter.form.manifestation class="form-select w-auto" %}
                                         </div>
+{#                                        <div class="col-auto">#}
+{#                                            {% render_field filter.form.manifestation class="form-select w-auto" %}#}
+{#                                        </div>#}
                                         <div class="col-auto">
                                             {% render_field filter.form.state class="form-select w-auto" %}
                                         </div>
@@ -80,8 +90,8 @@
                                 <div class="app-card-body">
                                     <div class="table-responsive">
                                         <table class="table app-table-hover mb-0 text-left">
-                                            <thead>
-                                            <tr>
+                                            <thead class="">
+                                            <tr class="">
                                                 <th class="cell">No</th>
                                                 <th class="cell">Fecha de registro</th>
                                                 <th class="cell">Descripción</th>
@@ -96,9 +106,11 @@
 
                                             {% for object in object_list %}
                                                 {% include 'order/row_order.html' %}
-                                              {% empty %}
+                                            {% empty %}
                                                 <tr>
-                                                    <td colspan="3">No hay pedidos disponibles.</td>
+                                                    <td colspan="8">
+                                                        {% include 'includes/_no_data.html' %}
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
 
@@ -172,6 +184,7 @@
                                 <!--//app-card-body-->
                             </div>
                             <!--//app-card-->
+                            {% include 'includes/app_pagination.html' %}
                         </div><!--//tab-pane-->
 
                         <div class="tab-pane fade" id="orders-approved" role="tabpanel"
@@ -293,29 +306,11 @@
 
                     </div><!--//tab-content-->
                 {% else %}
-                    <div class="app-card alert alert-dismissible shadow-sm mb-4 border-left-decoration" role="alert">
-                        <div class="inner">
-                            <div class="app-card-body p-3 p-lg-4">
-                                <h3 class="mb-3">{{ request.user.get_short_name }} lo sentimos 😢
-                                </h3>
-                                <div class="row gx-5 gy-3">
-                                    <div class="col-12 col-lg-9">
-                                        <div>No encontramos ningún pedido, desea
-                                            <a href="{% url 'order_create' %} " class="text-primary">hacer un
-                                                pedido.</a>
-                                        </div>
-                                    </div><!--//col-->
-                                </div><!--//row-->
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                            </div><!--//app-card-body-->
-                        </div><!--//inner-->
-                    </div><!--//app-card-->
+                    {% include 'includes/_no_data.html' %}
                 {% endif %}
 
 
             </div><!--//container-fluid-->
         </div><!--//app-content-->
     </div><!--//app-wrapper-->
-
 {% endblock %}

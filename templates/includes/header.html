@@ -1,5 +1,9 @@
 {% load groups_tags %}
 {% load static %}
+{% load notificaciones_tags %}
+{% cantNotify as cant %}
+
+
 <!-- ======= Header ======= -->
 <header id="header" class="app-header fixed-top">
 
@@ -37,7 +41,7 @@
                                     Sú último acceso fue {{ request.user.last_login }}
                                 </span>
                                     <li>
-                                        <a class="dropdown-item" href="{% url 'user_details_profile' %}">
+                                        <a class="dropdown-item" href="{% url 'profile_details' %}">
                                         <span style="font-size: 15px;">
                                             <i class="bi bi-person"></i> Mi Perfil
                                         </span>
@@ -174,8 +178,8 @@
                     <li class="nav-item has-submenu ">
                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                         <a class="nav-link submenu-toggle
-                        {% if request.resolver_match.url_name == 'user_details_profile' %} active
-                        {% elif request.resolver_match.url_name == 'user_update_profile' %} active
+                        {% if request.resolver_match.url_name == 'profile_details' %} active
+                        {% elif request.resolver_match.url_name == 'profile_details' %} active
                         {% endif %}" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-1"
                            aria-expanded="false" aria-controls="submenu-1">
                             <span class="nav-icon">
@@ -198,20 +202,20 @@
                         </a>
                         <!--//nav-link-->
                         <div id="submenu-1" class="collapse submenu submenu-1
-                                            {% if request.resolver_match.url_name == 'user_details_profile' %} show
-                                            {% elif request.resolver_match.url_name == 'user_update_profile' %} show
+                                            {% if request.resolver_match.url_name == 'profile_details' %} show
+                                            {% elif request.resolver_match.url_name == 'profile_details' %} show
                                             {% endif %}" data-bs-parent="#menu-accordion">
 
 
                             <ul class="submenu-list list-unstyled">
                                 <li class="submenu-item ">
-                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_details_profile' %} active {% endif %}"
-                                       href="{% url 'user_details_profile' %}">Ver perfil
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'profile_details' %} active {% endif %}"
+                                       href="{% url 'profile_details' %}">Ver perfil
                                     </a>
                                 </li>
                                 <li class="submenu-item ">
-                                    <a class="submenu-link {% if request.resolver_match.url_name == 'user_update_profile' %} active {% endif %} "
-                                       href="{% url 'user_update_profile' %}">Editar perfil</a>
+                                    <a class="submenu-link {% if request.resolver_match.url_name == 'profile_update' %} active {% endif %} "
+                                       href="{% url 'profile_update' %}">Editar perfil</a>
                                 </li>
                                 <li class="submenu-item">
                                     <a class="submenu-link {% if request.resolver_match.url_name == 'user_change_password' %} active {% endif %}"
@@ -316,6 +320,12 @@
                                 </svg>
                             </span>
                             <span class="nav-link-text">Notificaciones</span>
+
+                            <span class="submenu-arrow">
+                                 {% if cant %}
+                                     <span class="badge bg-danger">{{ cant }}</span>
+                                 {% endif %}
+                            </span>
                         </a>
                         <!--//nav-link-->
                     </li><!--Notificaciones -- //nav-item-->

@@ -26,7 +26,7 @@ handler403 = views.custom_permission_denied_view
 
 urlpatterns = [
 
-    #URL para hacer la app compatible con pwa
+    # URL para hacer la app compatible con pwa
     path('', include('config.pwa1.urls')),
 
     path('', include('apps.core.urls')),
@@ -34,12 +34,12 @@ urlpatterns = [
     path('nomenclatures/', include('apps.nomenclatures.urls')),
     path('accounts/', include('apps.accounts.urls')),
 
-    path('inventory/', include('apps.inventory.urls', namespace='inventory')),
+    path('inventory/', include('apps.inventory.urls')),
     path('loan/', include('apps.loan.urls')),
     path('order/', include('apps.order.urls')),
 
     path('notification/', include('apps.notification.urls')),
-    path('reports/', include(('apps.reports.urls','reports'))),
+    path('reports/', include(('apps.reports.urls', 'reports'))),
 
     path('security/', include('apps.security.urls')),
     path('admin/', admin.site.urls),

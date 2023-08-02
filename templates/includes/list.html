@@ -3,11 +3,10 @@
 {#{% elif request.resolver_match.url_name == 'inventory_report' %}#}
 {% extends 'layouts/base.html' %}
 {#{% endif %}#}
-
-
 {% load static %}
 
-{% block head %}
+{% block stylesheets %}
+
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet"
           href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
@@ -16,9 +15,6 @@
     <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
 
-    {% block head_list %}
-
-    {% endblock %}
 
 {% endblock %}
 

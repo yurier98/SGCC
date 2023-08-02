@@ -3,9 +3,18 @@
 {% load widget_tweaks %}
 
 {% block stylesheets %}
+    <link href="{% static 'assets/css/drag_drog.css' %}" rel="stylesheet">
+
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+
 {% endblock %}
 
 {% block javascript %}
+
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+
     <script>
         {% if form.errors %}
             var errors = '';
@@ -25,6 +34,13 @@
         {% endif %}
 
         $(function () {
+
+            $('.select2').select2({
+                theme: "bootstrap4",
+                language: 'es'
+            });
+
+
             $('form').on('submit', function (e) {
                 e.preventDefault();
                 var parameters = new FormData(this);
@@ -34,22 +50,6 @@
             });
         });
 
-
-        var input = document.getElementById('id_image');
-        var preview = document.getElementById('uploadfile-1-preview');
-        input.addEventListener('change', function () {
-            var file = this.files[0];
-
-            if (file) {
-                var reader = new FileReader();
-
-                reader.addEventListener('load', function () {
-                    preview.setAttribute('src', reader.result);
-                });
-
-                reader.readAsDataURL(file);
-            }
-        });
 
     </script>
 {% endblock %}
@@ -61,29 +61,19 @@
                 <div class="col-auto">
                     <h1 class="app-page-title mb-0">{{ entity }}</h1>
                     {% include "includes/_breadcrumbs.html" %}
+                    <hr class="mb-4">
                 </div><!--//col-auto-->
-                <hr class="mb-4">
 
-                <div class="row g-4 settings-section">
+                <div class=" settings-section row g-4">
                     <div class="col-12 col-md-8">
-                        <nav id="orders-table-tab"
-                             class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-                            <a class="flex-sm-fill text-sm-center nav-link
-                                {% if request.resolver_match.url_name == 'profile_details' %} active {% endif %}"
-                               id="orders-all-tab"
-                               href="{% url 'profile_details' %}" aria-controls="detail-product"
-                               aria-selected="true">Detalles del perfil</a>
-                            <a class="flex-sm-fill text-sm-center nav-link
-                             {% if request.resolver_match.url_name == 'profile_update' %} active {% endif %}"
-                               id="orders-all-tab"
-                               href="{% url 'profile_update' %}" aria-controls="detail-product"
-                               aria-selected="true">Editar perfil</a>
-                        </nav>
+                        {% include 'inventory/_nav_tab_option.html' %}
                         <div class="tab-content" id="orders-table-tab-content">
                             <div class="tab-pane fade show active" id="detail-product" role="tabpanel"
                                  aria-labelledby="detail-product-tab">
+
                                 <div class="app-card app-card-settings shadow-sm p-3">
-                                    <form method="post" action="." enctype="multipart/form-data">
+                                    <form method="post" action="" enctype="multipart/form-data">
+
                                         <div class="app-card-header p-1 border-bottom-0">
                                             <div class="row justify-content-between align-items-center gx-3">
                                                 <div class="col-auto">
@@ -97,16 +87,12 @@
                                                                     <path fill-rule="evenodd"
                                                                           d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
                                                                 </svg>
-
                                                             </div>
                                                         </div>
                                                         <div class="col-auto">
                                                             <h4 class="app-card-title">{{ title }}</h4>
-                                                            <label class="form-label">Nota:</label> Usted solo puede
-                                                            actualizar su foto de perfil y su teléfono.
                                                         </div><!--//col-->
                                                     </div>
-
                                                     <!--//icon-holder-->
                                                 </div><!--//col-->
                                                 <div class="col-auto">
@@ -116,7 +102,7 @@
                                             <hr>
                                         </div><!--//app-card-header-->
                                         <div class="app-card-body ">
-                                            <div class=" settings-form p-3 row g-2">
+                                            <div class=" settings-form row">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="action" value="{{ action }}">
                                                 {% if form.errors %}
@@ -136,52 +122,67 @@
                                                     </div>
                                                 {% endif %}
 
-                                                <div class="col-12">
-                                                    <label class="form-label">{{ form.image.label }}<span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="d-flex align-items-center">
-                                                        <label class="position-relative me-4" for="id_image"
-                                                               title="Replace this pic">
-                                                            <!-- Avatar place holder -->
-                                                            <span class="avatar avatar-xl">
-                                                                <img id="uploadfile-1-preview"
-                                                                     class="avatar-img rounded-circle border border-white border-3 shadow"
-                                                                     src="{{ request.user.get_image }}" alt="">
-                                                            </span>
-                                                        </label>
-                                                        <!-- Upload button -->
-                                                        <label class="btn btn-sm app-btn-primary mb-0"
-                                                               data-toggle="tooltip" data-placement="right"
-                                                               title="Cambiar imagen"
-                                                               for="id_image">Cambiar imagen</label>
-                                                        {% render_field form.image type="file" class="form-control d-none" %}
+                                                <div class="col-md-6 form-group py-2">
+                                                    <label class="form-label">{{ form.name.label }}</label>
+                                                    {% render_field form.name class="form-control" required="required" %}
+                                                </div>
+
+                                                <div class="col-md-6 py-2">
+                                                    <label class="form-label">{{ form.category.label }}</label>
+                                                    {% render_field form.category class="form-select custom-select select2" required="required" %}
+                                                </div>
+
+                                                <div class="col-md-6 py-2">
+                                                    <label for="" class="form-label">{{ form.stock.label }}</label>
+                                                    {% render_field form.stock class="form-control" type="number" name="unidades" min="1" max="50" step="1" required="required" %}
+                                                </div>
+
+                                                <div class="col-md-6 py-2">
+                                                    <label class="form-label">{{ form.state.label }}</label>
+                                                    {% render_field form.state class="form-select select2" required="required" %}
+                                                </div>
+
+
+                                                <div class="col-md-6 row ">
+                                                    <div class="col-auto form-check form-switch m-3">
+                                                        <label class="form-label">{{ form.available.label }}</label>
+                                                        {% render_field form.available class="form-check-input " type="checkbox" required="required" %}
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        {{ form.available.help_text }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 row  ">
+                                                    <div class="col-auto form-check form-switch m-3">
+                                                        <label class="form-label">{{ form.active.label }}</label>
+                                                        {% render_field form.active class="form-check-input " type="checkbox" required="required" %}
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        {{ form.active.help_text }}
                                                     </div>
                                                 </div>
 
-                                                <!-- Phone -->
-                                                <div class="col-md-6">
-                                                    <div class="">
-                                                        <label for="" class="form-label">{{ form.phone.label }} </label>
-                                                        {% render_field form.phone class="form-control" type="text" %}
-                                                    </div>
+                                                <div class="col-md-6 py-2">
+                                                    <label class="form-label">{{ form.img.label }}</label>
+                                                    {% render_field form.img type="file" %}
                                                 </div>
 
-{#                                                <!-- Imagen -->#}
-{#                                                <div class="col-md-6">#}
-{#                                                    <div class="">#}
-{#                                                        <label for="" class="form-label">{{ form.image.label }} </label>#}
-{#                                                        {% render_field form.image type="file" %}#}
-{#                                                    </div>#}
-{#                                                </div>#}
-
+                                                <div class="col-md-6  py-2 ">
+                                                    {#                                                    <label class="form-label">{{ form.img.label }}</label>#}
+                                                    <div class="drop-zone">
+                                                        <span class="drop-zone__prompt">  <i
+                                                                class="bi bi-card-image"></i></span>
+                                                        {% render_field form.img class="drop-zone__input" type="file" %}
+                                                    </div>
+                                                </div>
 
                                             </div>
                                         </div><!--//app-card-body-->
-
                                         <div class="app-card-footer p-3 mt-auto">
                                             <hr>
                                             <div class="mt-3 row justify-content-between">
                                                 <div class="col-auto">
+
                                                 </div>
                                                 <div class="col-auto">
                                                     <button type="submit" class="btn app-btn-primary ">
@@ -196,32 +197,49 @@
 
                                     </form>
                                 </div><!--//app-card-->
+
                             </div><!--//tab-pane-->
                         </div><!--//tab-content-->
                     </div>
-                    <div class="col-12 col-md-4">
-                        <div class="app-card shadow-sm p-4 d-flex flex-column align-items-center">
-                            <div class="app-card-body pt-4 profile-image ">
-                                <img src="{{ request.user.get_image }}"
-                                     style="width: 200px; height: 200px; border-radius: 50%;"
-                                     class="rounded-circle border border-white border-3 shadow" alt="user profile">
+                    <div class="col-xl-4">
+                        <div class="app-card">
+                            <div class="card-body pt-4 d-flex flex-column align-items-center">
 
-                                <div class="app-card-footer p-3 d-flex flex-column  align-items-center">
-                                    <h3>{{ request.user.get_short_name }}</h3>
-                                    <div class="info ">
-                                        {% if request.user.groups.all.count > 0 %}
-                                            {% for g in request.user.groups.all %}
-                                                <span class="badge bg-secondary"> {{ g.name }} </span>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <label class="position-relative me-4" for="uploadfile-1" title="Replace this pic">
+                                        <!-- Avatar place holder -->
+                                        <span class="avatar avatar-xl">
+
+                                              <img src="{% url 'home' %}media/{{ object.img }}"
+                                                   alt="Profile"
+                                                   class="avatar-img rounded-circle border border-white border-3 shadow">
+										</span>
+                                        <!-- Remove btn -->
+                                        <button type="button" class="uploadremove"><i class="bi bi-x text-white"></i>
+                                        </button>
+                                    </label>
+                                    <!-- Upload button -->
+                                    <label class="btn app-btn-primary mb-0" for="uploadfile-1">Change</label>
+                                    <input id="uploadfile-1" class="form-control d-none" type="file">
+                                </div>
+
+
+                                {#                                <img src="{% url 'home' %}media/{{ object.img }}"#}
+                                {#                                     style="width: 200px; height: 200px;"#}
+                                {#                                     alt="Profile"#}
+                                {#                                     class="">#}
+                                <div class="p-2 ">
+                                    {#                                    <h3>{{ object.name }}</h3>#}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div><!--//row-->
+
             </div><!--//container-fluid-->
         </div><!--//app-content-->
     </div><!--//app-wrapper-->
-
 {% endblock %}
+
+
+

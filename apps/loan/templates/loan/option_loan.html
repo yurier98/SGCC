@@ -1,0 +1,245 @@
+{% load static %}
+
+
+<div class="d-grid d-sm-flex justify-content-md-end align-items-sm-center gap-2">
+    <!-- Datatable Info -->
+    <div id="datatableCounterInfo" style="display: none;">
+        <div class="d-flex align-items-center">
+                <span class=" me-3">
+                  <span id="datatableCounter">0</span>
+                  Seleccionado
+                </span>
+
+            <a class="btn app-btn-secondary app-btn-outline-danger btn-sm" href="javascript:;"
+               onclick="eliminarFilas()">
+                <i class="bi-trash"></i> Delete
+            </a>
+
+            <button class="btn app-btn-secondary" id="eliminarFilas" style="display:none;"
+                    onclick="eliminarFilas()">Eliminar
+            </button>
+            <button type="button" class="btn btn-danger" id="btnEliminar" data-id="">Eliminar</button>
+        </div>
+    </div>
+    <!-- End Datatable Info -->
+
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <button type="button" class="btn app-btn-secondary dropdown-toggle w-100"
+                id="usersExportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-download me-2"></i> Export
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-sm-end"
+             aria-labelledby="usersExportDropdown" style="">
+            <span class="dropdown-header">Options</span>
+            <a id="export-copy" class="dropdown-item" href="javascript:;">
+                <img class="avatar  avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/copy-icon.svg' %}" alt="Image Description">
+                Copy
+            </a>
+            <a id="export-print" class="dropdown-item" href="javascript:;">
+                <img class="avatar avatar-xss avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/print-icon.svg' %}" alt="Image Description">
+                Print
+            </a>
+            <div class="dropdown-divider"></div>
+            <span class="dropdown-header">Download options</span>
+            <a id="export-excel" class="dropdown-item" href="javascript:;">
+                <img class="avatar avatar-xss avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/excel-icon.svg' %}" alt="Image Description">
+                Excel
+            </a>
+            <a id="export-csv" class="dropdown-item" href="javascript:;">
+                <img class="avatar avatar-xss avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/placeholder-csv-format.svg' %}"
+                     alt="Image Description">
+                .CSV
+            </a>
+            <a id="export-pdf" class="dropdown-item" href="javascript:;">
+                <img class="avatar avatar-xss avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/pdf-icon.svg' %}" alt="Image Description">
+                PDF
+            </a>
+        </div>
+    </div>
+    <!-- End Dropdown -->
+
+    {#    <!-- Dropdown -->#}
+    {#    <div class="dropdown">#}
+    {#        <button type="button" class="btn app-btn-secondary dropdown-toggle w-100"#}
+    {#                id="usersExportDropdown" data-bs-toggle="dropdown" aria-expanded="false">#}
+    {#            <i class="bi-download me-2"></i> Export#}
+    {#        </button>#}
+    {##}
+    {#        <div class="dropdown-menu dropdown-menu-sm-end"#}
+    {#             aria-labelledby="usersExportDropdown" style="">#}
+    {#            <span class="dropdown-header">Options</span>#}
+    {#            <a id="export-copy" class="dropdown-item" href="javascript:;">#}
+    {#                <img class="avatar  avatar-4x3 me-2"#}
+    {#                     src="{% static 'assets/images/options/copy-icon.svg' %}" alt="Image Description">#}
+    {#                Copy#}
+    {#            </a>#}
+    {#            <a id="export-print" class="dropdown-item" href="javascript:;">#}
+    {#                <img class="avatar avatar-xss avatar-4x3 me-2"#}
+    {#                     src="{% static 'assets/images/options/print-icon.svg' %}" alt="Image Description">#}
+    {#                Print#}
+    {#            </a>#}
+    {#            <div class="dropdown-divider"></div>#}
+    {#            <span class="dropdown-header">Download options</span>#}
+    {#            <a id="export-excel" class="dropdown-item" href="javascript:;">#}
+    {#                <img class="avatar avatar-xss avatar-4x3 me-2"#}
+    {#                     src="{% static 'assets/images/options/excel-icon.svg' %}" alt="Image Description">#}
+    {#                Excel#}
+    {#            </a>#}
+    {#            <a id="export-csv" class="dropdown-item" href="javascript:;">#}
+    {#                <img class="avatar avatar-xss avatar-4x3 me-2"#}
+    {#                     src="{% static 'assets/images/options/placeholder-csv-format.svg' %}"#}
+    {#                     alt="Image Description">#}
+    {#                .CSV#}
+    {#            </a>#}
+    {#            <a id="export-pdf" class="dropdown-item" href="javascript:;">#}
+    {#                <img class="avatar avatar-xss avatar-4x3 me-2"#}
+    {#                     src="{% static 'assets/images/options/pdf-icon.svg' %}" alt="Image Description">#}
+    {#                PDF#}
+    {#            </a>#}
+    {#        </div>#}
+    {#    </div>#}
+    {#    <!-- End Dropdown -->#}
+
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <button type="button" class="btn app-btn-secondary" id="usersFilterDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-filter me-1"></i> Filter <span
+                class="badge rounded-pill bg-secondary">2</span>
+        </button>
+
+        <div class="dropdown-menu"
+             aria-labelledby="usersFilterDropdown" style="min-width: 22rem;">
+            <!-- Card -->
+            <div class="app-card m-2">
+                <div class="app-card-header card-header-content-between m-2">
+                    <div class="row  justify-content-between align-items-center gx-3">
+                        <div class="col-auto ">
+                            <h5 class="card-header-title">Filtros</h5>
+                        </div><!--//col-->
+                        <div class="col-auto">
+                            <!-- Toggle Button -->
+                            <button type="button"
+                                    class="btn btn-ghost-secondary btn-icon btn-sm ms-2">
+                                <i class="bi-x-lg"></i>
+                            </button>
+                            <!-- End Toggle Button -->
+                        </div><!--//col-->
+                    </div><!--//row-->
+
+                </div>
+
+                <div class="app-card-body ">
+                    <form>
+                        <div class="mb-4">
+                            <small class="text-cap text-body">Role</small>
+
+                            <div class="row">
+                                <div class="col">
+                                    <!-- Check -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               value="" id="usersFilterCheckAll" checked="">
+                                        <label class="form-check-label"
+                                               for="usersFilterCheckAll">
+                                            All
+                                        </label>
+                                    </div>
+                                    <!-- End Check -->
+                                </div>
+                                <!-- End Col -->
+
+                                <div class="col">
+                                    <!-- Check -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               value="" id="usersFilterCheckEmployee">
+                                        <label class="form-check-label"
+                                               for="usersFilterCheckEmployee">
+                                            Employee
+                                        </label>
+                                    </div>
+                                    <!-- End Check -->
+                                </div>
+                                <!-- End Col -->
+                            </div>
+                            <!-- End Row -->
+                        </div>
+
+                        <div class="row ">
+                            <div class="col-sm mb-4">
+                                <small class="text-cap text-body">Position</small>
+                                <!-- Select -->
+                                <div class="tom-select-custom">
+                                    <select class=" form-select form-select-sm ">
+                                        <option value="">Any</option>
+                                        <option value="Accountant">Accountant</option>
+                                        <option value="Co-founder">Co-founder</option>
+                                        <option value="Designer">Designer</option>
+                                        <option value="Developer">Developer</option>
+                                        <option value="Director">Director</option>
+                                    </select>
+                                    <!-- End Select -->
+                                </div>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="col-sm mb-4">
+                                <small class="text-cap text-body">Position</small>
+                                <!-- Select -->
+                                <div class="tom-select-custom">
+                                    <select class=" form-select form-select-sm ">
+                                        <option value="">Any</option>
+                                        <option value="Accountant">Accountant</option>
+                                        <option value="Co-founder">Co-founder</option>
+                                        <option value="Designer">Designer</option>
+                                        <option value="Developer">Developer</option>
+                                        <option value="Director">Director</option>
+                                    </select>
+                                    <!-- End Select -->
+                                </div>
+                            </div>
+                            <!-- End Col -->
+
+
+                            <div class="col-12 mb-4">
+                                <small class="text-cap text-body">Members</small>
+
+                                <!-- Select -->
+                                <div class="tom-select-custom">
+                                    <select class=" form-select form-select-sm ">
+                                        <option value="">Any</option>
+                                        <option value="Accountant">Accountant</option>
+                                        <option value="Co-founder">Co-founder</option>
+                                        <option value="Designer">Designer</option>
+                                        <option value="Developer">Developer</option>
+                                        <option value="Director">Director</option>
+                                    </select>
+                                    <!-- End Select -->
+                                </div>
+                                <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                        </div>
+                        <!-- End Row -->
+
+                        <div class="d-grid m-1">
+                            <a class="btn btn-primary" href="javascript:;">Apply</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End Card -->
+        </div>
+    </div>
+    <!-- End Dropdown -->
+</div>
+
+

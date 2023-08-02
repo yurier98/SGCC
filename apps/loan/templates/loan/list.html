@@ -1,4 +1,5 @@
 {% extends 'includes/list.html' %}
+{% load widget_tweaks %}
 {% load static %}
 {% block head_list %}
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
@@ -7,16 +8,20 @@
     <script src="{% static 'loan/js/list.js' %}"></script>
 {% endblock %}
 
+
+
+{% block header %}
+{#    {% include 'loan/_header.html' %}#}
+{% endblock %}
+
 {% block columns %}
     <tr>
         <th class="cell" scope="col" style="width: 5%;">Nro</th>
-        <th class="cell" scope="col" style="width: 15%;">Usuario</th>
-        <th class="cell" scope="col" style="width: 10%;">Solapín</th>
-        <th class="cell" scope="col" style="width: 20%;">Área</th>
-        <th class="cell" scope="col" style="width: 10%;">Fecha de registro</th>
-        <th class="cell" scope="col" style="width: 10%;">Estado</th>
-        <th class="cell" scope="col" style="width: 10%;"> Manifestación</th>
-        <th class="cell" scope="col" style="width: 5%;"></th>
+        <th class="cell" scope="col">Usuario</th>
+        <th class="cell" scope="col">Fecha de registro</th>
+        <th class="cell" scope="col">Fecha de devolución</th>
+        <th class="cell" scope="col">Estado</th>
+        <th class="cell" scope="col"></th>
     </tr>
 {% endblock %}
 
@@ -37,99 +42,7 @@
     </div>
 {% endblock %}
 
-{% block javascript %}
-    <div class="modal fade" id="myModalProducts" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start"
-             role="document">
-            <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class=" bi bi-search"></i> Detalle del préstamo
-                    </h5>
-                </div>
-
-
-                <div class="modal-body">
-                    <table class="table app-table-hover mb-0 text-left" id="tblProducts">
-                        <thead>
-                        <tr>
-                            <th class="cell">Producto</th>
-                            <th class="cell">Categoría</th>
-                            <th class="cell">Cantidad</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg app-card app-card-orders-table shadow-sm mb-5  align-items-start"
-             role="document">
-            <form method="post" action=".">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-trash"></i> <b>{{ title }}</b>
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="{{ action }}">
-                            {% if form.errors %}
-                                <ul>
-                                    {% for field in form %}
-                                        {% for error in field.errors %}
-                                            <li>{{ error }}</li>
-                                        {% endfor %}
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                            <p class="text-center font-weight-bold mt-3">
-                                <i class="fas fa-trash fa-3x"></i><br><br>
-                                ¿Estás seguro de eliminar el registro N° {{ object.id }}?
-                            </p>
-                        </div>
-                    </div>
-                    <div class="modal-footer card-footer">
-                        <button type="submit" class="btn btn-primary btn-flat">
-                            <i class="fas fa-save"></i> Si, aceptar
-                        </button>
-                        <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
-                    </div>
-                </div>
-            </form>
-            <script>
-                $('form').on('submit', function (e) {
-                    e.preventDefault();
-                    var parameters = new FormData(this);
-                    submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de eliminar el siguiente registro?', parameters, function () {
-                        Swal.fire({
-                            title: 'Alerta',
-                            text: 'Registro eliminado correctamente',
-                            icon: 'success',
-                            timer: 2000,
-                            onClose: () => {
-                                location.href = '{{ list_url }}';
-                            }
-                        }).then((result) => {
-
-                        });
-                    });
-                });
-            </script>
-        </div>
-    </div>
-{% endblock %}
 
 {% block content_list_before %}
     <div class="form-group settings-form ">
@@ -137,11 +50,11 @@
         <div class="input-group mb-3">
             {{ form.date_range }}
 
-{#            <div id="reportrange"#}
-{#                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">#}
-{#                <i class="fa fa-calendar"></i>&nbsp;#}
-{#                <span></span> <i class="fa fa-caret-down"></i>#}
-{#            </div>#}
+            {#            <div id="reportrange"#}
+            {#                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">#}
+            {#                <i class="fa fa-calendar"></i>&nbsp;#}
+            {#                <span></span> <i class="fa fa-caret-down"></i>#}
+            {#            </div>#}
 
 
             <div class="input-group-append ">
@@ -155,3 +68,83 @@
         </div>
     </div>
 {% endblock %}
+
+
+{% block filter %}
+
+    <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+
+        <div class="col-auto">
+            <select class="form-select w-auto">
+                <option selected="" value="option-1">All</option>
+                <option value="option-2">Text file</option>
+                <option value="option-3">Image</option>
+                <option value="option-4">Spreadsheet</option>
+                <option value="option-5">Presentation</option>
+                <option value="option-6">Zip file</option>
+            </select>
+        </div>
+
+
+        <div class="col-auto">
+            <!-- Daterangepicker -->
+
+            <div id="reportrange" class="btn app-btn-secondary"
+                 style="cursor: pointer;">
+                <i class="bi-calendar-week"></i>
+                <span></span> <i class="fa fa-caret-down"></i>
+            </div>
+
+            <!-- End Daterangepicker -->
+        </div>
+        <div class="col-auto">
+            {% render_field form.date_range class=" btn app-btn-secondary dropdown-toggle" %}
+        </div>
+
+
+    </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(function () {
+
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                "opens": "left",
+                "buttonClasses": "btn btn-sm ",
+                "cancelClass": "btn app-btn-secondary",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                applyButtonClasses: 'btn-primary',
+                applyButtonCallback: function (start, end, label) {
+                    // Enviar datos del rango de fecha a la vista
+                    var start_date = start.format('YYYY-MM-DD');
+                    var end_date = end.format('YYYY-MM-DD');
+                    window.location.href = '/mi-vista/?start_date=' + start_date + '&end_date=' + end_date;
+                }
+            }, cb);
+
+            cb(start, end);
+
+        });
+    </script>
+{% endblock %}
+
+
