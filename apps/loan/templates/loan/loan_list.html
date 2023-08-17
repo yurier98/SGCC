@@ -20,9 +20,9 @@
                 select: {
                     style: 'multi'
                 },
-                "order": [],
+                "order": [], // Ajusta si necesitas un orden predeterminado
                 "columnDefs": [
-                    {"orderable": false, "targets": [0, -1]}
+                    {"orderable": false, "targets": [0, -1]} // Ajusta las columnas no ordenables
                 ],
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
@@ -30,6 +30,7 @@
                 "paging": true,
                 "ordering": true,
                 "searching": true,
+
                 "isResponsive": false,
                 "isShowPaging": false,
                 "pagination": "datatableWithPaginationPagination",
@@ -48,8 +49,6 @@
                     }).container();
                     $(buttons).appendTo('#usersExportDropdown+.dropdown-menu');
                 }
-
-
             });
 
 

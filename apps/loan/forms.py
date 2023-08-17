@@ -12,9 +12,10 @@ from datetime import datetime
 
 class ReportForm(forms.Form):
     date_range = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'autocomplete': 'off'
+        'class': 'btn app-btn-secondary dropdown-toggle',
     }))
+
+
 
 
 class LoanForm(ModelForm):

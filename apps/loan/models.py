@@ -22,18 +22,11 @@ from apps.order.models import Order
 
 class Loan(models.Model):
     """Préstamo model."""
-
     STATE = (
         ('PE', 'Pendiente a autorización'),
         ('PR', 'Prestado'),
         ('EN', 'Entregado'),
     )
-    # user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    # start_date = models.DateField("Fecha de inicio")
-    # end_date = models.DateField("Fecha de devolución")
-    # description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
-    #                                null=True, blank=True)
-    # manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
