@@ -138,7 +138,7 @@ class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
     template_name = 'user/profile_update.html'
-    success_url = reverse_lazy('user_update_profile')
+    success_url = reverse_lazy('profile_details')
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -157,12 +157,13 @@ class UserUpdateProfileView(LoginRequiredMixin, UpdateView):
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
+            print(e)
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Edición de Perfil'
+        context['title'] = 'Editar perfil'
         context['entity'] = 'Perfil'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
