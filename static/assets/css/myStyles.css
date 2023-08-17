@@ -61,6 +61,10 @@
 /*    width: calc(100% - 40px); !* Ancho del elemento restante *!*/
 /*}*/
 
+.border-right {
+    border-right: 1px solid #eee;
+}
+
 .app-card {
     border-radius: 7px;
 }
