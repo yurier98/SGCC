@@ -2,9 +2,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.dispatch import Signal
-
 # from apps.order.models import Order
-
 from .models import Order, OrderProduct
 
 # save_loan = Signal()
