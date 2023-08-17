@@ -32,8 +32,8 @@ from apps.notification.signals import notificar
 class OrderListAllView(GroupRequiredMixin, ExistsInventaryMixin, FilterView, ListView):
     """ Return all Order"""
     model = Order
-    template_name = 'order/list_order.html'
-    paginate_by = 4
+    template_name = 'order/order_list.html'
+    paginate_by = 10
 
     filterset_class = OrderFilter
     # permission_required = 'order.view_all_order'
@@ -57,7 +57,7 @@ class OrderListView(GroupNotAllowedMixin, ExistsInventaryMixin, LoginRequiredMix
     filterset_class = OrderFilter
     paginate_by = 4
     is_paginated = True
-    template_name = 'order/list_order.html'
+    template_name = 'order/order_list.html'
     permission_required = 'order.view_order'
     url_redirect = reverse_lazy('order_list')
 
@@ -122,7 +122,7 @@ class OrderListView2(ExistsInventaryMixin, LoginRequiredMixin, FormView):
 class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedMixin, CreateView):
     model = Order
     form_class = OrderForm
-    template_name = 'order/create.html'
+    template_name = 'order/order_create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
     permission_required = 'add_order'
@@ -199,7 +199,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
 class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
     model = Order
     form_class = OrderForm
-    template_name = 'order/create.html'
+    template_name = 'order/order_create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
     permission_required = 'change_order'
@@ -299,7 +299,7 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
 
 class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
     model = Order
-    template_name = 'order/detail.html'
+    template_name = 'order/order_detail.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
     permission_required = 'view_order'
@@ -307,7 +307,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
     def get_details_product(self):
         data = []
         order = self.get_object()
-        for i in order.orderproduct_set.all():
+        for i in order.products.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -360,7 +360,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
 class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderFormApprove
-    template_name = 'order/create.html'
+    template_name = 'order/order_create.html'
     success_url = reverse_lazy('all_order_list')
     url_redirect = success_url
     permission_required = {'order.approve_order', 'order.change_order'}

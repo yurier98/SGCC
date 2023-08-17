@@ -41,11 +41,11 @@ class Order(models.Model):
         item['created'] = self.created.strftime('%Y-%m-%d')
         item['user'] = self.user.toJSON()
         item['manifestation'] = self.manifestation.toJSON()
-        item['orderproduct'] = [i.toJSON() for i in self.orderproduct_set.all()]
+        item['orderproduct'] = [i.toJSON() for i in self.products.all()]
         return item
 
     def delete(self, using=None, keep_parents=False):
-        for detail in self.orderproduct_set.all():
+        for detail in self.products.all():
             detail.product.stock += detail.cant
             detail.product.save()
         super(Order, self).delete()
@@ -61,7 +61,7 @@ class Order(models.Model):
 
 
 class OrderProduct(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='products')
     product = models.ForeignKey(Product, related_name='Listados_de_items', on_delete=models.CASCADE)
     cant = models.PositiveIntegerField(default=1)
 
