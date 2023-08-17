@@ -9,6 +9,8 @@ from config import settings
 from inventory.models import Product, Category
 
 
+
+
 def insert_products():
     with open(f'{settings.BASE_DIR}/deploy/json/products.json', encoding='utf8') as json_file:
         data = json.load(json_file)
