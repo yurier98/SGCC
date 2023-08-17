@@ -1,7 +1,10 @@
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalReadView, BSModalCreateView, BSModalUpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic.base import TemplateResponseMixin
 from django_filters.views import FilterView
 
 # from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
@@ -21,39 +24,141 @@ class ProductFilterView(ValidatePermissionRequiredMixin, FilterView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Productos'
-        context['create_url'] = reverse_lazy('create')
-        context['list_url'] = reverse_lazy('inventory:inventory')
+        context['create_url'] = reverse_lazy('product_create')
+        context['list_url'] = reverse_lazy('inventory_list')
         context['entity'] = 'Inventario'
         return context
 
 
-class ProductListView(ValidatePermissionRequiredMixin, ListView):
+class ProductListView(ValidatePermissionRequiredMixin, FilterView, ListView):
     """ Return all Productos"""
     model = Product
     paginate_by = 24
-    context_object_name = 'products_list'
+    filterset_class = ProductFilter
+
+    # context_object_name = 'products_list'
     template_name = 'inventory/inventory_list.html'
-    redirect_field_name = 'inventory:inventory'
+    redirect_field_name = 'inventory_list'
+    permission_required = 'inventory.view_product'
 
     # add_home = False
+
+    # def get(self, request, *args, **kwargs):
+    #     queryset = self.get_queryset()
+    #     data = {'productos': []}
+    #     for producto in queryset:
+    #         data['productos'].append({
+    #             'nombre': producto.name,
+    #             'imagen': producto.img.url if producto.img else '',
+    #             # Agregar aquí más campos que quieras mostrar en la tarjeta
+    #         })
+    #     return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Productos'
-        context['create_url'] = reverse_lazy('create')
+        context['create_url'] = reverse_lazy('product_create')
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Inventario'
         return context
 
 
-class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
+from django.views.generic import TemplateView
+from django.views.generic.list import MultipleObjectMixin
+from django.http import JsonResponse, HttpRequest
+from .models import Product
 
+class JsonProductListView(TemplateView, MultipleObjectMixin):
+    template_name = 'inventory/inventory_list.html'
+    paginate_by = 10
+    context_object_name = 'products_list'
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        if self.request.is_ajax(request):
+            data = {'productos': []}
+            for producto in self.object_list:
+                data['productos'].append({
+                    'nombre': producto.name,
+                    'imagen': producto.img.url if producto.img else '',
+                    # Agregar aquí más campos que quieras mostrar en la tarjeta
+                })
+            return JsonResponse(data)
+        else:
+            return self.render_to_response(context)
+
+    def get_queryset(self):
+        return Product.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Productos'
+        context['create_url'] = reverse_lazy('product_create')
+        context['list_url'] = reverse_lazy('loan_list')
+        context['entity'] = 'Inventario'
+        return context
+
+class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
     form_class = ProductoForm
     template_name = 'inventory/create_product.html'
     success_message = 'Producto creada correctamente.'
-    success_url = reverse_lazy('inventory:inventory')
+
+    success_url = reverse_lazy('inventory_list')
     url_redirect = success_url
     permission_required = 'inventory.add_product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Crear producto'
+        context['entity'] = 'Inventario'
+        context['list_url'] = self.success_url
+        return context
+
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    model = Product
+    template_name = 'inventory/detail_product.html'
+    url_redirect = reverse_lazy('inventory_list')
+
+    # permission_required = 'view_order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalles del producto'
+        context['entity'] = 'Inventario'
+        context['list_url'] = self.url_redirect
+        return context
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ProductoForm
+    template_name = 'inventory/product_update.html'
+    success_url = reverse_lazy('inventory_list')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Editar producto'
+        context['entity'] = 'Inventario'
+        context['list_url'] = self.success_url
+        context['url_detail'] = reverse_lazy('product_detail')
+        context['list_update'] = reverse_lazy('product_update')
+        context['action'] = 'edit'
+        return context
 
 
 # class Detail(BSModalReadView, DetailBreadcrumbMixin):
@@ -65,7 +170,7 @@ class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
 class Update(ValidatePermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductoForm
-    # template_name = 'inventory/update_product.html'
+
     template_name = 'inventory/editar.html'
     success_message = 'El producto se ha actualizado con exito'
     success_url = reverse_lazy('inventory:inventory')
@@ -79,3 +184,41 @@ class Delete(SuccessMessageMixin, BSModalDeleteView):
     success_url = reverse_lazy('inventory:inventory')
 
 
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('inventory_list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        data = {'eliminado': True}
+        return JsonResponse(data)
+
+
+
+class MyModelDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('inventory_list')
+
+    # def delete(self, request, *args, **kwargs):
+    #     response = super().delete(request, *args, **kwargs)
+    #     if self.request.is_ajax():
+    #         return JsonResponse({'message': 'Object deleted successfully.'})
+    #     else:
+    #         return response
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+
+        if self.request.is_ajax():
+            return JsonResponse({'message': 'Object deleted successfully.'})
+        else:
+            return super().delete(request, *args, **kwargs)
+
+    # def post(self, request, *args, **kwargs):
+    #     if self.request.is_ajax():
+    #         self.object = self.get_object()
+    #         return self.delete(request, *args, **kwargs)
+    #     else:
+    #         return super().post(request, *args, **kwargs)

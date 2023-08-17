@@ -5,10 +5,9 @@ from django.forms import model_to_dict
 from django.urls import reverse
 from config.settings import base
 from apps.nomenclatures.models import Category
+from apps.utils import optimize_image
+
 # Create your models here.
-
-
-
 
 
 class ProductAttribute(models.Model):
@@ -25,7 +24,6 @@ class ProductAttribute(models.Model):
         return self.atributo
 
 
-
 class Product(models.Model):
     ESTADO = (
         ('D', 'Disponible'),
@@ -34,7 +32,7 @@ class Product(models.Model):
     # id_producto = models.AutoField(primary_key=True)
     category = models.ForeignKey(Category, verbose_name=("Categoria del producto"), on_delete=models.PROTECT)
     name = models.CharField("Nombre del producto", max_length=100)
-    img = ImageField(upload_to='products', null=True, blank=True, default='no_picture.svg')
+    img = ImageField(verbose_name='Imagen del producto',upload_to='products/%Y/%m/%d', null=True, blank=True, default='no_picture.svg')
 
     state = models.CharField("Estado", max_length=1, choices=ESTADO, default='D')
     stock = models.PositiveIntegerField('Cantidad de unidades')
@@ -44,7 +42,6 @@ class Product(models.Model):
                                     help_text="Marcar si el producto está disponible en el sistema.")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
 
     def get_absolute_url(self):
         return reverse('inventory:detail', kwargs={'pk': self.pk})
@@ -65,6 +62,15 @@ class Product(models.Model):
             return f'{base.MEDIA_URL}{self.img}'
         return f'{base.STATIC_URL}/no_picture.svg'
 
+    def save(self, *args, **kwargs):
+        # Llama al método save() del modelo para guardar la imagen original
+        super(Product, self).save(*args, **kwargs)
+
+        # Optimizamos la imagen antes de guardarla
+        if self.img:
+            # Llama a la función optimize_image para optimizar la imagen
+            optimize_image(self.img.path)
+
 
     class Meta:
         ordering = ["-created"]
@@ -84,3 +90,6 @@ class Product(models.Model):
             # ("producto_json", "xPuede listar productos en formato JSON"),
             # ("producto_edit_precio", "Puede actualizar precio venta de productos"),
         )
+
+
+
