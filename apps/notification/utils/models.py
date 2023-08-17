@@ -71,17 +71,13 @@ class AbstractNotificacion(models.Model):
 
     destiny = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='notificaciones', blank=True,
                                 null=True)
-
     actor_content_type = models.ForeignKey(ContentType, related_name='notificar_actor', on_delete=models.CASCADE)
     object_id_actor = models.PositiveIntegerField()
     actor = GenericForeignKey('actor_content_type', 'object_id_actor')
-
     verbo = models.CharField(max_length=220)
-
     read = models.BooleanField(default=False)
     publico = models.BooleanField(default=True)
     eliminado = models.BooleanField(default=False)
-
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
 
     objects = NotificationQueryset.as_manager()
