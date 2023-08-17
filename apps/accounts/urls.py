@@ -19,8 +19,8 @@ urlpatterns = [
 
     # las url para las vistas deL CRUD de Usuario debe estar contenidas dentro del modulo de admin
 
-    path('profile/update/', UserUpdateProfileView.as_view(), name='user_update_profile'),
-    path('profile/details/', UserDetailProfileView.as_view(), name='user_details_profile'),
+    path('profile/update/', UserUpdateProfileView.as_view(), name='profile_update'),
+    path('profile/details/', UserDetailProfileView.as_view(), name='profile_details'),
     path('change/password/', UserChangePasswordView.as_view(), name='user_change_password'),
 
 
