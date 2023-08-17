@@ -5,11 +5,27 @@ from django.forms import ModelForm
 from .models import Product
 
 
-class ProductoForm(forms.ModelForm):
-
+class ProductoForm(ModelForm):
     class Meta:
         model = Product
-        #fields = ['name', 'category', 'img', 'state', 'active', 'stock', 'available']
-        #fields = '__all__'
+        # fields = ['name', 'category', 'img', 'state', 'active', 'stock', 'available']
+        # fields = '__all__'
         exclude = ['created', 'updated']
+        widgets = {
+            'category': forms.Select(attrs={
+                'class': 'custom-select select2',
+                # 'style': 'width: 100%'
+            }),
+            'state': forms.Select(attrs={
+                'class': 'custom-select select2',
+                'style': 'width: 100%'
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'style': 'width: 100%'
+            }),
+            'img': forms.FileInput(attrs={
+                'class': 'form-control',
+            }),
 
+        }

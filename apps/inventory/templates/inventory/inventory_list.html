@@ -14,10 +14,10 @@
     <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
     <script>
         $(document).ready(function () {
-            const botonesEliminar = document.querySelectorAll('[id^="eliminar-"]');
+            const botonesEliminar = document.querySelectorAll('[id^="eliminar-{{ objeto.id }}"]');
             const modal = $('#modal');
             const confirmar = $('#confirmar');
             const cancelar = $('#cancelar');
@@ -31,7 +31,7 @@
             });
 
             confirmar.on('click', function () {
-                const objetoId = objetoAEliminar.querySelector('[id^="eliminar-"]').id.split('-')[1];
+                const objetoId = objetoAEliminar.querySelector('[id^="eliminar-{{ objeto.id }}"]').id.split('-')[1];
                 $.ajax({
                     url: '{% url "product_delete" 0 %}'.replace('0', objetoId),
                     type: 'post',
@@ -50,6 +50,7 @@
             });
         });
     </script>
+
     <script>
         $(document).ready(function () {
 
@@ -76,12 +77,70 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function () {
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            $('.delete-btn').click(function () {
+                var id = $(this).data('id');
+                console.log('El id es:' + id)
+                // Asigna el ID del objeto al botón de confirmación del modal
+                $('#delete-confirm-btn').data('id', id);
+                $('#delete-modal').modal('show');
+
+            });
+            $('#delete-confirm-btn').click(function () {
+                var id = $(this).data('id');
+                {#const csrf = document.getElementsByName('csrfmiddlewaretoken');#}
+                var csrf_token = getCookie('csrftoken');
+
+                console.log('El id es:' + id)
+                console.log('El csrf es:' + csrf_token)
+
+
+                $.ajax({
+                    {#url: "{% url 'product_delete' id %}",  // Usa la URL correcta para tu vista de eliminación#}
+                    {#url: "{% url 'product_delete' id %}" + id + "/",  // Corregir la URL concatenando el ID#}
+                    url: "/inventory/delete/" + id + "/",  // Reemplazar con la URL correcta para tu vista de eliminación
+                    type: 'POST',
+                    headers: {"X-CSRFToken": csrf_token},
+                    success: function (data) {
+                        $('#delete-modal').modal('hide');
+                        $('#notification').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
+                        $('#object-' + id).remove();
+                    },
+                    error: function () {
+                        $('#delete-modal').modal('hide');
+                        $('#notification').html('<div class="alert alert-danger" role="alert">Ocurrió un error al eliminar el objeto.' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                    }
+                });
+            });
+        });
+
+    </script>
+
 {% endblock %}
 
 
 {% block content %}
 
     <div class="app-wrapper">
+
 
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
@@ -128,6 +187,8 @@
                     </div><!--//col-auto-->
                 </div><!--//row-->
 
+                <div id="notification"></div>
+
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                     <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -157,7 +218,9 @@
                             <div class="row g-4">
                                 {% for object in object_list %}
                                     <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
-                                        <div class="app-card app-card-doc shadow-sm h-100">
+
+                                        <div id="object-{{ object.id }}"
+                                             class="app-card app-card-doc shadow-sm h-100">
                                             <div class="app-card-thumb-holder p-3">
                                                 <div class="app-card-thumb">
                                                     <img class="thumb-image"
@@ -192,16 +255,20 @@
                                                                 <span class="badge  rounded-pill bg-warning"> Prestado </span>
                                                             {% endif %}
                                                         </li>
+                                                        <li><span class="text-muted">Editado:</span>
+                                                            {{ object.updated | timesince }}
+                                                        </li>
                                                     </ul>
                                                 </div><!--//app-doc-meta-->
 
                                                 {% include 'inventory/_app_card_actions.html' %}
 
                                             </div><!--//app-card-body-->
-
                                         </div><!--//app-card-->
+
                                     </div><!--//col-->
                                 {% endfor %}
+
                             </div>
 
                         </div><!--//tab-pane-->
@@ -214,7 +281,8 @@
                                         {% for object in filter.qs %}
                                             {% if object.state == 'D' %}
                                                 <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
-                                                    <div class="app-card app-card-doc shadow-sm h-100">
+                                                    <div id="object-{{ object.id }}"
+                                                         class="app-card app-card-doc shadow-sm h-100">
                                                         <div class="app-card-thumb-holder p-3">
                                                             <div class="app-card-thumb">
                                                                 <img class="thumb-image"
@@ -256,7 +324,6 @@
                                                             {% include 'inventory/_app_card_actions.html' %}
 
                                                         </div><!--//app-card-body-->
-
                                                     </div><!--//app-card-->
                                                 </div><!--//col-->
                                             {% endif %}
@@ -333,7 +400,6 @@
             </div><!--//container-fluid-->
 
         </div><!--//app-content-->
-
         {#        {% include 'includes/footer.html' %}#}
     </div><!--//app-wrapper-->
 
@@ -344,32 +410,31 @@
 
 {% block modal %}
 
-    <div class="modal modal-alert position-static d-block bg-secondary py-5" tabindex="-1" role="dialog"
-         id="modalChoice">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content rounded-4 shadow">
+    <!-- Modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" data-bs-backdrop="static"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-8">
+
                 <div class="modal-body p-4 text-center">
-                    <h5 class="mb-0">¿Habilitar esta configuración?</h5>
-                    <p class="mb-0">Siempre puedes cambiar de opinión en la configuración de tu cuenta.</p>
+                    <h5 class="mb-0">¿Estás seguro que desea eliminar este producto?</h5>
+                    <p class="mb-0">Tenga en cuenta que esta acción no se podrá desacer.</p>
                 </div>
                 <div class="modal-footer flex-nowrap p-0">
-                    <button type="button"
+                    <button type="button" id="delete-confirm-btn"
                             class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-right">
-                        <strong>Sí,
-                            habilitar</strong></button>
-                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0"
+                        <strong class="text-danger">Sí, eliminar</strong>
+                    </button>
+                    <button type="button" class="btn btn-lg btn-dark fs-6 text-decoration-none col-6 m-0 rounded-0"
                             data-bs-dismiss="modal">No gracias
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <div id="modal" class="oculto">
-        <div class="contenido">
-            <p>¿Estás seguro que deseas eliminar este objeto?</p>
-            <button id="confirmar">Confirmar</button>
-            <button id="cancelar">Cancelar</button>
-        </div>
-    </div>
+
+
+
 
 {% endblock %}
