@@ -5630,7 +5630,7 @@ textarea.form-control-lg {
     pointer-events: auto;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 0.5px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
     outline: 0;
 }
@@ -5642,7 +5642,9 @@ textarea.form-control-lg {
     z-index: 1040;
     width: 100vw;
     height: 100vh;
-    background-color: #000;
+   background-color: rgb(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }
 
 .modal-backdrop.fade {
@@ -5650,7 +5652,7 @@ textarea.form-control-lg {
 }
 
 .modal-backdrop.show {
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .modal-header {
@@ -7887,6 +7889,15 @@ textarea.form-control-lg {
 
 .rounded-3 {
     border-radius: 0.3rem !important;
+}
+.rounded-4 {
+    border-radius: 0.4rem !important;
+}
+.rounded-5 {
+    border-radius: 0.5rem !important;
+}
+.rounded-8 {
+    border-radius: 0.8rem !important;
 }
 
 .rounded-circle {
