@@ -12,6 +12,7 @@ urlpatterns = [
     # path('', TemplateView.as_view(template_name="notifications/notifications.html"), name='notifications_list'),
     path('', views.NotificationListView.as_view(), name='notifications_list'),
     path('detail/<int:pk>/', views.NotificationDetailView.as_view(), name='notifications_detail'),
+
     path('all', views.NotificationListViewFilter.as_view(), name='notifications_list_all'),
     path('search/', FilterView.as_view(filterset_class=TimeFilter, template_name="notifications/notifications.html"),
          name='search'),

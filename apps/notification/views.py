@@ -81,7 +81,7 @@ class NotificationListView(ListView):
     #             queryset = Notification.objects.all()
     #
     #             if len(start_date) and len(end_date):
-    #                 queryset = queryset.filter(created__range=[start_date, end_date])
+    #                 queryset = queryset.filter(timestamp__range=[start_date, end_date])
     #
     #                 start_date=timezone.now().date() - datetime.timedelta(days=1)
     #
@@ -237,7 +237,7 @@ class NotificationListViewFilter(FormView):
 #         return Response({'status': status.HTTP_200_OK})
 class NotificationDetailView(LoginRequiredMixin, DetailView):
     model = Notification
-    template_name = 'notifications/detail.html'
+    template_name = 'notifications/notification_detail.html'
     success_url = reverse_lazy('notifications_list')
     url_redirect = success_url
 
