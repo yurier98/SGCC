@@ -12,8 +12,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # Create your views here.
 from django.template.loader import get_template
+from django.views.generic.edit import FormMixin
 from weasyprint import HTML, CSS
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
 
 from ..security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
@@ -33,7 +35,49 @@ def index(request):
 
 
 ####################Vistas de Prestamos##################
-class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormView):
+
+class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormMixin, ListView):
+    model = Loan
+    # paginate_by = 10
+    template_name = 'loan/loan_list.html'
+    permission_required = 'loan.view_loan'
+    form_class = ReportForm
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     start_date = self.request.GET.get('start_date')
+    #     end_date = self.request.GET.get('end_date')
+    #     if start_date and end_date:
+    #         start_date = timezone.datetime.strptime(start_date, '%Y-%m-%d')
+    #         end_date = timezone.datetime.strptime(end_date, '%Y-%m-%d')
+    #         queryset = queryset.filter(order__created__range=[start_date, end_date])
+    #     return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Préstamos'
+        context['create_url'] = reverse_lazy('loan_create')
+        context['list_url'] = reverse_lazy('loan_list')
+        context['entity'] = 'Préstamos'
+        context['form'] = self.form_class()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            action = form.cleaned_data['action']
+            if action == 'search':
+                loans = self.get_queryset()
+                data = [loan.toJSON() for loan in loans]
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        else:
+            data['error'] = form.errors
+        return JsonResponse(data, safe=False)
+
+
+class LoanListView2(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormView):
     """ Return all Prestamos"""
     form_class = ReportForm
     template_name = 'loan/list.html'
@@ -82,10 +126,10 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormVi
 class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, CreateView):
     model = Loan
     form_class = LoanForm
-    template_name = 'loan/create_loan.html'
+    template_name = 'loan/loan_create.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
-    permission_required = 'add_loan'
+    permission_required = 'loan.add_loan'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -170,7 +214,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear préstamo'
-        context['entity'] = 'Préstamo'
+        context['entity'] = 'Préstamos'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['products'] = []
@@ -180,7 +224,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
 class LoanUpdateView(UpdateView):
     model = Loan
     form_class = LoanForm
-    template_name = 'loan/create_loan.html'
+    template_name = 'loan/loan_create.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
     permission_required = 'change_loan'
@@ -308,7 +352,7 @@ class LoanDeleteView(DeleteView):
 
 class LoanDetailView(ValidatePermissionRequiredMixin, DetailView):
     model = Order
-    template_name = 'loan/detail_loan.html'
+    template_name = 'loan/loan_detail.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
     permission_required = 'view_loan'

@@ -9,20 +9,23 @@ from ..loan import views
 
 
 urlpatterns = [
-    # path('', TemplateView.as_view(template_name="loan/list_loan.html"), name='loan'),
+    # path('', TemplateView.as_view(template_name="loan/loan_list.html"), name='loan'),
     # path('', views.index, name='home'),
     # path('', views.LoanListView.as_view(), name='loan'),
-    # path('create', TemplateView.as_view(template_name="loan/create_loan.html"), name='create'),
+    # path('create', TemplateView.as_view(template_name="loan/loan_create.html"), name='create'),
     # path('create', views.Create.as_view(), name='create'),
     # path('search_product', views.Search_Producto.as_view(), name='search_product'),
 
     path('', views.LoanListView.as_view(), name='loan_list'),
+    # path('', views.LoanListView.as_view(), name='loan_list'),
+
+
     path('add', views.LoanCreateView.as_view(), name='loan_create'),
     # path('delete/<int:pk>/', views.LoanDeleteView.as_view(), name='loan_delete'),
     path('update/<int:pk>/', views.LoanUpdateView.as_view(), name='loan_update'),
 
     path('invoice/pdf/<int:pk>/', views.LoanPdfView.as_view(), name='sale_invoice_pdf'),
 
-    path('detail/<int:pk>/', views.LoanDetailView.as_view(), name='loan_detail'),
+    path('detail/<uuid:pk>/', views.LoanDetailView.as_view(), name='loan_detail'),
 
 ]
