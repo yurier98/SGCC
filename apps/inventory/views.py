@@ -68,6 +68,7 @@ from django.views.generic.list import MultipleObjectMixin
 from django.http import JsonResponse, HttpRequest
 from .models import Product
 
+
 class JsonProductListView(TemplateView, MultipleObjectMixin):
     template_name = 'inventory/inventory_list.html'
     paginate_by = 10
@@ -98,6 +99,7 @@ class JsonProductListView(TemplateView, MultipleObjectMixin):
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Inventario'
         return context
+
 
 class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
     form_class = ProductoForm
@@ -184,41 +186,16 @@ class Delete(SuccessMessageMixin, BSModalDeleteView):
     success_url = reverse_lazy('inventory:inventory')
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(SuccessMessageMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('inventory_list')
+    success_message = 'El producto se ha eliminado con exito.'
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
-        data = {'eliminado': True}
-        return JsonResponse(data)
-
-
-
-class MyModelDeleteView(DeleteView):
-    model = Product
-    success_url = reverse_lazy('inventory_list')
-
-    # def delete(self, request, *args, **kwargs):
-    #     response = super().delete(request, *args, **kwargs)
-    #     if self.request.is_ajax():
-    #         return JsonResponse({'message': 'Object deleted successfully.'})
-    #     else:
-    #         return response
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
+        product = self.get_object()
+        product.delete()
 
         if self.request.is_ajax():
             return JsonResponse({'message': 'Object deleted successfully.'})
         else:
             return super().delete(request, *args, **kwargs)
-
-    # def post(self, request, *args, **kwargs):
-    #     if self.request.is_ajax():
-    #         self.object = self.get_object()
-    #         return self.delete(request, *args, **kwargs)
-    #     else:
-    #         return super().post(request, *args, **kwargs)
