@@ -344,7 +344,6 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
         user = self.request.user
         if user.groups.filter(name='tecnico').exists():
             context['list_url'] = reverse('order_all_list')
-
             # Obtener el próximo objeto con estado 'pendiente'
             next_object = self.get_next_object()
             # Agregar la URL del próximo objeto al contexto
