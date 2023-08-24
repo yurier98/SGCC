@@ -16,8 +16,6 @@ class ReportForm(forms.Form):
     }))
 
 
-
-
 class LoanForm(ModelForm):
     date_range = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -33,18 +31,13 @@ class LoanForm(ModelForm):
         self.fields['user'].queryset = UserProfile.objects.all().filter(is_active=True)
         self.fields['description'].widget.attrs['rows'] = 3
         self.fields['state_loan'].choices = Loan.STATE
-        self.fields['state'].choices = Order.STATE[1:2]
+        # self.fields['state'].choices = Order.STATE[1:2]
 
     class Meta:
         model = Order
-        fields = '__all__'
-        # exclude = ['created', 'updated']
+        # fields = '__all__'
+        exclude = ['state', 'created', 'updated']
         widgets = {
-            'state': forms.Select(attrs={
-                'class': 'form-select',
-                # 'style': 'width: 100%'
-            }),
-
             'user': forms.Select(attrs={
                 'class': 'custom-select select2',
                 # 'style': 'width: 100%'

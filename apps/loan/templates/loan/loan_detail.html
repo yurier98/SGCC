@@ -5,27 +5,70 @@
 
 {% block stylesheets %}
 
-    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
     <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
-    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
-    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
 
 {% endblock %}
 
 {% block javascript %}
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
     <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
-    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
-    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
     <script src="{% static 'order/js/details.js' %}"></script>
     <script>
-        order.details.products = {{ products|safe }};
+        // Obtenemos el JSON de products del contexto de la plantilla
+        var productsJson = {{ products|safe }};
+
+        // Función para agregar un elemento a la lista de productos
+        function addProductToList(product) {
+            var productItem = document.createElement("div");
+            productItem.classList.add("item", "border-bottom", "py-3");
+
+            {#productItem.innerHTML = `#}
+            {#    <strong>ID:</strong> ${product.id}<br>#}
+            {#    <strong>Categoría:</strong> ${product.category.name}<br>#}
+            {#    <strong>Nombre:</strong> ${product.name}<br>#}
+            {#    <strong>Imagen:</strong> <img src="${product.img}" alt="Imagen del producto"><br>#}
+            {#    <strong>Estado:</strong> ${product.state}<br>#}
+            {#    <strong>Stock:</strong> ${product.stock}<br>#}
+            {#    <strong>Activo:</strong> ${product.active}<br>#}
+            {#    <strong>Disponible:</strong> ${product.available}<br>#}
+            {#    <strong>Nombre completo:</strong> ${product.full_name}<br>#}
+            {#    <strong>Fecha de creación:</strong> ${product.created}<br>#}
+            {#    <strong>Cantidad:</strong> ${product.cant}<br>#}
+            {#`;#}
+
+            productItem.innerHTML = `
+
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center row">
+                                <div class="col-auto">
+                                    <!-- Avatar place holder -->
+                                    <span class="avatar avatar-md">
+                                        <img class="avatar-img" style="border-radius: 8px"
+                                             src="${product.img}" alt="">
+                                    </span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>${product.name}</strong></div>
+                                    <div class="item-data">Categoría: ${product.category.name}</div>
+                                    <div class="item-data">Cantidad: ${product.cant}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            `;
+
+            document.getElementById("product-list").appendChild(productItem);
+        }
+
+
+        // Iteramos sobre los productos y los agregamos a la lista
+        for (var i = 0; i < productsJson.length; i++) {
+            addProductToList(productsJson[i]);
+        }
     </script>
 {% endblock %}
 
@@ -58,37 +101,8 @@
                         <div class="app-card-body px-4 w-100">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
-                                            <div class="app-card-header p-2 border-bottom-0">
-                                                <h3 class="app-card-title">
-                                                    <div class="app-icon-holder"><i class="fas fa-boxes"></i></div>
-                                                    Artículos encargados
-                                                </h3>
-                                                <hr>
-                                            </div>
-                                            <div class="app-card-body">
-                                                <div class="table-responsive p-2">
-                                                    <table class="table app-table-hover mb-0 text-left "
-                                                           id="tblProducts">
-                                                        <thead>
-                                                        <tr>
-                                                            <th class="cell">Imagen</th>
-                                                            <th class="cell">Producto</th>
-                                                            <th class="cell">Categoría</th>
-                                                            <th class="cell">Cantidad disponible</th>
-                                                            <th class="cell">Cantidad deseada</th>
-                                                            <th class="cell">Estado</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div><!--//app-card-->
-                                    </div>
                                     <div class="col-lg-4">
+                                        <!-- Datos del usuario -->
                                         <div class="app-card shadow-sm mb-5 align-items-start">
                                             <div class="app-card-header p-3 border-bottom-0">
                                                 <div class="row align-items-center gx-3">
@@ -111,12 +125,41 @@
                                             </div>
                                             <div class="app-card-body px-4 w-100">
 
+                                                <div class="item border-bottom py-3 pt-0">
+                                                    <div class="row justify-content-between align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="d-flex align-items-center row">
+                                                                <div class="col-auto">
+                                                                    <!-- Avatar place holder -->
+                                                                    <span class="avatar avatar-md">
+                                                                    <img class="avatar-img rounded-circle border border-white border-3 shadow"
+                                                                         src="{{ object.order.user.get_image }}" alt="">
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-auto">
+                                                                    <label class="col item-data">{{ object.order.user.get_full_name }}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div><!--//col-->
+
+                                                    </div><!--//row-->
+                                                </div><!--//item-->
                                                 <div class="item border-bottom py-3">
                                                     <div class="row justify-content-between align-items-center">
                                                         <div class="col-auto">
-                                                            <div class="item-label"><strong>Nombre</strong>
+                                                            <div class="item-label"><strong>Información del
+                                                                contacto</strong>
                                                             </div>
-                                                            <div class="item-data"> {{ object.user.get_full_name }}</div>
+                                                            <div class="item-data">
+                                                                <ul class="list-unstyled">
+                                                                    <li>
+                                                                        <i class="bi-at me-2"></i>{{ object.order.user.email }}
+                                                                    </li>
+                                                                    <li>
+                                                                        <i class="bi-phone me-2"></i>{{ object.order.user.phone }}
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div><!--//col-->
 
                                                     </div><!--//row-->
@@ -126,7 +169,7 @@
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Área</strong>
                                                             </div>
-                                                            <div class="item-data"> {{ object.user.area }}
+                                                            <div class="item-data"> {{ object.order.user.area }}
                                                             </div>
                                                         </div><!--//col-->
 
@@ -136,32 +179,15 @@
                                                     <div class="row justify-content-between align-items-center">
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Solapin</strong></div>
-                                                            <div class="item-data"> {{ object.user.solapin }}</div>
+                                                            <div class="item-data"> {{ object.order.user.solapin }}</div>
                                                         </div><!--//col-->
 
                                                     </div><!--//row-->
                                                 </div><!--//item-->
-                                                <div class="item border-bottom py-3">
-                                                    <div class="row justify-content-between align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="item-label"><strong>Teléfono</strong></div>
-                                                            <div class="item-data"> {{ object.user.phone }}</div>
-                                                        </div><!--//col-->
-                                                    </div><!--//row-->
-                                                </div><!--//item-->
-                                                <div class="item py-3">
-                                                    <div class="row justify-content-between align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="item-label"><strong>Dirección de correo
-                                                                electrónico</strong></div>
-                                                            <div class="item-data">
-                                                                {{ object.user.email }}
-                                                            </div>
-                                                        </div><!--//col-->
-                                                    </div><!--//row-->
-                                                </div><!--//item-->
+
                                             </div>
                                         </div>
+                                        <!-- Detalles del pedido -->
                                         <div class="app-card shadow-sm mb-5 align-items-start">
                                             <div class="app-card-header p-2 border-bottom-0">
                                                 <h3 class="app-card-title">
@@ -180,8 +206,9 @@
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Rango de fecha </strong>
                                                             </div>
-                                                            <div class="item-data"> {{ object.start_date |date:"D d M Y" }}
-                                                                - {{ object.end_date |date:"D d M Y" }}</div>
+                                                            <div class="item-data">
+                                                                {{ object.order.start_date |date:"D d M Y" }}
+                                                                - {{ object.order.end_date |date:"D d M Y" }}</div>
                                                         </div><!--//col-->
 
                                                     </div><!--//row-->
@@ -191,7 +218,8 @@
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Fecha de creado</strong>
                                                             </div>
-                                                            <div class="item-data"> {{ object.created |date:"D d M Y" }}
+                                                            <div class="item-data">
+                                                                {{ object.order.created |date:"D d M Y" }}
                                                             </div>
                                                         </div><!--//col-->
 
@@ -201,7 +229,7 @@
                                                     <div class="row justify-content-between align-items-center">
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Manifestación</strong></div>
-                                                            <div class="item-data"> {{ object.manifestation }}</div>
+                                                            <div class="item-data"> {{ object.order.manifestation }}</div>
                                                         </div><!--//col-->
 
                                                     </div><!--//row-->
@@ -210,7 +238,7 @@
                                                     <div class="row justify-content-between align-items-center">
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Descripción</strong></div>
-                                                            <div class="item-data">{{ object.description }}</div>
+                                                            <div class="item-data">{{ object.order.description }}</div>
                                                         </div><!--//col-->
                                                     </div><!--//row-->
                                                 </div><!--//item-->
@@ -220,17 +248,19 @@
                                                             <div class="item-label"><strong>Estado</strong></div>
                                                             <div class="item-data">
                                                                 {% if object.state == 'Pendiente' %}
-                                                                    <span class="badge bg-warning"> Pendiente </span>
-                                                                {% elif object.state == 'Aprobado' %}
-                                                                    <span class="badge bg-success"> Aprobado </span>
+                                                                    <span class="badge bg-warning"> Pendiente a autorización </span>
+                                                                {% elif object.state == 'Prestado' %}
+                                                                    <span class="badge bg-success"> Prestado </span>
+                                                                {% elif object.state == 'Entregado' %}
+                                                                    <span class="badge bg-secondary"> Entregado </span>
                                                                 {% else %}
-                                                                    <span class="badge bg-danger"> No Aprobado </span>
+                                                                    <span class="badge bg-danger"> N/A </span>
                                                                 {% endif %}
                                                             </div>
                                                         </div><!--//col-->
                                                         <div class="col text-end">
 
-                                                            {% if request.user|has_group:"Técnico" %}
+                                                            {% if request.user|has_group:"tecnico" %}
                                                                 {% if object.state == 'Pendiente' %}
                                                                     <div class="btn-group">
                                                                         <button type="button"
@@ -261,7 +291,25 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <!-- Artículos encargados -->
+                                    <div class="col-lg-8">
+                                        <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
+                                            <div class="app-card-header p-2 border-bottom-0">
+                                                <h3 class="app-card-title">
+                                                    <div class="app-icon-holder"><i class="bi-boxes"></i></div>
+                                                    Artículos encargados
+                                                </h3>
+                                                <hr>
+                                            </div>
+                                            <div class="app-card-body px-4 w-100">
+                                                {% if products %}
+                                                    <div id="product-list">
+                                                        <!-- Los detalles del producto se generarán aquí usando JavaScript -->
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div><!--//app-card-->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -272,11 +320,9 @@
 
                                 </div>
                                 <div class="col-auto">
-                                    <button type="submit" class="btn app-btn-primary btn-flat">
-                                        <i class="fas fa-save"></i> Guardar registro
-                                    </button>
                                     <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
-                                        <i class="fas fa-times"></i> Cancelar
+                                        <i class="bi-arrow-left"></i>
+                                        Regresar
                                     </a>
                                 </div>
                             </div>
@@ -290,37 +336,5 @@
 {% endblock %}
 
 {% block modal %}
-    <div class="modal fade" id="myModalSearchProducts" tabindex="-1" role="dialog"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" data-bs-backdrop="false">
-            <div class=" modal-content app-card app-card-orders-table">
 
-                <div class="modal-header app-card-header  p-2 border-bottom-0">
-                    <h3 class="modal-title app-card-title justify-content-between align-items-center">
-                        <div class="app-icon-holder">
-                            <i class="bi bi-search fa-2x" style="line-height: 0;"></i>
-                        </div>
-                        Búsqueda de Productos
-                    </h3>
-                    <hr>
-                </div>
-
-                <div class="modal-body app-card-body app-card-orders-table p-3 mt-auto">
-                    <table class="table app-table-hover mb-0 text-left " id="tblSearchProducts">
-                        <thead>
-                        <tr>
-                            <th class="cell">Producto</th>
-                            <th class="cell">Imagen</th>
-                            <th class="cell">Cantidad disponible</th>
-                            <th class="cell">Categoría</th>
-                            <th class="cell">Opciones</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}

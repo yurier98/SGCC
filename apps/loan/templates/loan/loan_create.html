@@ -9,6 +9,10 @@
     <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
 {% endblock %}
 
 {% block javascript %}
@@ -21,6 +25,12 @@
     <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
     <script src="{% static 'order/js/form.js' %}"></script>
+
+
+    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
     <script>
         order.details.products = {{ products|safe }};
     </script>
@@ -159,17 +169,17 @@
                                                         <label class="form-label">Descripción - (Opcional)</label>
                                                         {{ form.description }}
                                                     </div>
-                                                    {% if form.state %}
-                                                        <div class="form-group py-1">
-                                                            <label class="form-label">Estado</label>
-                                                            {{ form.state }}
-                                                        </div>
 
-                                                        <div class="form-group py-1">
-                                                            <label class="form-label">Estado del préstamo</label>
-                                                            {{ form.state_loan }}
-                                                        </div>
-                                                    {% endif %}
+                                                    {#                                                        <div class="form-group py-1">#}
+                                                    {#                                                            <label class="form-label">Estado</label>#}
+                                                    {#                                                            {{ form.state }}#}
+                                                    {#                                                        </div>#}
+
+                                                    <div class="form-group py-1">
+                                                        <label class="form-label">Estado del préstamo</label>
+                                                        {{ form.state_loan }}
+                                                    </div>
+
 
                                                 </div>
                                             </div>

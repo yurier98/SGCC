@@ -250,15 +250,17 @@
                                             </td>
 
                                             <td class="cell">
-                                                {% if object.state  == 'PR' %}
+                                                {% if object.state  == 'Prestado' %}
                                                     <span class="badge bg-success"> Prestado </span>
-                                                {% elif object.state  == 'PE' %}
-                                                    <span class="badge bg-warning"> Pendiente </span>
+                                                {% elif object.state  == 'Pendiente' %}
+                                                    <span class="badge bg-warning"> Pendiente a autorización </span>
+                                                {% elif object.state  == 'Entregado' %}
+                                                    <span class="badge bg-secondary"> Entregado </span>
                                                 {% endif %}
                                             </td>
                                             <td class="cell">{{ object.order.manifestation }}</td>
-                                            <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                                href="#">Ver</a>
+                                            <td class="cell">
+                                                {% include 'loan/_app_li_actions.html' %}
                                             </td>
                                         </tr>
 

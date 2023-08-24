@@ -42,7 +42,7 @@ var loan = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="img-fluid" style="width: 80px; height: 80px;">';
+                        return '<img src="' + data + '" class="" style="width: 50px; height: 50px; border-radius: 50px;">';
                     }
                 },
                 {
@@ -153,7 +153,7 @@ $(function () {
             return $('<div class="wrapper container">' +
                 '<div class="row">' +
                 '<div class="col-lg-1">' +
-                '<img alt="" src="' + repo.img + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
+                '<img alt="" src="' + repo.img + '" style="width: 50px; height: 50px; border-radius: 50px;"  class="">' +
                 '</div>' +
                 '<div class="col-lg-11 text-left shadow-sm">' +
                 //'<br>' +
@@ -244,7 +244,7 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
+                        return '<img src="' + data + '" class="" style="width: 50px; height: 50px; border-radius: 50px;" >';
                     }
                 },
 

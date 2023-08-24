@@ -23,14 +23,14 @@ from apps.order.models import Order
 class Loan(models.Model):
     """Préstamo model."""
     STATE = (
-        ('PE', 'Pendiente a autorización'),
-        ('PR', 'Prestado'),
-        ('EN', 'Entregado'),
+        ('Pendiente', 'Pendiente a autorización'),
+        ('Prestado', 'Prestado'),
+        ('Entregado', 'Entregado'),
     )
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)
-    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    state = models.CharField("Estado", max_length=2, choices=STATE, default='PR')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    state = models.CharField("Estado", max_length=9, choices=STATE, default='Prestado')
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     def __str__(self):
