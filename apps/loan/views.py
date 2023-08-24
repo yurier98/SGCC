@@ -25,6 +25,7 @@ from ..order.models import Order, OrderProduct
 from .forms import ReportForm, LoanForm
 from .models import Loan
 from ..inventory.models import Product
+from apps.notification.signals import notificar
 
 
 @login_required(login_url="/login/")
@@ -175,14 +176,9 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                     order.end_date = request.POST['end_date']
                     order.user_id = int(request.POST['user'])
                     order.description = request.POST['description']
-                    order.state = request.POST['state']
+                    order.state = Order.STATE[1:2]  # aki toma el valor del estado en aprobado
                     order.manifestation_id = int(request.POST['manifestation'])
                     order.save()
-
-                    loan = Loan()
-                    loan.order_id = order.id
-                    loan.state = request.POST['state_loan']
-                    loan.save()
 
                     for i in products:
                         order_product = OrderProduct()
@@ -195,8 +191,18 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                         if product.stock == 0:
                             product.state = 'P'
                         product.save()
-                        messages.success(request, '¡Préstamo guardado con éxito!')
-                    data['id'] = order.id
+
+                    loan = Loan()
+                    loan.order_id = order.id
+                    loan.state = request.POST['state_loan']
+                    loan.save()
+                    messages.success(request, '¡Préstamo guardado con éxito!')
+                    user = UserProfile.objects.get(id=request.POST['user'])
+                    notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente, '
+                                                            'para recogerlo contacte con nosotros.',
+                                   level='info')
+
+                    data['id'] = loan.id
                     # detail = OrderProduct()
                     # detail.order_id = order.id
                     # detail.product_id = int(i['id'])
@@ -208,6 +214,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
+            print(e)
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
@@ -350,8 +357,8 @@ class LoanDeleteView(DeleteView):
         return context
 
 
-class LoanDetailView(ValidatePermissionRequiredMixin, DetailView):
-    model = Order
+class LoanDetailView(DetailView):
+    model = Loan
     template_name = 'loan/loan_detail.html'
     success_url = reverse_lazy('loan_list')
     url_redirect = success_url
@@ -359,8 +366,8 @@ class LoanDetailView(ValidatePermissionRequiredMixin, DetailView):
 
     def get_details_product(self):
         data = []
-        order = self.get_object()
-        for i in order.orderproduct_set.all():
+        loan = self.get_object()
+        for i in loan.order.products.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -368,10 +375,9 @@ class LoanDetailView(ValidatePermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Detalles del pedido'
-        context['entity'] = 'Pedidos'
+        context['title'] = 'Detalles del préstamo'
+        context['entity'] = 'Préstamos'
         context['list_url'] = self.success_url
-        context['action'] = 'edit'
         context['products'] = self.get_details_product()
         return context
 
