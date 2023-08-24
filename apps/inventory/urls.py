@@ -15,8 +15,8 @@ urlpatterns = [
     path('add', views.ProductCreateView.as_view(), name='product_create'),
     path('detail/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
     path('update/<int:pk>/', views.ProductUpdateView.as_view(), name='product_update'),
-    # path('delete/<int:pk>/', views.ProductDeleteView.as_view(), name='product_delete'),
-    path('delete/<int:pk>/', views.MyModelDeleteView.as_view(), name='product_delete'),
+    path('delete/<int:pk>/', views.ProductDeleteView.as_view(), name='product_delete'),
+
 
 
 

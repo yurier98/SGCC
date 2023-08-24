@@ -40,7 +40,6 @@
                 language: 'es'
             });
 
-
             $('form').on('submit', function (e) {
                 e.preventDefault();
                 var parameters = new FormData(this);
@@ -48,6 +47,7 @@
                     location.href = '{{ list_url }}';
                 });
             });
+
         });
 
 

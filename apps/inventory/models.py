@@ -60,7 +60,7 @@ class Product(models.Model):
     def get_image(self):
         if self.img:
             return f'{base.MEDIA_URL}{self.img}'
-        return f'{base.STATIC_URL}/no_picture.svg'
+        return f'{base.MEDIA_URL}/no_picture.svg'
 
     def save(self, *args, **kwargs):
         # Llama al método save() del modelo para guardar la imagen original
