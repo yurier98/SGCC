@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100, verbose_name='Nombre del producto')),
-                ('img', models.ImageField(blank=True, default='no_picture.jpg', null=True, upload_to='products')),
+                ('img', models.ImageField(blank=True, default='no_picture.svg', null=True, upload_to='products')),
                 ('state', models.CharField(choices=[('D', 'Disponible'), ('P', 'Prestado')], default='D', max_length=1, verbose_name='Estado')),
                 ('stock', models.PositiveIntegerField(verbose_name='Cantidad de unidades')),
                 ('active', models.BooleanField(default=True, help_text='Si no está marcado, le permitirá ocultar el producto sin eliminarlo.', verbose_name='Activo')),

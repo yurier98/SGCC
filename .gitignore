@@ -133,11 +133,10 @@ dmypy.json
 .vscode
 .fleet/
 *.DS_Store
-.fleet/
 
 # staticfiles
 staticfiles
+mediafiles
 
 #Carpeta excluida
-mediafiles/products/
-mediafiles/users/
+mediafiles/products
