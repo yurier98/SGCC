@@ -13,7 +13,7 @@ class UserProfile(AbstractUser):
     Modelo que representa el perfil del usuario
     """
     image = models.ImageField(verbose_name="Imagen de perfil", upload_to='users/%Y/%m/%d', null=True, blank=True,
-                              default='users/user.png')
+                              default='user.jpg')
     token = models.UUIDField(primary_key=False, editable=False, null=True, blank=True)
     solapin = models.CharField(max_length=7)
     ocupacion = models.CharField(max_length=100,blank=True)
@@ -28,7 +28,7 @@ class UserProfile(AbstractUser):
     def get_image(self):
         if self.image:
             return f'{base.MEDIA_URL}{self.image}'
-        return f'{base.STATIC_URL}/users/user.png'
+        return f'{base.MEDIA_URL}user.jpg'
 
     def save(self, *args, **kwargs):
         # Llama al método save() del modelo para guardar la imagen original

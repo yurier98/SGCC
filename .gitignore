@@ -136,7 +136,7 @@ dmypy.json
 
 # staticfiles
 staticfiles
-mediafiles
 
 #Carpeta excluida
 mediafiles/products
+mediafiles/users
