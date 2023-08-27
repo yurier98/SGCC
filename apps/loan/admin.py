@@ -47,7 +47,7 @@ order_detail.allow_tags = True
 
 class LoanAdmin(admin.ModelAdmin):
     list_display = ('order', 'state', order_detail)
-    list_filter = ('state',)
+    list_filter = ('state', 'order__updated')
     # list_editable = ('state',)
     # autocomplete_fields = ['user']
     # inlines = [LoanItemInline]

@@ -26,6 +26,7 @@ class Loan(models.Model):
         ('Pendiente', 'Pendiente a autorización'),
         ('Prestado', 'Prestado'),
         ('Entregado', 'Entregado'),
+        ('Atrasado', 'Atrasado'),
     )
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)

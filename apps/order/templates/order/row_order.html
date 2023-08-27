@@ -26,8 +26,10 @@
                     <span class="badge bg-warning"> Pendiente </span>
                 {% elif object.state == 'Aprobado' %}
                     <span class="badge bg-success"> Aprobado </span>
-                {% else %}
+                {% elif object.state == 'No Aprobado' %}
                     <span class="badge bg-danger"> No Aprobado </span>
+                {% else %}
+                    <span class="badge bg-danger"> N/A </span>
                 {% endif %}
             </td>
             <td class="cell">

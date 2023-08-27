@@ -1,7 +1,5 @@
 import json
 import os
-from bootstrap_modal_forms.generic import BSModalReadView, BSModalDeleteView, BSModalFormView, BSModalCreateView, \
-    BSModalUpdateView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,18 +11,18 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # Create your views here.
 from django.template.loader import get_template
 from django.views.generic.edit import FormMixin
+from django_filters.views import FilterView
 from weasyprint import HTML, CSS
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, FormView, DeleteView, View, DetailView
-
-from ..security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
-
-from ..accounts.models import UserProfile
-from ..order.models import Order, OrderProduct
 from .forms import ReportForm, LoanForm
 from .models import Loan
-from ..inventory.models import Product
+from .filters import LoanFilter
+from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsInventaryMixin
+from apps.accounts.models import UserProfile
+from apps.order.models import Order, OrderProduct
+from apps.inventory.models import Product
 from apps.notification.signals import notificar
 
 
@@ -37,12 +35,12 @@ def index(request):
 
 ####################Vistas de Prestamos##################
 
-class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormMixin, ListView):
+class LoanListView( FilterView, ListView):
     model = Loan
+    filterset_class = LoanFilter
     # paginate_by = 10
     template_name = 'loan/loan_list.html'
     permission_required = 'loan.view_loan'
-    form_class = ReportForm
 
     # def get_queryset(self):
     #     queryset = super().get_queryset()
@@ -53,6 +51,8 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormMi
     #         end_date = timezone.datetime.strptime(end_date, '%Y-%m-%d')
     #         queryset = queryset.filter(order__created__range=[start_date, end_date])
     #     return queryset
+    def get_queryset(self):
+        return Loan.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,22 +60,22 @@ class LoanListView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormMi
         context['create_url'] = reverse_lazy('loan_create')
         context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Préstamos'
-        context['form'] = self.form_class()
+        context['filter'] = LoanFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
-    def post(self, request, *args, **kwargs):
-        data = {}
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            action = form.cleaned_data['action']
-            if action == 'search':
-                loans = self.get_queryset()
-                data = [loan.toJSON() for loan in loans]
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        else:
-            data['error'] = form.errors
-        return JsonResponse(data, safe=False)
+    # def post(self, request, *args, **kwargs):
+    #     data = {}
+    #     form = self.form_class(request.POST)
+    #     if form.is_valid():
+    #         action = form.cleaned_data['action']
+    #         if action == 'search':
+    #             loans = self.get_queryset()
+    #             data = [loan.toJSON() for loan in loans]
+    #         else:
+    #             data['error'] = 'Ha ocurrido un error'
+    #     else:
+    #         data['error'] = form.errors
+    #     return JsonResponse(data, safe=False)
 
 
 class LoanListView2(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormView):
@@ -176,7 +176,8 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                     order.end_date = request.POST['end_date']
                     order.user_id = int(request.POST['user'])
                     order.description = request.POST['description']
-                    order.state = Order.STATE[1:2]  # aki toma el valor del estado en aprobado
+                    order.state = Order.STATE[1:1]  # aki toma el valor del estado en aprobado (arreglar xq no le pone estado )
+                    # order.state = Order.STATE.index(2)
                     order.manifestation_id = int(request.POST['manifestation'])
                     order.save()
 

@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block stylesheets %}
     {#    <link rel="stylesheet" type="text/css"#}
@@ -8,15 +9,39 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 
+    {#    <!-- DataTables CSS -->#}
+    {#    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">#}
+    {#    <!-- DataTables Buttons CSS -->#}
+    {#    <link rel="stylesheet" type="text/css"#}
+    {#          href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">#}
+
+
 {% endblock %}
 
 {% block javascript %}
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script>
+
+    {#    <!-- jQuery -->#}
+    {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
+    {#    <!-- DataTables JS -->#}
+    {#    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>#}
+    {#    <!-- DataTables Buttons JS -->#}
+    {#    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>#}
+    {#    <!-- PDFMake -->#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>#}
+    {#    <!-- jsPDF -->#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>#}
+
     <script>
         $(document).ready(function () {
             $('#LoanTabla').DataTable({
+                //  dom: 'Bfrtip',
+                //  buttons: [
+                //      'copy', 'csv', 'excel', 'pdf', 'print'
+                //  ],
                 select: {
                     style: 'multi'
                 },
@@ -37,6 +62,7 @@
 
                 "initComplete": function () {
                     var table = $('#LoanTabla').DataTable();
+
                     var buttons = table.buttons([
                         'copyHtml5',
                         'excelHtml5',
@@ -127,47 +153,28 @@
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
-                    <div class="col-auto">
+                    <div class="col-md-4">
                         <h1 class="app-page-title mb-0">{{ entity }}</h1>
                         {% include "includes/_breadcrumbs.html" %}
                     </div>
-                    <div class="col-auto">
+                    <div class="col-md-8">
                         <div class="page-utilities">
                             <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-                                <div class="col-auto">
-                                    <form class="table-search-form row gx-1 align-items-center">
-                                        <div class="col-auto">
-                                            <input type="text" id="search-orders" name="searchorders"
-                                                   class="form-control search-orders" placeholder="Buscar">
+                                <div class="col-8 ">
+                                    <form method="get"
+                                          class="row gx-1 justify-content-start justify-content-md-end align-items-center">
+                                        <div class="col-lg-9">
+                                            {% render_field filter.form.description_contains class="form-control search-input" placeholder="Buscar por descripción del pedido." %}
                                         </div>
                                         <div class="col-auto">
-                                            <button type="submit" class="btn app-btn-secondary">Buscar</button>
+                                            <button type="submit" class="btn app-btn-secondary">
+                                                <i class="bi-search"></i> Buscar
+                                            </button>
                                         </div>
                                     </form>
 
                                 </div><!--//col-->
-                                <div class="col-auto">
 
-                                    <select class="form-select w-auto">
-                                        <option selected value="option-1">Todos</option>
-                                        <option value="option-2">Esta semana</option>
-                                        <option value="option-3">Este mes</option>
-                                        <option value="option-4">Últimos 3 meses</option>
-
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <a class="btn app-btn-secondary" href="#">
-                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1"
-                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd"
-                                                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-                                        </svg>
-                                        Descargar CSV
-                                    </a>
-                                </div>
                                 <div class="col-auto">
                                     <a class="btn app-btn-primary" href="{{ create_url }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -188,18 +195,22 @@
                         <div class="app-card-header p-3 border-bottom-0">
                             <div class="row  justify-content-between align-items-center gx-3">
                                 <div class="col-auto">
-                                    <form>
-                                        <!-- Search -->
-                                        <div class="input-group input-group-merge input-group-flush">
-                                            <div class="input-group-prepend input-group-text">
-                                                <i class="bi-search"></i>
+                                    <div class="row align-items-center gx-3">
+                                        <div class="col-auto">
+                                            <div class="app-icon-holder">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt"
+                                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"></path>
+                                                    <path fill-rule="evenodd"
+                                                          d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"></path>
+                                                </svg>
                                             </div>
-                                            <input id="datatableSearch" type="search" class="form-control"
-                                                   placeholder="Search users" aria-label="Search users">
                                         </div>
-                                        <!-- End Search -->
-                                    </form>
-
+                                        <div class="col-auto">
+                                            <h4 class="app-card-title">{{ title }}</h4>
+                                        </div><!--//col-->
+                                    </div>
 
                                 </div><!--//col-->
                                 <div class="col-auto">
@@ -256,6 +267,8 @@
                                                     <span class="badge bg-warning"> Pendiente a autorización </span>
                                                 {% elif object.state  == 'Entregado' %}
                                                     <span class="badge bg-secondary"> Entregado </span>
+                                                {% else %}
+                                                     <span class="badge bg-danger"> Atrasado </span>
                                                 {% endif %}
                                             </td>
                                             <td class="cell">{{ object.order.manifestation }}</td>

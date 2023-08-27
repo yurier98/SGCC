@@ -44,8 +44,15 @@
 -gradient-top-left: linear-gradient(225deg, #f8bc24ff, #f58800ff, #266867ff, #1a4645ff, #051821ff);
 -gradient-bottom-left: linear-gradient(315deg, #f8bc24ff, #f58800ff, #266867ff, #1a4645ff, #051821ff);
 -gradient-radial: radial-gradient(#f8bc24ff, #f58800ff, #266867ff, #1a4645ff, #051821ff);
+
+
+    --bs-border-radius: 0.375rem;
 }
 
+.btn{
+    /*border-radius: var(--bs-border-radius);*/
+    border-radius: 0.375rem;
+}
 
 .app-btn-primary {
 
@@ -53,6 +60,7 @@
     color: #fff;
     border-color:  var(--bs-primary);
 }
+
 
 .app-btn-primary:hover {
     background: var(--tangerineDark);

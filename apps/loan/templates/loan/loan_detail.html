@@ -9,9 +9,13 @@
     <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
 
+
+
 {% endblock %}
 
 {% block javascript %}
+
+
     <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
     <script src="{% static 'order/js/details.js' %}"></script>
@@ -253,6 +257,8 @@
                                                                     <span class="badge bg-success"> Prestado </span>
                                                                 {% elif object.state == 'Entregado' %}
                                                                     <span class="badge bg-secondary"> Entregado </span>
+                                                                {% elif object.state == 'Atrasado' %}
+                                                                    <span class="badge bg-danger"> Atrasado </span>
                                                                 {% else %}
                                                                     <span class="badge bg-danger"> N/A </span>
                                                                 {% endif %}
