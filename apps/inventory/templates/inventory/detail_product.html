@@ -2,9 +2,31 @@
 {% load static %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/plugins/glightbox/css/glightbox.css' %}">
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'assets/plugins/glightbox/js/glightbox.js' %}"></script>
+    <script>
+        var e = {
+            init: function () {
+                e.lightBox();
+            },
+            // START: GLightbox
+            lightBox: function () {
+                var light = e.select('[data-glightbox]');
+                if (e.isVariableDefined(light)) {
+                    var lb = GLightbox({
+                        selector: '*[data-glightbox]',
+                        openEffect: 'fade',
+                        closeEffect: 'fade'
+                    });
+                }
+            },
+            // END: GLightbox
+        }
+    </script>
+
     <script type="text/javascript">
         $(function () {
             // Delete inventory buttons
@@ -161,17 +183,27 @@
 
                         </div><!--//tab-content-->
                     </div>
+                    <!-- Image -->
                     <div class="col-xl-4">
-
                         <div class="app-card">
                             <div class="card-body  d-flex flex-column align-items-center">
-                                <img src="{% url 'home' %}media/{{ object.img }}"
-                                     alt="Profile"
-                                     class="img-fluid  img-thumbnail">
+
+                                <a data-glightbox data-gallery="gallery" href="{{ object.img.url }}">
+                                    <div class="card card-element-hover card-overlay-hover overflow-hidden">
+                                        <!-- Image -->
+                                        <img src="{{ object.img.url }}" class="rounded-3 img-fluid  img-thumbnail"
+                                             alt="Imagen de {{ object.name }}">
+                                        <!-- Full screen button -->
+                                        <div class="hover-element position-absolute w-100 h-100">
+                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>
+                                        </div>
+                                    </div>
+                                </a>
 
                             </div>
                         </div>
                     </div>
+                    <!-- END Image -->
                 </section>
 
             </div><!--//container-fluid-->
