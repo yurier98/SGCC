@@ -33,6 +33,15 @@ class Order(models.Model):
         """Return title and username."""
         return 'Pedido de {}'.format(self.user.username)
 
+    class Meta:
+        verbose_name = "Pedido"
+        verbose_name_plural = "Pedidos"
+        ordering = ["-created"]
+        permissions = (
+            ("approve_order", "Aprobar Pedido"),
+            ("view_all_order", "Ver todos los pedidos"),
+        )
+
     def toJSON(self):
         item = model_to_dict(self)
         # item['id'] = self.id
@@ -50,14 +59,27 @@ class Order(models.Model):
             detail.product.save()
         super(Order, self).delete()
 
-    class Meta:
-        verbose_name = "Pedido"
-        verbose_name_plural = "Pedidos"
-        ordering = ["-created"]
-        permissions = (
-            ("approve_order", "Aprobar Pedido"),
-            ("view_all_order", "Ver todos los pedidos"),
-        )
+    def stats(self):
+        item = []
+        item['total_orders'] = self.total_orders()
+        item['total_orders_pending'] = self.total_orders_pending()
+        return item
+
+    @classmethod
+    def total_orders(cls):
+        return cls.objects.count()
+
+    @classmethod
+    def total_orders_pending(cls):
+        return cls.objects.filter(state='Pendiente').count()
+
+    @classmethod
+    def total_orders_approve(cls):
+        return cls.objects.filter(state='Aprobado').count()
+
+    @classmethod
+    def total_orders_rejected(cls):
+        return cls.objects.filter(state='No Aprobado').count()
 
 
 class OrderProduct(models.Model):

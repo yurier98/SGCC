@@ -1,0 +1,38 @@
+<div class="app-card app-card-orders-table shadow-sm mb-5">
+    <div class="app-card-body">
+        <div class="table-responsive">
+            <table class="table app-table-hover mb-0 text-left">
+                <thead class="">
+                <tr class="">
+                    <th class="cell">No</th>
+                    <th class="cell">Fecha de registro</th>
+                    <th class="cell">Descripción</th>
+                    <th class="cell">Fecha de inicio</th>
+                    <th class="cell">Fecha de devolución</th>
+                    <th class="cell">Manifestación</th>
+                    <th class="cell">Estado</th>
+                    <th class="cell" style="width: 4%;"></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for object in object_list %}
+                    {% include 'order/row_order.html' %}
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            {% include 'includes/_no_data.html' %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div><!--//table-responsive-->
+    </div><!--//app-card-body-->
+</div><!--//app-card-->
+{% include 'includes/app_pagination.html' %}
+
+
+
+   {% if object.state == 'Pendiente' %}

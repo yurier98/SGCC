@@ -49,13 +49,14 @@ class OrderListAllView(GroupRequiredMixin, ExistsInventaryMixin, FilterView, Lis
         context['create_url'] = reverse_lazy('order_create')
         context['list_url'] = reverse_lazy('order_all_list')
         context['entity'] = 'Todos los Pedidos'
+        context['stats'] = self.model.stats
         return context
 
 
 class OrderListView(GroupNotAllowedMixin, ExistsInventaryMixin, LoginRequiredMixin, FilterView):
     """ Return all Order of usuario"""
     filterset_class = OrderFilter
-    paginate_by = 4
+    paginate_by = 10
     is_paginated = True
     template_name = 'order/order_list.html'
     permission_required = 'order.view_order'
@@ -215,7 +216,7 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
     def get_details_product(self):
         data = []
         order = self.get_object()
-        for i in order.orderproduct_set.all():
+        for i in order.products.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -267,7 +268,7 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
                         order.description = request.POST['description']
                         order.manifestation_id = int(request.POST['manifestation'])
                         order.save()
-                        order.orderproduct_set.all().delete()
+                        order.products.all().delete()
                         for i in products:
                             detail = OrderProduct()
                             detail.order_id = order.id
@@ -373,7 +374,7 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
     def get_details_product(self):
         data = []
         order = self.get_object()
-        for i in order.orderproduct_set.all():
+        for i in order.products.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -427,7 +428,7 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
                         order.state = state
                         order.manifestation_id = int(request.POST['manifestation'])
                         order.save()
-                        order.orderproduct_set.all().delete()
+                        order.products.all().delete()
                         for i in products:
                             detail = OrderProduct()
                             detail.order_id = order.id

@@ -48,13 +48,16 @@
 <body>
 <div class="container-fluid">
     <img alt="" src="{% static 'assets/images/app-logo.svg' %}" class="img-fluid d-block mx-auto img-logo">
-    <h1 class="name-company">Dirección de Extensión Universitaria</h1>
+   <h1 class="name-company">Comprobante del Pedido</h1>
+    <h5 class="text-center">Dirección de Extensión Universitaria</h5>
+
     <p class="text-center">
         {{ loan.company.ruc }}Reporte de Pedidos <br>
         {#        {{ loan.company.address }}<br>#}
         Celular: {{ loan.company.mobile }}<br>
         Teléfono: {{ loan.company.phone }}<br>
         Web: {{ sale.company.website }}<br>
+        Estado del pedido: {{  object.state }}<br>
     </p>
     <div class="mt-2 row justify-content-between">
         <div class="col-auto">
@@ -89,7 +92,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for det in object.orderproduct_set.all %}
+        {% for det in object.products.all %}
             <tr>
                 <td>{{ det.product }}</td>
                 <td class="text-center">{{ det.cant }}</td>
@@ -97,8 +100,8 @@
         {% endfor %}
 
         <tr class="text-uppercase font-weight-bold text-right mt-3">
-            <td >Total de productos:</td>
-            <td class="text-center"> {{ object.orderproduct_set.all.count }}</td>
+            <td >Total de productos: {{ object.products.all.count }}</td>
+            <td class="text-center"> {{ object.products.all.count }}</td>
 
         </tr>
         <tr>

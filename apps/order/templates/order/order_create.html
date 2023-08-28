@@ -9,9 +9,19 @@
     <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/plugins/glightbox/css/glightbox.css' %}">
+
+
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'assets/plugins/glightbox/js/glightbox.js' %}"></script>
+
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
     <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
@@ -20,8 +30,13 @@
     <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
     <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
-    <script src="{% static 'order/js/form.js' %}"></script>
 
+    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'order/js/form.js' %}"></script>
     <script>
         order.details.products = {{ products|safe }};
         // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
@@ -214,14 +229,14 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" data-bs-backdrop="false">
             <div class=" modal-content app-card app-card-orders-table">
 
-                <div class="modal-header app-card-header  p-2 border-bottom-0">
-                    <h3 class="modal-title app-card-title justify-content-between align-items-center">
+                <div class="modal-header ">
+                    <h5 class="modal-title">
                         <div class="app-icon-holder">
                             <i class="bi bi-search fa-2x" style="line-height: 0;"></i>
                         </div>
-                        Búsqueda de Productos
-                    </h3>
-                    <hr>
+                        Buscar productos
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body app-card-body app-card-orders-table p-3 mt-auto">
