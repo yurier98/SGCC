@@ -42,7 +42,19 @@ var order = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="img-fluid" style="width: 80px; height: 80px;">';
+                        //return '<img src="' + data + '" class="img-fluid" style="width: 80px; height: 80px;">';
+                        return '  <a data-glightbox data-gallery="gallery" href="' + data + '">\n' +
+                            '       <span class="avatar avatar-md">\n' +
+                            '                                        <!-- Image -->\n' +
+                            '             <img src="' + data + '" class="rounded-3 avatar-img"\n' +
+                            '                  alt="Imagen de" style="border-radius: 8px;">\n' +
+                            '                                        <!-- Full screen button -->\n' +
+                            '                                        <div class="hover-element position-absolute w-100 h-100">\n' +
+                            '                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>\n' +
+                            '                                        </div>\n' +
+                            '           </span>\n' +
+
+                            '      </a>';
                     }
                 },
                 {
@@ -50,7 +62,9 @@ var order = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<input type="text" name="cant" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cant + '">';
+                        var var_stock =data.names;
+                        console.log(var_stock)
+                        return '<input type="number" min="1" max="' + var_stock + '" name="cant" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cant + '">';
                     }
                 },
                 {
@@ -150,21 +164,25 @@ $(function () {
                 return repo.text;
             }
 
-            return $('<div class="wrapper container">' +
-                '<div class="row">' +
-                '<div class="col-lg-1">' +
-                '<img alt="" src="' + repo.img + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
-                '</div>' +
-                '<div class="col-lg-11 text-left shadow-sm">' +
-                //'<br>' +
-                '<p style="margin-bottom: 0;">' +
-                '<b>Nombre:</b> ' + repo.name + '<br>' +
-                '<b>Categoría:</b> <span class="">' + repo.category.name + '</span>' + '<br>' +
-                '<b>Stock:  </b>' + '<span class="badge  bg-success">' + repo.stock + '</span>' + ' <br>' +
-                '</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>');
+            return $('       <div class="row justify-content-between align-items-center">\n' +
+                '                        <div class="col-auto">\n' +
+                '                            <div class="d-flex align-items-center row">\n' +
+                '                                <div class="col-auto">\n' +
+                '                                    <!-- Avatar place holder -->\n' +
+                '                                    <span class="avatar avatar-md">\n' +
+                '                                        <img class="avatar-img" style="border-radius: 8px"\n' +
+                '                                             src="' + repo.img + '" alt="">\n' +
+                '                                    </span>\n' +
+                '                                </div>\n' +
+                '                                <div class="col-auto">\n' +
+                '                                    <div class="item-label"><strong>' + repo.name + '</strong></div>\n' +
+                '                                    <div class="item-data">Categoría: ' + repo.category.name + '</div>\n' +
+                '                                    <div class="item-data">En almacen: ' + '<span class="badge  bg-success">' + repo.stock + '</span>'+ '</div>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>')
+
         },
     })
         .on('select2:select', function (e) {
@@ -243,7 +261,16 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
+                        // return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
+                        return '  <a data-glightbox data-gallery="gallery" href="' + data + '">\n' +
+                            '                                        <!-- Image -->\n' +
+                            '                                        <img src="' + data + '" class="rounded-3"\n' +
+                            '                                             alt="Imagen de" style="width: auto; height: 50px; border-radius: 8px">\n' +
+                            '                                        <!-- Full screen button -->\n' +
+                            '                                        <div class="hover-element position-absolute w-100 h-100">\n' +
+                            '                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>\n' +
+                            '                                        </div>\n' +
+                            '                                </a>';
                     }
                 },
 
