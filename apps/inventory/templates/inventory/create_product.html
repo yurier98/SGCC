@@ -15,113 +15,392 @@
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
-                <h1 class="app-page-title mb-0">{{ entity }}</h1>
-                {% include "includes/_breadcrumbs.html" %}
-                <hr class="mb-4">
-                <div class="settings-section row justify-content-lg-center">
-                    <div class="col-md-8">
-                        <div class="app-card app-card-settings shadow-sm p-4">
-                            <div class="app-card-body">
-                                <form enctype="multipart/form-data" method="post" action=""
-                                      class="settings-form row g-3">
-                                    {% csrf_token %}
-                                    <div class="col-md-10">
-                                        <label for="setting-input-1" for="{{ form.categoria }}" class="form-label">Nombre
-                                            del producto<span
-                                                    class="ms-2" data-container="body" data-bs-toggle="popover"
-                                                    data-trigger="hover" data-placement="top"
-                                                    data-content="This is a Bootstrap popover example. You can use popover to provide extra info."><svg
-                                                    width="1em" height="1em" viewBox="0 0 16 16"
-                                                    class="bi bi-info-circle"
-                                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
-  <circle cx="8" cy="4.5" r="1"/>
-</svg></span></label>
-                                        {% render_field form.name class="form-control" type="text" %}
-                                        <span class="help-block valid-feedback">{{ form.name.error_messages }}</span>
-                                    </div>
 
-                                    <div class="col-md-2">
-                                        <div class="drop-zone">
-                                            <span class="drop-zone__prompt">  <i class="bi bi-card-image"></i></span>
-                                            {% render_field form.img class="drop-zone__input" type="file" %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="">
-                                            <label for="" class="form-label">{{ form.img.label }} </label>
-                                            {% render_field form.img type="file" %}
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">Categoría</label>
-                                        <i class="bi-question-circle text-body ms-1" data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           aria-label="Displayed on public forums, such as Front."
-                                           data-bs-original-title="Displayed on public forums, such as Front."></i>
-
-                                        {% render_field form.category class="form-select" placeholder="First Name" type="text" %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">Estado</label>
-                                        {% render_field form.state class="form-select" placeholder="First Name" type="text" %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">Cantidad de unidades</label>
-                                        {% render_field form.stock class="form-control" type="number" name="unidades" min="1" max="50" step="1" required="required" %}
-                                    </div>
-                                    <div class="col-md-4 ">
-                                        <div class="form-check form-switch">
-                                            {% render_field form.available class="form-check-input" name="available" id="id_available" type="checkbox" %}
-                                            <label for="id_available" class="form-check-label form-label">Está
-                                                disponible</label>
-                                            <span class="help-block valid-feedback text-black-50">{{ form.available.help_text }}</span>
-                                            <span class="help-block valid-feedback text-black-50">{{ form.available.error_messages }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 ">
-                                        <div class="form-check form-switch">
-                                            {% render_field form.active class="form-check-input" type="checkbox" name="active" id="id_active" %}
-                                            <label class="form-check-label form-label" for="id_active">Está
-                                                activo</label>
-                                            <span class="help-block  valid-feedback text-black-50">{{ form.active.help_text }}</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
-                                            {% for error in form.non_field_errors %}
-                                                <span class="invalid-feedback">{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-
-                                        {% for field in form %}
-                                            <div class="{% if field.errors %} invalid{% endif %}">
-                                                {% for error in field.errors %}
-                                                    <span class="invalid-feedback">{{ error }}</span>
-                                                    <p class="help-block ">{{ error }}</p>
-                                                    {{ field.error_messages }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="mt-3 row justify-content-between">
-                                        <div class="col-auto">
-                                            <button type="submit" class="btn app-btn-primary">Guardar</button>
-                                        </div>
-                                        <div class="col-auto">
-                                            <a class="btn app-btn-secondary"
-                                               href="{% url 'inventory_list' %}">Cancelar</a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div><!--//app-card-body-->
-                        </div><!--//app-card-->
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
                     </div>
-                </div><!--//row-->
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto ">
+                                    {% block content_list_before %}{% endblock %}
+                                </div><!--//col-->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div>
+                <form class="row " enctype="multipart/form-data" method="post" action="">
+                    {% csrf_token %}
+
+                    <div class="col-lg-8 mb-3 mb-lg-0">
+                        <!-- Información del producto Card -->
+                        <div class="app-card app-card-settings mb-3 mb-lg-5">
+                            <!-- Header -->
+                            <div class="app-card-header p-2 border-bottom-0">
+                                <h3 class="app-card-title">
+                                    <div class="app-icon-holder"><i class="bi-boxes"></i></div>
+                                    Información del producto
+                                </h3>
+                                <hr>
+                            </div>
+                            <!-- End Header -->
+                            <!-- Body -->
+                            <div class="app-card-body px-4 w-100">
+                                <!-- Form -->
+                                <div class="mb-4">
+                                    <label for="" class="form-label">Nombre</label>
+                                    <label for="setting-input-1" class="form-label">Business Name
+                                        <span class="ms-2"
+                                              data-bs-container="body"
+                                              data-bs-toggle="popover"
+                                              data-bs-trigger="hover focus"
+                                              data-bs-placement="top"
+                                              data-bs-content="This is a Bootstrap popover example. You can use popover to provide extra info."><svg
+                                                width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle"
+                                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+  <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"></path>
+  <circle cx="8" cy="4.5" r="1"></circle>
+</svg></span></label>
+                                    {% render_field form.name class="form-control" type="text" name="name" required="required" %}
+                                </div>
+                                <!-- End Form -->
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- Form -->
+                                        <div class="mb-4">
+                                            <label for="" class="form-label">Categoria</label>
+                                            {% render_field form.category class="form-select" placeholder="First Name" type="text" %}
+
+                                        </div>
+                                        <!-- End Form -->
+                                    </div>
+                                    <!-- End Col -->
+
+                                    <div class="col-sm-6">
+                                        <!-- Form -->
+                                        <div class="mb-4">
+                                            <label for="" class="form-label">Estado</label>
+                                            {% render_field form.state class="form-select" placeholder="First Name" type="text" %}
+                                            <small class="form-text">Used to calculate shipping rates at checkout and
+                                                label prices during fulfillment.</small>
+                                        </div>
+                                        <!-- End Form -->
+                                    </div>
+                                    <!-- End Col -->
+                                </div>
+                                <!-- End Row -->
+
+
+                            </div>
+                            <!-- Body -->
+                        </div>
+                        <!-- End Card -->
+
+                        <!-- Card media  -->
+                        <div class="app-card app-card-settings mb-3 mb-lg-5">
+                            <!-- Header -->
+                            <div class="app-card-header p-3 border-bottom-0">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto">
+                                        <div class="app-icon-holder">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-folder"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.828 4a3 3 0 0 1-2.12-.879l-.83-.828A1 1 0 0 0 6.173 2H2.5a1 1 0 0 0-1 .981L1.546 4h-1L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3v1z"></path>
+                                                <path fill-rule="evenodd"
+                                                      d="M13.81 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zM2.19 3A2 2 0 0 0 .198 5.181l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H2.19z"></path>
+                                            </svg>
+                                        </div><!--//icon-holder-->
+                                    </div><!--//col-->
+                                    <div class="col-auto">
+                                        <h4 class="app-card-title">Foto del producto</h4>
+                                    </div><!--//col-->
+                                </div><!--//row-->
+                                <hr>
+                            </div>
+                            <!-- End Header -->
+
+                            <!-- Body -->
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="" class="form-label">Imagen del producto</label>
+                                    <div class="drop-zone">
+                                        <span class="drop-zone__prompt">  <i class="bi bi-card-image"></i></span>
+                                        {% render_field form.img class="drop-zone__input" type="file" %}
+                                    </div>
+                                    {% render_field form.img class="form-control" type="file" %}
+                                </div>
+                                {% render_field form.img class="form-control" type="file" %}
+                                <!-- Dropzone -->
+                                <div id="attachFilesNewProjectLabel"
+                                     class="js-dropzone dz-dropzone dz-dropzone-card dz-clickable">
+                                    <div class="dz-message">
+                                        <img class="avatar avatar-xl avatar-4x3 mb-3"
+                                             src="assets/svg/illustrations/oc-browse.svg" alt="Image Description"
+                                             data-hs-theme-appearance="default">
+                                        <img class="avatar avatar-xl avatar-4x3 mb-3"
+                                             src="assets/svg/illustrations-light/oc-browse.svg" alt="Image Description"
+                                             data-hs-theme-appearance="dark">
+
+                                        <h5>Drag and drop your file here</h5>
+
+                                        <p class="mb-2">or</p>
+
+                                        <span class="btn btn-white btn-sm">Browse files</span>
+                                    </div>
+                                </div>
+                                <!-- End Dropzone -->
+                            </div>
+                            <!-- Body -->
+                        </div>
+                        <!-- End Card -->
+
+                        <!-- Variants Card -->
+                        <div class="app-card app-card-settings mb-3 mb-lg-5">
+                            <!-- Header -->
+                            <div class="app-card-header p-3 border-bottom-0">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto">
+                                        <div class="app-icon-holder">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-folder"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.828 4a3 3 0 0 1-2.12-.879l-.83-.828A1 1 0 0 0 6.173 2H2.5a1 1 0 0 0-1 .981L1.546 4h-1L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3v1z"></path>
+                                                <path fill-rule="evenodd"
+                                                      d="M13.81 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zM2.19 3A2 2 0 0 0 .198 5.181l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H2.19z"></path>
+                                            </svg>
+                                        </div><!--//icon-holder-->
+                                    </div><!--//col-->
+                                    <div class="col-auto">
+                                        <h4 class="app-card-title">Variante del producto</h4>
+                                    </div><!--//col-->
+                                </div><!--//row-->
+                                <hr>
+                            </div>
+                            <!-- End Header -->
+
+                            <!-- Body -->
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="" class="form-label">Imagen del producto</label>
+                                    {% render_field form.img class="form-control" type="file" %}
+                                </div>
+
+                                <h6 class="text-cap">Options</h6>
+
+                                <div class="js-add-field">
+                                    <div class="row mb-4">
+                                        <div class="col-sm-4 mb-2 mb-sm-0">
+                                            <!-- Select -->
+                                            <div class="tom-select-custom">
+                                                <select class="js-select form-select tomselected ts-hidden-accessible"
+                                                        data-hs-tom-select-options="{
+                                &quot;searchInDropdown&quot;: false,
+                                &quot;hideSearch&quot;: true
+                              }" id="tomselect-2" tabindex="-1">
+
+                                                    <option value="Color">Color</option>
+                                                    <option value="Material">Material</option>
+                                                    <option value="Style">Style</option>
+                                                    <option value="Title">Title</option>
+                                                    <option value="Size">Size</option>
+                                                </select>
+                                                <div class="ts-wrapper js-select form-select single plugin-change_listener plugin-hs_smart_position input-hidden full has-items">
+                                                    <div class="ts-control">
+                                                        <div data-value="Size" class="item" data-ts-item="">Size</div>
+                                                    </div>
+                                                    <div class="tom-select-custom">
+                                                        <div class="ts-dropdown single plugin-change_listener plugin-hs_smart_position"
+                                                             style="display: none; visibility: visible; opacity: 1;">
+                                                            <div role="listbox" tabindex="-1"
+                                                                 class="ts-dropdown-content"
+                                                                 id="tomselect-2-ts-dropdown">
+                                                                <div data-selectable="" data-value="Size"
+                                                                     class="option selected active" role="option"
+                                                                     id="tomselect-2-opt-1" aria-selected="true">Size
+                                                                </div>
+                                                                <div data-selectable="" data-value="Color"
+                                                                     class="option" role="option"
+                                                                     id="tomselect-2-opt-2">Color
+                                                                </div>
+                                                                <div data-selectable="" data-value="Material"
+                                                                     class="option" role="option"
+                                                                     id="tomselect-2-opt-3">Material
+                                                                </div>
+                                                                <div data-selectable="" data-value="Style"
+                                                                     class="option" role="option"
+                                                                     id="tomselect-2-opt-4">Style
+                                                                </div>
+                                                                <div data-selectable="" data-value="Title"
+                                                                     class="option" role="option"
+                                                                     id="tomselect-2-opt-5">Title
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End Select -->
+                                        </div>
+                                        <!-- End Col -->
+
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" placeholder="Enter tags"
+                                                   aria-label="Enter tags">
+                                        </div>
+                                        <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+
+                                    <!-- Container For Input Field -->
+                                    <div id="addAnotherOptionFieldContainer"></div>
+
+                                    <a href="javascript:;" class="js-create-field form-link">
+                                        <i class="bi-plus"></i> Add another option
+                                    </a>
+                                </div>
+
+                                <!-- Add Another Option Input Field -->
+                                <div id="addAnotherOptionFieldTemplate" style="display: none;">
+                                    <div class="row mb-4">
+                                        <div class="col-sm-4 mb-2 mb-sm-0">
+                                            <!-- Select -->
+                                            <div class="tom-select-custom">
+                                                <select class="js-select-dynamic form-select"
+                                                        data-hs-tom-select-options="{
+                                &quot;searchInDropdown&quot;: false,
+                                &quot;hideSearch&quot;: true
+                              }">
+                                                    <option value="Size">Size</option>
+                                                    <option value="Color">Color</option>
+                                                    <option value="Material">Material</option>
+                                                    <option value="Style">Style</option>
+                                                    <option value="Title">Title</option>
+                                                </select>
+                                            </div>
+                                            <!-- End Select -->
+                                        </div>
+                                        <!-- End Col -->
+
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" placeholder="Enter tags"
+                                                   aria-label="Enter tags">
+                                        </div>
+                                        <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+                                </div>
+                                <!-- End Add Another Option Input Field -->
+                            </div>
+                            <!-- Body -->
+                        </div>
+                        <!-- End Card -->
+                    </div>
+                    <!-- End Col -->
+
+                    <div class="col-lg-4">
+
+                        <!-- Other Card -->
+                        <div class="app-card app-card-settings mb-3 mb-lg-5">
+                            <!-- Header -->
+                            <div class="app-card-header p-3 border-bottom-0">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto">
+                                        <div class="app-icon-holder">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-folder"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.828 4a3 3 0 0 1-2.12-.879l-.83-.828A1 1 0 0 0 6.173 2H2.5a1 1 0 0 0-1 .981L1.546 4h-1L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3v1z"></path>
+                                                <path fill-rule="evenodd"
+                                                      d="M13.81 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zM2.19 3A2 2 0 0 0 .198 5.181l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H2.19z"></path>
+                                            </svg>
+                                        </div><!--//icon-holder-->
+                                    </div><!--//col-->
+                                    <div class="col-auto">
+                                        <h4 class="app-card-title">Otros datos del producto</h4>
+                                    </div><!--//col-->
+                                </div><!--//row-->
+                                <hr>
+                            </div>
+                            <!-- End Header -->
+
+                            <!-- Body -->
+                            <div class="card-body">
+                                <!-- Form -->
+                                <div class="md-4">
+                                    <label for="" class="form-label">Cantidad de unidades</label>
+                                    {% render_field form.stock class="form-control" type="number" name="unidades" min="1" max="50" step="1" required="required" %}
+                                </div>
+                                <!-- End Form -->
+
+                                <hr class="my-4">
+
+                                <div class="md-4">
+                                    <div class="form-check form-switch">
+                                        {% render_field form.available class="form-check-input" name="available" id="id_available" type="checkbox" %}
+                                        <label for="id_available" class="form-check-label form-label">Está
+                                            disponible
+                                            <i class="bi-question-circle text-body ms-1"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               aria-label="Product availability switch toggler."
+                                               data-bs-original-title="Product availability switch toggler."></i>
+                                        </label>
+                                        <span class="help-block valid-feedback text-black-50">{{ form.available.help_text }}</span>
+                                        <span class="help-block valid-feedback text-black-50">{{ form.available.error_messages }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="md-4">
+                                    <div class="form-check form-switch">
+                                        {% render_field form.active class="form-check-input" type="checkbox" name="active" id="id_active" %}
+                                        <label class="form-check-label form-label" for="id_active">Está
+                                            activo</label>
+                                        <span class="help-block  valid-feedback text-black-50">{{ form.active.help_text }}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Body -->
+                        </div>
+                        <!-- End Card -->
+
+                    </div>
+                    <!-- End Col -->
+
+                    <!-- Buttons Options  -->
+                    <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
+                         style="max-width: 40rem;">
+                        <!-- Card -->
+                        <div class="app-card card-sm bg-dark bg-blur shadow-sm mx-2">
+                            <div class="card-body">
+                                <div class="row justify-content-center justify-content-sm-between">
+                                    <div class="col">
+
+                                    </div>
+                                    <!-- End Col -->
+
+                                    <div class="col-auto">
+                                        <div class="d-flex gap-3">
+                                            <a href="{{ list_url }}" class="btn btn-ghost-light">
+                                                Descartar</a>
+                                            <button type="submit" class="btn app-btn-primary">
+                                                <i class="bi-archive"></i> Guardar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- End Col -->
+                                </div>
+                                <!-- End Row -->
+                            </div>
+                        </div>
+                        <!-- End Card -->
+                    </div>
+                    <!-- End Buttons Options -->
+
+                </form>
+
+
             </div><!--//container-fluid-->
         </div><!--//app-content-->
     </div><!--//app-wrapper-->

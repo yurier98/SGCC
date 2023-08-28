@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import UserProfile
 
@@ -19,10 +20,18 @@ class PerfileAdmin(admin.ModelAdmin):
         "phone",
         "is_active",
         "grupos",
+        "photo",
     ]
 
     def grupos(self, obj):
         return "\n".join([g.name for g in obj.groups.all()])
+
+    def photo(self, obj):
+        img=obj.image
+        if img is None:
+            print("No hay img")
+            return format_html('<img src="" style="width: 50px; height: 50px; border-radius: 8px;" />')
+        return format_html('<img src={} style="width: 50px; height: 50px; border-radius: 8px;" />', obj.image.url)
 
 
 admin.site.register(UserProfile, PerfileAdmin)

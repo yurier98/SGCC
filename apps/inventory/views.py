@@ -101,7 +101,7 @@ class JsonProductListView(TemplateView, MultipleObjectMixin):
         return context
 
 
-class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
+class ProductCreateView(ValidatePermissionRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = ProductoForm
     template_name = 'inventory/create_product.html'
     success_message = 'Producto creada correctamente.'
