@@ -1,7 +1,7 @@
 {% load static %}
 {% load widget_tweaks %}
 
-<div class="d-grid d-sm-flex justify-content-md-end align-items-sm-center gap-2">
+<div class="d-grid d-sm-flex gap-2">
     <!-- Datatable Info -->
     <div id="datatableCounterInfo" style="display: none;">
         <div class="d-flex align-items-center">
@@ -15,10 +15,7 @@
                 <i class="bi-trash"></i> Delete
             </a>
 
-            <button class="btn app-btn-secondary" id="eliminarFilas" style="display:none;"
-                    onclick="eliminarFilas()">Eliminar
-            </button>
-            <button type="button" class="btn btn-danger" id="btnEliminar" data-id="">Eliminar</button>
+
         </div>
     </div>
     <!-- End Datatable Info -->
@@ -68,7 +65,7 @@
 
     <!-- Dropdown -->
     <div class="dropdown">
-        <button type="button" class="btn app-btn-secondary" id="FilterDropdown"
+        <button type="button" class="btn app-btn-secondary w-100" id="FilterDropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi-filter me-1"></i> Filtrar <span
                 class="badge rounded-pill bg-secondary">2</span>

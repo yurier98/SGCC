@@ -42,7 +42,7 @@ var loan = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="" style="width: 50px; height: 50px; border-radius: 50px;">';
+                        return '<img src="' + data + '" class="" style="width: 60px; height: 60px; border-radius: 8px;">';
                     }
                 },
                 {
@@ -150,21 +150,24 @@ $(function () {
                 return repo.text;
             }
 
-            return $('<div class="wrapper container">' +
-                '<div class="row">' +
-                '<div class="col-lg-1">' +
-                '<img alt="" src="' + repo.img + '" style="width: 50px; height: 50px; border-radius: 50px;"  class="">' +
-                '</div>' +
-                '<div class="col-lg-11 text-left shadow-sm">' +
-                //'<br>' +
-                '<p style="margin-bottom: 0;">' +
-                '<b>Nombre:</b> ' + repo.name + '<br>' +
-                '<b>Categoría:</b> <span class="">' + repo.category.name + '</span>' + '<br>' +
-                '<b>Stock:  </b>' + '<span class="badge  bg-success">' + repo.stock + '</span>' + ' <br>' +
-                '</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>');
+            return $('       <div class="row justify-content-between align-items-center">\n' +
+                '                        <div class="col-auto">\n' +
+                '                            <div class="d-flex align-items-center row">\n' +
+                '                                <div class="col-auto">\n' +
+                '                                    <!-- Avatar place holder -->\n' +
+                '                                    <span class="avatar avatar-md">\n' +
+                '                                        <img class="avatar-img" style="border-radius: 8px"\n' +
+                '                                             src="' + repo.img + '" alt="">\n' +
+                '                                    </span>\n' +
+                '                                </div>\n' +
+                '                                <div class="col-auto">\n' +
+                '                                    <div class="item-label"><strong>' + repo.name + '</strong></div>\n' +
+                '                                    <div class="item-data">Categoría: ' + repo.category.name + '</div>\n' +
+                '                                    <div class="item-data">En almacen: ' + '<span class="badge  bg-success">' + repo.stock + '</span>' + '</div>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>');
         },
     })
         .on('select2:select', function (e) {
@@ -200,7 +203,7 @@ $(function () {
 
     $('.btnRemoveAll').on('click', function () {
         if (loan.details.products.length === 0) return false;
-        alert_action('Notificación', '¿Estas seguro de eliminar todos los details de tu detalle?', function () {
+        alert_action('Notificación', '¿Estas seguro de eliminar todos el listado de productos?', function () {
             loan.details.products = [];
             loan.listProducts();
         }, function () {
@@ -232,19 +235,19 @@ $(function () {
                 },
             },
             columns: [
-                {"data": "full_name"},
                 {"data": "img"},
+                {"data": "name"},
                 {"data": "stock"},
                 {"data": "category.name"},
                 {"data": "id"},
             ],
             columnDefs: [
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<img src="' + data + '" class="" style="width: 50px; height: 50px; border-radius: 50px;" >';
+                        return '<img src="' + data + '" class="" style="width: 60px; height: 60px; border-radius: 8px;" >';
                     }
                 },
 
@@ -253,7 +256,7 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        var buttons = '<a rel="add" class="btn-sm app-btn-primary "><i class="fas fa-plus"></i></a> ';
+                        var buttons = '<a rel="add" class="btn app-btn-primary "><i class="bi-cart-plus"></i></a> ';
                         return buttons;
                     }
                 },],
@@ -278,20 +281,11 @@ $(function () {
 
     input_daterange = $('input[name="date_range"]');
 
-    // input_daterange
-    //     .daterangepicker({
-    //         language: 'auto',
-    //         startDate: new Date(),
-    //         minDate: new Date(),
-    //         locale: {
-    //             format: 'YYYY-MM-DD',
-    //         }
-    //     });
-
     input_daterange
         .daterangepicker({
                 language: 'auto',
-                // startDate: "start_date",
+                startDate: new Date(),
+                minDate: new Date(),
                 // endDate: "end_date",
                 // minDate: new Date(),
                 locale: {
@@ -319,7 +313,7 @@ $(function () {
                 // }
             }, function (start, end, label) {
                 console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-
+                console.log("Los productos son: " + JSON.stringify(loan.details.products));
             }
         );
     var startDate = $("start_date").val();
@@ -329,6 +323,8 @@ $(function () {
     // input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD').setValue(startDate)
 
     console.log("Fechas : " + $("start_date").val());
+
+
 
 
     $('#frmLoan').on('submit', function (e) {

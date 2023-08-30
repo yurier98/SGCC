@@ -44,6 +44,7 @@
                                     <span class="avatar avatar-md">
                                         <img class="avatar-img" style="border-radius: 8px"
                                              src="${product.img}" alt="">
+                                            <span class="avatar-status avatar-lg-status avatar-status-primary">${product.cant}</span>
                                     </span>
                                 </div>
                                 <div class="col-auto">
@@ -119,270 +120,296 @@
 
                     </div>
                     <div class="app-card-body  w-100">
-                        <div class="container-fluid">
-                            <div class="row">
 
-                                <div class="col-lg-4">
-                                    <!-- Detalles del pedido -->
-                                    <div class="app-card shadow-sm mb-5 align-items-start">
-                                        <div class="app-card-header p-2 border-bottom-0">
-                                            <h3 class="app-card-title">
+                        <div class="row">
 
-                                                <div class="app-icon-holder">
-                                                    <i class="bi bi-cart2 fa-2x"
-                                                       style="line-height: 0;"></i>
-                                                </div>
-                                                Detalles del pedido
-                                            </h3>
-                                            <hr>
-                                        </div>
-                                        <div class="app-card-body px-4 w-100">
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Rango de fecha </strong>
-                                                        </div>
-                                                        <div class="item-data">
-                                                            {{ object.start_date |date:"D d M Y" }}
-                                                            - {{ object.end_date |date:"D d M Y" }}</div>
-                                                    </div><!--//col-->
+                            <div class="col-lg-4">
+                                <!-- Detalles del pedido -->
+                                <div class="app-card shadow-sm mb-5 align-items-start">
+                                    <div class="app-card-header p-2 border-bottom-0">
+                                        <h3 class="app-card-title">
 
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Fecha de creado</strong>
-                                                        </div>
-                                                        <div class="item-data"> {{ object.created |date:"D d M Y" }}
-                                                        </div>
-                                                    </div><!--//col-->
-
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Manifestación</strong></div>
-                                                        <div class="item-data"> {{ object.manifestation }}</div>
-                                                    </div><!--//col-->
-
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Descripción</strong></div>
-                                                        <div class="item-data">{{ object.description }}</div>
-                                                    </div><!--//col-->
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Estado</strong></div>
-                                                        <div class="item-data">
-                                                            {% if object.state == 'Pendiente' %}
-                                                                <span class="badge bg-warning"> Pendiente </span>
-                                                            {% elif object.state == 'Aprobado' %}
-                                                                <span class="badge bg-success"> Aprobado </span>
-                                                            {% elif object.state == 'No Aprobado' %}
-                                                                <span class="badge bg-danger"> No Aprobado </span>
-                                                            {% else %}
-                                                                <span class="badge bg-danger"> N/A </span>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div><!--//col-->
-                                                    <div class="col text-end">
-
-                                                        {% if request.user|has_group:"tecnico" %}
-                                                            {% if object.state == 'Pendiente' %}
-                                                                <div class="btn-group">
-                                                                    <button type="button"
-                                                                            class="btn-sm app-btn-secondary dropdown-toggle"
-                                                                            data-bs-toggle="dropdown"
-                                                                            aria-expanded="false">
-                                                                        Cambiar
-                                                                    </button>
-                                                                    <ul class="dropdown-menu" style="">
-                                                                        <li><a class="dropdown-item"
-                                                                               href="{% url 'order_approve' object.pk %}">
-                                                                            <i class="bi bi-file-earmark-check"
-                                                                               style="color: #15a362;"></i>
-                                                                            {#                  <i class="fas fa-check-square"></i>#}
-                                                                            Aprobar</a></li>
-                                                                        <li><a class="dropdown-item"
-                                                                               href="{% url 'order_deny' object.pk %}">
-                                                                            <i class="bi bi-file-earmark-x"
-                                                                               style="color: #fb866a;"></i>
-                                                                            Denegar</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    </div><!--//col-->
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                        </div>
+                                            <div class="app-icon-holder">
+                                                <i class="bi bi-cart2 fa-2x"
+                                                   style="line-height: 0;"></i>
+                                            </div>
+                                            Detalles del pedido
+                                        </h3>
+                                        <hr>
                                     </div>
-                                    <!-- Datos del usuario -->
-                                    <div class="app-card shadow-sm mb-5 align-items-start">
-                                        <div class="app-card-header p-3 border-bottom-0">
-                                            <div class="row align-items-center gx-3">
+                                    <div class="app-card-body px-4 w-100">
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="app-icon-holder">
-                                                        <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                             class="bi bi-person" fill="currentColor"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd"
-                                                                  d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
-                                                        </svg>
-                                                    </div><!--//icon-holder-->
-
+                                                    <div class="item-label"><strong>Rango de fecha </strong>
+                                                    </div>
+                                                    <div class="item-data">
+                                                        {{ object.start_date |date:"D d M Y" }}
+                                                        - {{ object.end_date |date:"D d M Y" }}</div>
                                                 </div><!--//col-->
+
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
                                                 <div class="col-auto">
-                                                    <h4 class="app-card-title"> Datos del usuario</h4>
+                                                    <div class="item-label"><strong>Fecha de creado</strong>
+                                                    </div>
+                                                    <div class="item-data"> {{ object.created |date:"D d M Y" }}
+                                                    </div>
+                                                </div><!--//col-->
+
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Manifestación</strong></div>
+                                                    <div class="item-data"> {{ object.manifestation }}</div>
+                                                </div><!--//col-->
+
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Descripción</strong></div>
+                                                    <div class="item-data">{{ object.description }}</div>
                                                 </div><!--//col-->
                                             </div><!--//row-->
-                                            <hr>
-                                        </div>
-                                        <div class="app-card-body px-4 w-100">
+                                        </div><!--//item-->
+                                        <div class="item py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Estado</strong></div>
+                                                    <div class="item-data">
+                                                        {% if object.state == 'Pendiente' %}
+                                                            <span class="badge bg-warning"> Pendiente </span>
+                                                        {% elif object.state == 'Aprobado' %}
+                                                            <span class="badge bg-success"> Aprobado </span>
+                                                        {% elif object.state == 'No Aprobado' %}
+                                                            <span class="badge bg-danger"> No Aprobado </span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger"> N/A </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div><!--//col-->
+                                                <div class="col text-end">
 
-                                            <div class="item border-bottom py-3 pt-0">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="d-flex align-items-center row">
-                                                            <div class="col-auto">
-                                                                <!-- Avatar place holder -->
-                                                                <span class="avatar avatar-md">
+                                                    {% if request.user|has_group:"tecnico" %}
+                                                        {% if object.state == 'Pendiente' %}
+                                                            <div class="btn-group">
+                                                                <button type="button"
+                                                                        class="btn-sm app-btn-secondary dropdown-toggle"
+                                                                        data-bs-toggle="dropdown"
+                                                                        aria-expanded="false">
+                                                                    Cambiar
+                                                                </button>
+                                                                <ul class="dropdown-menu" style="">
+                                                                    <li><a class="dropdown-item"
+                                                                           href="{% url 'order_approve' object.pk %}">
+                                                                        <i class="bi bi-file-earmark-check"
+                                                                           style="color: #15a362;"></i>
+                                                                        {#                  <i class="fas fa-check-square"></i>#}
+                                                                        Aprobar</a></li>
+                                                                    <li><a class="dropdown-item"
+                                                                           href="{% url 'order_deny' object.pk %}">
+                                                                        <i class="bi bi-file-earmark-x"
+                                                                           style="color: #fb866a;"></i>
+                                                                        Denegar</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                    </div>
+                                </div>
+                                <!-- Datos del usuario -->
+                                <div class="app-card shadow-sm mb-5 align-items-start">
+                                    <div class="app-card-header p-3 border-bottom-0">
+                                        <div class="row align-items-center gx-3">
+                                            <div class="col-auto">
+                                                <div class="app-icon-holder">
+                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                         class="bi bi-person" fill="currentColor"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                              d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+                                                    </svg>
+                                                </div><!--//icon-holder-->
+
+                                            </div><!--//col-->
+                                            <div class="col-auto">
+                                                <h4 class="app-card-title"> Datos del usuario</h4>
+                                            </div><!--//col-->
+                                        </div><!--//row-->
+                                        <hr>
+                                    </div>
+                                    <div class="app-card-body px-4 w-100">
+
+                                        <div class="item border-bottom py-3 pt-0">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="d-flex align-items-center row">
+                                                        <div class="col-auto">
+                                                            <!-- Avatar place holder -->
+                                                            <span class="avatar avatar-md">
                                                                     <img class="avatar-img rounded-circle"
                                                                          src="{{ object.user.get_image }}" alt="">
                                                                     </span>
-                                                            </div>
-                                                            <div class="col-auto">
-                                                                <label class="col item-data">{{ object.user.get_full_name }}</label>
-                                                            </div>
                                                         </div>
-                                                    </div><!--//col-->
+                                                        <div class="col-auto">
+                                                            <label class="col item-data">{{ object.user.get_full_name }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div><!--//col-->
 
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label">
-                                                            <strong>Información del contacto</strong>
-                                                        </div>
-                                                        <div class="item-data">
-                                                            <ul class="list-unstyled m-0">
-                                                                <li><i class="bi-at me-2"></i>{{ object.user.email }}
-                                                                </li>
-                                                                <li><i class="bi-phone me-2"></i>{{ object.user.phone }}
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label">
+                                                        <strong>Información del contacto</strong>
+                                                    </div>
+                                                    <div class="item-data">
+                                                        <ul class="list-unstyled m-0">
+                                                            <li><i class="bi-at me-2"></i>{{ object.user.email }}
+                                                            </li>
+                                                            <li><i class="bi-phone me-2"></i>{{ object.user.phone }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div><!--//col-->
 
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item border-bottom py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Área</strong>
-                                                        </div>
-                                                        <div class="item-data">
-                                                            <i class="bi-building me-2"></i> {{ object.user.area }}
-                                                        </div>
-                                                    </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item border-bottom py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Área</strong>
+                                                    </div>
+                                                    <div class="item-data">
+                                                        <i class="bi-building me-2"></i> {{ object.user.area }}
+                                                    </div>
+                                                </div><!--//col-->
 
-                                                </div><!--//row-->
-                                            </div><!--//item-->
-                                            <div class="item py-3">
-                                                <div class="row justify-content-between align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="item-label"><strong>Solapin</strong></div>
-                                                        <div class="item-data">
-                                                            <i class="bi-credit-card-2-front me-2"></i> {{ object.user.solapin }}
-                                                        </div>
-                                                    </div><!--//col-->
-                                                </div><!--//row-->
-                                            </div><!--//item-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
+                                        <div class="item py-3">
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="item-label"><strong>Solapin</strong></div>
+                                                    <div class="item-data">
+                                                        <i class="bi-credit-card-2-front me-2"></i> {{ object.user.solapin }}
+                                                    </div>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                        </div><!--//item-->
 
-                                        </div>
                                     </div>
-
                                 </div>
 
-                                <!-- Artículos encargados -->
-                                <div class="col-lg-8">
-                                    <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
-                                        <div class="app-card-header p-2 border-bottom-0">
-                                            <h3 class="app-card-title">
-                                                <div class="app-icon-holder"><i class="bi-boxes"></i></div>
-                                                Artículos encargados
-                                            </h3>
-                                            <hr>
-                                        </div>
-                                        <div class="app-card-body px-4 w-100">
+                            </div>
+
+                            <!-- Artículos encargados -->
+                            <div class="col-lg-8">
+                                <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
+                                    <div class="app-card-header p-2 border-bottom-0">
+                                        <h3 class="app-card-title">
+                                            <div class="app-icon-holder"><i class="bi-boxes"></i></div>
+                                            Artículos encargados
+                                        </h3>
+                                        <hr>
+                                    </div>
+                                    <div class="app-card-body px-4 w-100">
 
 
-                                            {% if products %}
-                                                <div id="product-list" class="pb-3">
-                                                    <!-- Los detalles del producto se generarán aquí usando JavaScript -->
+                                        {% if products %}
+                                            <div id="product-list" class="pb-3">
+                                                <!-- Los detalles del producto se generarán aquí usando JavaScript -->
+                                            </div>
+                                            <div class="row justify-content-md-end mb-3">
+                                                <div class="col-md-8 col-lg-7">
+                                                    <dl class="row text-sm-end">
+                                                        <dt class="col-sm-10">Cantidad de productos:</dt>
+                                                        <dd class="col-sm-2">{{ order.products.all.count }}</dd>
+                                                        <dt class="col-sm-10">Total de unidades:</dt>
+                                                        <dd class="col-sm-2">{{ order.products.all.count }}</dd>
+                                                    </dl>
+                                                    <!-- End Row -->
                                                 </div>
-                                                <div class="row justify-content-md-end mb-3">
-                                                    <div class="col-md-8 col-lg-7">
-                                                        <dl class="row text-sm-end">
-                                                            <dt class="col-sm-10">Cantidad de productos:</dt>
-                                                            <dd class="col-sm-2">{{ order.products.all.count }}</dd>
-                                                            <dt class="col-sm-10">Total de unidades:</dt>
-                                                            <dd class="col-sm-2">{{ order.products.all.count }}</dd>
-                                                        </dl>
-                                                        <!-- End Row -->
-                                                    </div>
-                                                    <!-- End Col -->
-                                                </div>
+                                                <!-- End Col -->
+                                            </div>
 
+                                        {% endif %}
+
+
+                                    </div>
+                                </div><!--//app-card-->
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="app-card-footer p-4 mt-auto">
+
+                        <!-- Buttons Options  -->
+                        <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
+                             style="max-width: 40rem;">
+                            <!-- Card -->
+                            <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                                <div class="card-body">
+                                    <div class="row justify-content-center justify-content-sm-between">
+                                        <div class="col">
+                                            {% if next_object_url %}
+                                                <a href="{{ next_object_url }}"
+                                                   class="btn btn-ghost-light btn-flat">
+                                                    Siguiente <i class="fas fa-arrow-right"></i>
+                                                </a>
                                             {% endif %}
 
 
                                         </div>
-                                    </div><!--//app-card-->
+                                        <!-- End Col -->
+
+                                        <div class="col-auto">
+                                            <div class="d-flex gap-3">
+
+
+                                                <a href="{{ list_url }}" class="btn btn-ghost-light">
+                                                    <i class="bi-arrow-left"></i>
+                                                    Regresar</a>
+
+                                                <a href="{% url 'loan_invoice_pdf' object.pk %}" target="_blank"
+                                                   class="btn app-btn-primary">
+                                                    <i class="bi-printer"></i>
+                                                    Imprimir
+                                                </a>
+
+                                                {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
+                                                {% if object.state == 'Pendiente' %}
+                                                    <a href="{% url 'order_update' object.pk %} "
+                                                       class="btn app-btn-primary btn-flat">
+                                                        <i class="bi-pencil"></i>
+                                                        Editar
+                                                    </a>
+                                                {% endif %}
+
+
+                                            </div>
+                                        </div>
+                                        <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
                                 </div>
-
                             </div>
+                            <!-- End Card -->
                         </div>
-                    </div>
-                    <div class="app-card-footer p-4 mt-auto">
-                        <hr>
-                        <div class="mt-3 row justify-content-between">
-                            <div class="col-auto">
+                        <!-- End Buttons Options -->
 
-                            </div>
-                            <div class="col-auto">
-                                {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
-                                {% if object.state == 'Pendiente' %}
-                                    <a href="{% url 'order_update' object.pk %} "
-                                       class="btn app-btn-primary btn-flat">
-                                        <i class="bi-pencil"></i>
-                                        Editar
-                                    </a>
-                                {% endif %}
-
-
-
-                                {% if next_object_url %}
-                                    <a href="{{ next_object_url }}" class="btn app-btn-secondary btn-flat">
-                                        Siguiente <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                {% endif %}
-
-                                <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
-                                    <i class="bi-arrow-left"></i>
-                                    Regresar
-                                </a>
-                            </div>
-                        </div>
 
                     </div>
                 </div>

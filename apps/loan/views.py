@@ -35,7 +35,7 @@ def index(request):
 
 ####################Vistas de Prestamos##################
 
-class LoanListView( FilterView, ListView):
+class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
     model = Loan
     filterset_class = LoanFilter
     # paginate_by = 10
@@ -143,7 +143,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                 products = Product.objects.filter(stock__gt=0)
                 if len(term):
                     products = products.filter(name__icontains=term)
-                    # filtrar por es estado prestado (P)
+                    # excluir de la consulta los productos con estado prestado (P)
                 for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
                     item['value'] = i.__str__()
@@ -171,39 +171,67 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
             elif action == 'add':
                 with transaction.atomic():
                     products = json.loads(request.POST['products'])
+
                     order = Order()
                     order.start_date = request.POST['start_date']
                     order.end_date = request.POST['end_date']
                     order.user_id = int(request.POST['user'])
                     order.description = request.POST['description']
-                    order.state = Order.STATE[1:1]  # aki toma el valor del estado en aprobado (arreglar xq no le pone estado )
+                    order.state = Order.STATE[1:2]  # aki toma el valor del estado en aprobado (arreglar xq no le pone estado )
                     # order.state = Order.STATE.index(2)
                     order.manifestation_id = int(request.POST['manifestation'])
                     order.save()
 
-                    for i in products:
-                        order_product = OrderProduct()
-                        order_product.order_id = order.id
-                        order_product.product_id = i['id']
-                        order_product.quantity = i['cant']
-                        order_product.save()
-                        product = Product.objects.get(pk=i['id'])
-                        product.stock = int(product.stock) - int(i['cant'])
-                        if product.stock == 0:
-                            product.state = 'P'
-                        product.save()
-
                     loan = Loan()
                     loan.order_id = order.id
                     loan.state = request.POST['state_loan']
+
+                    for i in products:
+                        order_product = OrderProduct()
+                        order_product.order_id = order.id
+                        order_product.product_id = int(i['id'])
+                        order_product.cant = int(i['cant'])
+                        order_product.save()
+
+                        # order_product.product.stock -= order_product.cant
+                        # if order_product.product.stock == 0:
+                        #     order_product.product.state = 'P'
+                        # order_product.product.save()
+
+                        # product = Product.objects.get(pk=i['id'])
+                        # product.stock = int(product.stock) - int(i['cant'])
+                        # if product.stock == 0:
+                        #     product.state = 'P'
+                        # product.save()
+
+
+                    if loan.state == 'Prestado':
+                        products_order_loan = loan.order.products.all()
+                        for i in products_order_loan:
+
+                            # order_product.product.stock -= order_product.cant
+                            # if order_product.product.stock == 0:
+                            #     order_product.product.state = 'P'
+                            # order_product.product.save()
+
+                            i.product.stock -= i.cant
+                            if i.product.stock == 0:
+                                i.product.state = 'P'
+                            i.product.save()
+
                     loan.save()
-                    messages.success(request, '¡Préstamo guardado con éxito!')
-                    user = UserProfile.objects.get(id=request.POST['user'])
+
+
+
+
+                    # user = UserProfile.objects.get(id=request.POST['user'])
+                    user = Order.objects.get(pk=order.pk).user
                     notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente, '
                                                             'para recogerlo contacte con nosotros.',
                                    level='info')
+                    messages.success(request, '¡Préstamo guardado con éxito!')
 
-                    data['id'] = loan.id
+                    data = {'id': order.id}
                     # detail = OrderProduct()
                     # detail.order_id = order.id
                     # detail.product_id = int(i['id'])

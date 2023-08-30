@@ -2,7 +2,7 @@
 {% if page_obj %}
     {% with offset=page_obj.start_index|add:0 %}
 
-        <tr onclick="window.location.href = '{% url 'order_detail' object.pk %}';">
+        <tr >
 
             <td>{{ offset|add:forloop.counter0 }}  </td>
 

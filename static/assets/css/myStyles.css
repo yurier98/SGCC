@@ -76,6 +76,15 @@
 
 .btn, .form-control, .form-select {
     border-radius: 0.375rem !important;
+    box-shadow: none !important;
+}
+
+.form-select:focus {
+    border-color: var(--bs-primary) !important;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary) !important;
 }
 
 .app-btn-outline-danger {
@@ -89,8 +98,14 @@
 }
 
 .btn-ghost-light {
-    color: #FFF;
+    color: #5d6778;
+    font-weight: bold;
     background: none;
+}
+
+.btn-ghost-light:hover {
+    color: #5d6778;
+    background: rgba(7, 7, 7, 0.07);
 }
 
 .app-btn-outline-danger:hover {
@@ -243,11 +258,11 @@ tr:hover {
 }
 
 .bg-blur {
-    background: rgba(5, 24, 33, 0.85);
-    box-shadow: 0 8px 32px 0 rgba(5, 24, 33, 0.37);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(241, 236, 236, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 10px;
+    border: 1.5px solid #266867;
 }
 
 .page-item.active .page-link {
@@ -255,4 +270,85 @@ tr:hover {
     color: #fff;
     background: #747f94;
     border-color: #747f94;
+    padding: 0.25rem 0.5rem;
+
+}
+
+.page-link {
+    color: #5d6778;
+    padding: 0.25rem 0.5rem;
+
+}
+
+.page-link:hover {
+    color: #5d6778;
+    padding: 0.25rem 0.5rem;
+
+}
+
+.avatar-status {
+    position: absolute;
+    bottom: -.459375rem;
+    right: -.459375rem;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: baseline;
+    border: .125rem solid #fff;
+    width: 1.1484375rem;
+    height: 1.1484375rem;
+    line-height: 1;
+    font-size: .65625rem;
+    border-radius: 50%
+}
+
+.avatar-sm-status {
+    bottom: -.2296875rem;
+    right: -.2296875rem;
+    width: .8203125rem;
+    height: .8203125rem;
+    font-size: .4375rem
+}
+
+.avatar-lg-status {
+    width: 1.421875rem;
+    height: 1.421875rem;
+    font-size: .85625rem
+}
+
+.avatar-primary .avatar-initials {
+    color: #fff;
+    background-color: #377dff
+}
+
+.avatar-status-primary {
+    color: #fff;
+    background-color: var(--bs-primary)
+}
+
+.avatar-secondary .avatar-initials {
+    color: #fff;
+    background-color: #71869d
+}
+
+.avatar-status-secondary {
+    color: #fff;
+    background-color: #71869d
+}
+
+.avatar-success .avatar-initials {
+    color: #fff;
+    background-color: #00c9a7
+}
+
+.avatar-status-success {
+    color: #fff;
+    background-color: #00c9a7
 }

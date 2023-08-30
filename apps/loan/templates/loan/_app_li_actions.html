@@ -1,47 +1,72 @@
 {% load static %}
 
 
-<div class="dropdown-icon">
-    <button type="button"
-            class="btn p-0 hide-arrow"
-            data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>
+<div class="btn-group " role="group">
+    <a class="btn app-btn-secondary  btn-sm" href="{% url 'loan_detail' object.pk %}">
+        <i class="bi-eye"></i> Ver
+    </a>
 
-    <ul class="dropdown-menu" style="font-size: 14px;">
+    <!-- Button Group -->
+    <div class="btn-group">
+        <button type="button"
+                class="btn app-btn-secondary btn-white btn-icon btn-sm dropdown-toggle dropdown-toggle-empty"
+                id="ordersExportDropdown1" data-bs-toggle="dropdown" aria-expanded="false"></button>
 
-        <li><a class="dropdown-item" href="{% url 'loan_detail' object.pk %}">
-            <span><i class="bi bi-eye"></i> Ver</span></a>
-        </li>
-        <li><a class="dropdown-item" href="{% url 'loan_invoice_pdf' object.pk %}" target="_blank">
-            <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>
-        </a></li>
+        <div class="dropdown-menu dropdown-menu-end mt-1" aria-labelledby="ordersExportDropdown1">
+            <span class="dropdown-header">Opciones de descarga</span>
+            <a class="dropdown-item" href="{% url 'loan_invoice_pdf' object.pk %}" target="_blank">
+                <span><img class="avatar avatar-xss avatar-4x3 me-2"
+                     src="{% static 'assets/images/options/pdf-icon.svg' %}" alt="Image Description">
+                    Descargar pdf</span>
+            </a>
 
-        {% if object.state == 'Pendiente' %}
+            {% if object.state == 'Pendiente' %}
+                <div class="dropdown-divider"></div>
+                <span class="dropdown-header">Opciones</span>
+                <a class="dropdown-item text-primary" href="{% url 'order_approve' object.pk %}">
+                    <i class="bi bi-file-earmark-check"></i>
+                    {#                  <i class="fas fa-check-square"></i>#}
+                    Aprobar</a>
+                <a class="dropdown-item text-danger" href="{% url 'order_deny' object.pk %}">
+                    <i class="bi bi-file-earmark-x"></i>
+                    Denegar</a>
+            {% endif %}
 
-            <li>
-                <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item text-primary" href="{% url 'order_approve' object.pk %}">
-                <i class="bi bi-file-earmark-check"></i>
-                {#                  <i class="fas fa-check-square"></i>#}
-                Aprobar</a></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'order_deny' object.pk %}">
-                <i class="bi bi-file-earmark-x"></i>
-                Denegar</a></li>
-
-        {% elif object.state == 'Prestado' %}
-            <li>
-                <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item text-primary" href="{% url 'order_approve' object.pk %}">
-                <i class="bi bi-file-earmark-check"></i>
-                {#                  <i class="fas fa-check-square"></i>#}
-                Aprobar</a></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'order_deny' object.pk %}">
-                <i class="bi bi-file-earmark-x"></i>
-                Denegar</a></li>
-
-        {% endif %}
-    </ul>
+        </div>
+    </div>
+    <!-- End Unfold -->
 </div>
+
+
+{#<div class="dropdown-icon">#}
+{#    <button type="button"#}
+{#            class="btn p-0 hide-arrow"#}
+{#            data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>#}
+{##}
+{#    <ul class="dropdown-menu" style="font-size: 14px;">#}
+{##}
+{#        <li><a class="dropdown-item" href="{% url 'loan_detail' object.pk %}">#}
+{#            <span><i class="bi bi-eye"></i> Ver</span></a>#}
+{#        </li>#}
+{#        <li><a class="dropdown-item" href="{% url 'loan_invoice_pdf' object.pk %}" target="_blank">#}
+{#            <span><i class="bi bi-file-earmark-pdf"></i> Descargar pdf</span>#}
+{#        </a></li>#}
+{##}
+{#        {% if object.state == 'Pendiente' %}#}
+{##}
+{#            <li>#}
+{#                <hr class="dropdown-divider">#}
+{#            </li>#}
+{#            <li><a class="dropdown-item text-primary" href="{% url 'order_approve' object.pk %}">#}
+{#                <i class="bi bi-file-earmark-check"></i>#}
+                {#                  <i class="fas fa-check-square"></i>#}
+{#                Aprobar</a></li>#}
+{#            <li><a class="dropdown-item text-danger" href="{% url 'order_deny' object.pk %}">#}
+{#                <i class="bi bi-file-earmark-x"></i>#}
+{#                Denegar</a></li>#}
+{#            #}
+{#        {% endif %}#}
+{#    </ul>#}
+{#</div>#}
 
 

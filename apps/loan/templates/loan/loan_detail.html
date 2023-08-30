@@ -52,6 +52,7 @@
                                     <span class="avatar avatar-md">
                                         <img class="avatar-img" style="border-radius: 8px"
                                              src="${product.img}" alt="">
+                                        <span class="avatar-status avatar-lg-status avatar-status-primary">${product.cant}</span>
                                     </span>
                                 </div>
                                 <div class="col-auto">
@@ -350,19 +351,44 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="app-card-footer p-4 mt-auto">
-                            <hr>
-                            <div class="mt-3 row justify-content-between">
-                                <div class="col-auto">
 
+
+                        <div class="app-card-footer p-4 mt-auto">
+                            <!-- Buttons Options  -->
+                            <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
+                                 style="max-width: 40rem;">
+                                <!-- Card -->
+                                <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                                    <div class="card-body">
+                                        <div class="row justify-content-center justify-content-sm-between">
+                                            <div class="col">
+
+
+                                            </div>
+                                            <!-- End Col -->
+
+                                            <div class="col-auto">
+                                                <div class="d-flex gap-3">
+                                                    <a href="{{ list_url }}" class="btn btn-ghost-light">
+                                                        <i class="bi-arrow-left"></i>
+                                                        Regresar</a>
+                                                    <a href="{% url 'order_invoice_pdf' object.pk %}" target="_blank"
+                                                       class="btn app-btn-primary">
+                                                        <i class="bi-printer"></i>
+                                                        Imprimir
+                                                    </a>
+
+                                                </div>
+                                            </div>
+                                            <!-- End Col -->
+                                        </div>
+                                        <!-- End Row -->
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <a href="{{ list_url }}" class="btn app-btn-secondary btn-flat">
-                                        <i class="bi-arrow-left"></i>
-                                        Regresar
-                                    </a>
-                                </div>
+                                <!-- End Card -->
                             </div>
+                            <!-- End Buttons Options -->
+
 
                         </div>
                     </div>

@@ -59,7 +59,7 @@ class Loan(models.Model):
     class Meta:
         verbose_name = "Préstamo"
         verbose_name_plural = "Préstamos"
-        # ordering = ["-created"]
+        ordering = ["-order__created"]
         permissions = (
             ("report_loan", "Puede reportar Préstamos"),
         )

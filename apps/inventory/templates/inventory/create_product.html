@@ -5,10 +5,12 @@
 
 {% block stylesheets %}
     <link href="{% static 'assets/css/drag_drog.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block javascript %}
-
+    <script src="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.js' %}"></script>
+    <script src="{% static 'assets/js/drag&drop.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -139,11 +141,9 @@
                                      class="js-dropzone dz-dropzone dz-dropzone-card dz-clickable">
                                     <div class="dz-message">
                                         <img class="avatar avatar-xl avatar-4x3 mb-3"
-                                             src="assets/svg/illustrations/oc-browse.svg" alt="Image Description"
+                                             src="{% static 'assets/images/illustrations/oc-browse.svg' %}"
+                                             alt="Image Description"
                                              data-hs-theme-appearance="default">
-                                        <img class="avatar avatar-xl avatar-4x3 mb-3"
-                                             src="assets/svg/illustrations-light/oc-browse.svg" alt="Image Description"
-                                             data-hs-theme-appearance="dark">
 
                                         <h5>Drag and drop your file here</h5>
 
@@ -372,7 +372,7 @@
                     <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                          style="max-width: 40rem;">
                         <!-- Card -->
-                        <div class="app-card card-sm bg-dark bg-blur shadow-sm mx-2">
+                        <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
                             <div class="card-body">
                                 <div class="row justify-content-center justify-content-sm-between">
                                     <div class="col">
@@ -384,6 +384,7 @@
                                         <div class="d-flex gap-3">
                                             <a href="{{ list_url }}" class="btn btn-ghost-light">
                                                 Descartar</a>
+
                                             <button type="submit" class="btn app-btn-primary">
                                                 <i class="bi-archive"></i> Guardar
                                             </button>

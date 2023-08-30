@@ -126,7 +126,6 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
     template_name = 'order/order_create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
-    permission_required = 'add_order'
 
     disallowed_group = 'tecnico'
     error_url = 'order_all_list'
@@ -153,7 +152,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text': term})
                 products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                for i in products.exclude(id__in=ids_exclude)[0:10]:
+                for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
                     item['text'] = i.__str__()
                     data.append(item)
@@ -166,16 +165,21 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                     order.user_id = int(request.POST['user'])
                     order.description = request.POST['description']
                     order.manifestation_id = int(request.POST['manifestation'])
-
                     order.save()
+
                     for i in products:
                         detail = OrderProduct()
                         detail.order_id = order.id
                         detail.product_id = int(i['id'])
                         detail.cant = int(i['cant'])
                         detail.save()
+
+                        # esta logica debe esta en la vista de aprobar un pedido pues hasta q se aprueba ese pedido no se debe cambiar el estado del inventario
                         detail.product.stock -= detail.cant
+                        if detail.product.stock == 0:
+                            detail.product.state = 'P'
                         detail.product.save()
+
                     user = Order.objects.get(pk=order.pk).user
                     notificar.send(user, destiny=user, verb='Se ha creado un pedido a su usuario exitosamente.',
                                    level='info')

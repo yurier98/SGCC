@@ -21,7 +21,7 @@
     {% block stylesheets %}
         <!-- App CSS -->
         {#        <link id="theme-style" rel="stylesheet" href="assets/css/portal.css">#}
-        <link href="{% static 'assets/css/portal.css' %}" rel="stylesheet">
+        <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
         <!-- Favicons -->
         <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
         <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
@@ -51,6 +51,8 @@
 
                     </div><!--//app-branding-->
                     <div class="app-card p-5 text-center shadow-sm">
+                        <img class=" img-fluid me-2" style="width: 200px; height: 200px;"
+                             src="{% static 'assets/images/illustrations/oc-thinking.svg' %}">
                         <h1 class="page-title mb-4">403<br><span class="font-weight-light">Permiso denegado</span></h1>
                         <div class="mb-4">
                             Lo sentimos, no tiene permisos para acceder a esta página 😥.

@@ -102,8 +102,6 @@
                                                         </div>
                                                         <div class="col-auto">
                                                             <h4 class="app-card-title">{{ title }}</h4>
-                                                            <label class="form-label">Nota:</label> Usted solo puede
-                                                            actualizar su foto de perfil y su teléfono.
                                                         </div><!--//col-->
                                                     </div>
 
@@ -116,7 +114,13 @@
                                             <hr>
                                         </div><!--//app-card-header-->
                                         <div class="app-card-body ">
+
                                             <div class=" settings-form p-3 row g-2">
+                                                <div class="col-12">
+                                                    <label class="form-label">Nota:</label> Usted solo puede
+                                                    actualizar su foto de perfil y su teléfono.
+                                                </div>
+
                                                 {% csrf_token %}
                                                 <input type="hidden" name="action" value="{{ action }}">
                                                 {% if form.errors %}
@@ -166,13 +170,13 @@
                                                     </div>
                                                 </div>
 
-{#                                                <!-- Imagen -->#}
-{#                                                <div class="col-md-6">#}
-{#                                                    <div class="">#}
-{#                                                        <label for="" class="form-label">{{ form.image.label }} </label>#}
-{#                                                        {% render_field form.image type="file" %}#}
-{#                                                    </div>#}
-{#                                                </div>#}
+                                                {#                                                <!-- Imagen -->#}
+                                                {#                                                <div class="col-md-6">#}
+                                                {#                                                    <div class="">#}
+                                                {#                                                        <label for="" class="form-label">{{ form.image.label }} </label>#}
+                                                {#                                                        {% render_field form.image type="file" %}#}
+                                                {#                                                    </div>#}
+                                                {#                                                </div>#}
 
 
                                             </div>

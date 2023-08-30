@@ -42,19 +42,19 @@ var order = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        //return '<img src="' + data + '" class="img-fluid" style="width: 80px; height: 80px;">';
-                        return '  <a data-glightbox data-gallery="gallery" href="' + data + '">\n' +
-                            '       <span class="avatar avatar-md">\n' +
-                            '                                        <!-- Image -->\n' +
-                            '             <img src="' + data + '" class="rounded-3 avatar-img"\n' +
-                            '                  alt="Imagen de" style="border-radius: 8px;">\n' +
-                            '                                        <!-- Full screen button -->\n' +
-                            '                                        <div class="hover-element position-absolute w-100 h-100">\n' +
-                            '                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>\n' +
-                            '                                        </div>\n' +
-                            '           </span>\n' +
-
-                            '      </a>';
+                        return '<img src="' + data + '" class="img-fluid" style="width: 60px; height: 60px;  border-radius: 8px;">';
+                        // return '  <a data-glightbox data-gallery="gallery" href="' + data + '">\n' +
+                        //     '       <span class="avatar avatar-md">\n' +
+                        //     '                                        <!-- Image -->\n' +
+                        //     '             <img src="' + data + '" class="rounded-3 avatar-img"\n' +
+                        //     '                  alt="Imagen de" style="border-radius: 8px;">\n' +
+                        //     '                                        <!-- Full screen button -->\n' +
+                        //     '                                        <div class="hover-element position-absolute w-100 h-100">\n' +
+                        //     '                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>\n' +
+                        //     '                                        </div>\n' +
+                        //     '           </span>\n' +
+                        //
+                        //     '      </a>';
                     }
                 },
                 {
@@ -181,7 +181,7 @@ $(function () {
                 '                                </div>\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
-                '                    </div>')
+                '                    </div>');
 
         },
     })
@@ -249,28 +249,20 @@ $(function () {
                 },
             },
             columns: [
-                {"data": "full_name"},
                 {"data": "img"},
+                {"data": "name"},
                 {"data": "stock"},
                 {"data": "category.name"},
                 {"data": "id"},
             ],
             columnDefs: [
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         // return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
-                        return '  <a data-glightbox data-gallery="gallery" href="' + data + '">\n' +
-                            '                                        <!-- Image -->\n' +
-                            '                                        <img src="' + data + '" class="rounded-3"\n' +
-                            '                                             alt="Imagen de" style="width: auto; height: 50px; border-radius: 8px">\n' +
-                            '                                        <!-- Full screen button -->\n' +
-                            '                                        <div class="hover-element position-absolute w-100 h-100">\n' +
-                            '                                            <i class="bi bi-fullscreen fs-6 text-white position-absolute top-50 start-50 translate-middle bg-dark rounded-1 p-2 lh-1"></i>\n' +
-                            '                                        </div>\n' +
-                            '                                </a>';
+                       return '<img src="' + data + '" class="" style="width: 60px; height: 60px; border-radius: 8px;" >';
                     }
                 },
 
