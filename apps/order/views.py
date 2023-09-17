@@ -22,7 +22,7 @@ from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin, ExistsIn
 from apps.accounts.models import UserProfile
 from apps.loan.models import Loan
 from .filters import OrderFilter
-from .forms import ReportForm, OrderForm, OrderFormApprove
+from .forms import ReportForm, OrderForm, OrderFormApprove, OrderFormAlpha
 from .models import Order, OrderProduct, Manifestation
 from apps.inventory.models import Product
 from apps.notification.signals import notificar
@@ -49,7 +49,10 @@ class OrderListAllView(GroupRequiredMixin, ExistsInventaryMixin, FilterView, Lis
         context['create_url'] = reverse_lazy('order_create')
         context['list_url'] = reverse_lazy('order_all_list')
         context['entity'] = 'Todos los Pedidos'
-        context['stats'] = self.model.stats
+        # Obtener los valores estadísticos
+        stats = self.model.stats()
+        # Agregar los valores al contexto
+        context['stats'] = stats
         return context
 
 
@@ -126,6 +129,7 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
     template_name = 'order/order_create.html'
     success_url = reverse_lazy('order_list')
     url_redirect = success_url
+    permission_required = 'add_order'
 
     disallowed_group = 'tecnico'
     error_url = 'order_all_list'
@@ -162,7 +166,9 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                     order = Order()
                     order.start_date = request.POST['start_date']
                     order.end_date = request.POST['end_date']
-                    order.user_id = int(request.POST['user'])
+                    # order.user_id = int(request.POST['user'])
+                    order.user_id = int(
+                        get_current_request().user.id)  # se registra el pedido a nombre del usuario autenticado
                     order.description = request.POST['description']
                     order.manifestation_id = int(request.POST['manifestation'])
                     order.save()
@@ -181,7 +187,8 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                         detail.product.save()
 
                     user = Order.objects.get(pk=order.pk).user
-                    notificar.send(user, destiny=user, verb='Se ha creado un pedido a su usuario exitosamente.',
+                    notificar.send(user, destiny=user,
+                                   verb='Se ha creado un pedido a su usuario exitosamente. pedido: .....',
                                    level='info')
                     messages.success(request, 'Se ha creado el pedido exitosamente.')
                     data = {'id': order.id}
@@ -189,6 +196,65 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Hacer pedido'
+        context['entity'] = 'Pedidos'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        context['products'] = []
+        return context
+
+
+class OrderCreateView2(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedMixin, CreateView):
+    model = Order
+    form_class = OrderFormAlpha
+    template_name = 'order/order_create.html'
+    success_url = reverse_lazy('order_list')
+    url_redirect = success_url
+    permission_required = 'add_order'
+
+    disallowed_group = 'tecnico'
+    error_url = 'order_all_list'
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            print(action)
+            form = self.get_form()
+
+            if action == 'search_products':
+                term = request.POST['term'].strip()
+                ids_exclude = json.loads(request.POST['ids'])
+                data = form.search_products(term, ids_exclude)
+
+            elif action == 'search_products_select2':
+                term = request.POST['term'].strip()
+                ids_exclude = json.loads(request.POST['ids'])
+                data = form.search_products(term, ids_exclude)
+
+            elif action == 'add':
+                form = self.get_form(request.POST)
+                print(form.is_valid())
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Se ha creado el pedido exitosamente.')
+                    data = {'id': form.instance.id}
+                else:
+                    print('El formulario no es valido ')
+                    data['errors'] = form.errors
+                    messages.error(request, 'Ha ocurrido un error inesperado.')
+
+            else:
+                messages.error(request, 'Ha ocurrido un error inesperado.')
+                data['error'] = 'Ha ocurrido un error inesperado.'
+
+        except Exception as e:
+            data['error'] = str(e)
+            messages.error(request, str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -214,8 +280,14 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
     def get_form(self, form_class=None):
         instance = self.get_object()
         form = OrderForm(instance=instance)
-        form.fields['user'].queryset = UserProfile.objects.filter(id=instance.user.id)
-        return form
+        # form.fields['user'].queryset = UserProfile.objects.filter(id=instance.user.id)
+        user_auth = int(get_current_request().user.id)
+        user_form = instance.user.id
+
+        if user_auth == user_form:
+            return form
+        else:
+            messages.error('Usted no tiene permiso de actualizar este pedido.')
 
     def get_details_product(self):
         data = []
@@ -230,6 +302,7 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
         data = {}
         try:
             action = request.POST['action']
+
             if action == 'search_products':
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
@@ -268,7 +341,7 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
                         order = self.get_object()
                         order.start_date = request.POST['start_date']
                         order.end_date = request.POST['end_date']
-                        order.user_id = int(request.POST['user'])
+                        # order.user_id = int(request.POST['user'])
                         order.description = request.POST['description']
                         order.manifestation_id = int(request.POST['manifestation'])
                         order.save()

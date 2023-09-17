@@ -271,7 +271,7 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        var buttons = '<a rel="add" class="btn-sm app-btn-primary "><i class="fas fa-plus"></i></a> ';
+                        var buttons = '<a rel="add" class="btn app-btn-primary "><i class="bi-basket"></i> Añadir al pedido</a> ';
                         return buttons;
                     }
                 },],

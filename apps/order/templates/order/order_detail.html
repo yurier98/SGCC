@@ -183,12 +183,12 @@
                                                 <div class="col-auto">
                                                     <div class="item-label"><strong>Estado</strong></div>
                                                     <div class="item-data">
-                                                        {% if object.state == 'Pendiente' %}
+                                                        {% if object.state == 'P' %}
                                                             <span class="badge bg-warning"> Pendiente </span>
-                                                        {% elif object.state == 'Aprobado' %}
+                                                        {% elif object.state == 'A' %}
                                                             <span class="badge bg-success"> Aprobado </span>
-                                                        {% elif object.state == 'No Aprobado' %}
-                                                            <span class="badge bg-danger"> No Aprobado </span>
+                                                        {% elif object.state == 'R' %}
+                                                            <span class="badge bg-danger"> Rechazado </span>
                                                         {% else %}
                                                             <span class="badge bg-danger"> N/A </span>
                                                         {% endif %}
@@ -383,14 +383,14 @@
                                                     <i class="bi-arrow-left"></i>
                                                     Regresar</a>
 
-                                                <a href="{% url 'loan_invoice_pdf' object.pk %}" target="_blank"
+                                                <a href="{% url 'order_invoice_pdf' object.pk %}" target="_blank"
                                                    class="btn app-btn-primary">
                                                     <i class="bi-printer"></i>
                                                     Imprimir
                                                 </a>
 
                                                 {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
-                                                {% if object.state == 'Pendiente' %}
+                                                {% if object.state == 'P' %}
                                                     <a href="{% url 'order_update' object.pk %} "
                                                        class="btn app-btn-primary btn-flat">
                                                         <i class="bi-pencil"></i>

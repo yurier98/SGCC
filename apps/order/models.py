@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timedelta
 from django.db import models
 from django.forms import model_to_dict
 
@@ -12,9 +13,9 @@ class Order(models.Model):
     """Pedido model. """
 
     STATE = (
-        ('Pendiente', 'Pendiente'),
-        ('Aprobado', 'Aprobado'),
-        ('No Aprobado', 'No Aprobado'),
+        ('P', 'Pendiente'),
+        ('A', 'Aprobado'),
+        ('R', 'Rechazado'),
     )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -24,7 +25,7 @@ class Order(models.Model):
     description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
                                    null=True, blank=True)
     manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
-    state = models.CharField("Estado", max_length=11, choices=STATE, default='Pendiente')
+    state = models.CharField("Estado", max_length=11, choices=STATE, default='P')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_delete = models.BooleanField(default=False)
@@ -59,11 +60,32 @@ class Order(models.Model):
             detail.product.save()
         super(Order, self).delete()
 
+    @classmethod
     def stats(self):
-        item = []
-        item['total_orders'] = self.total_orders()
-        item['total_orders_pending'] = self.total_orders_pending()
-        return item
+        # Obtener la fecha actual
+        today = datetime.now().date()
+        # Calcular la fecha hace 30 días
+        last_month = today - timedelta(days=30)
+        # Obtener el total de préstamos de los últimos 30 días
+        last_month_orders = Order.objects.filter(created__gte=last_month).count()
+        # Obtener el total de préstamos
+        total_orders = Order.objects.all().count()
+        # Calcular el porcentaje de aumento
+        if last_month_orders > 0:
+            increase = (total_orders - last_month_orders) / last_month_orders * 100
+            increase = round(increase, 2)  # Redondear a dos lugares decimales
+        else:
+            increase = 0
+        # Crear un diccionario con los valores estadísticos
+        stats = {
+            'total_orders': total_orders,
+            'total_orders_pending': Order.objects.filter(state='P').count(),
+            'total_orders_approve': Order.objects.filter(state='A').count(),
+            'total_orders_rejected': Order.objects.filter(state='R').count(),
+            'last_month_orders': last_month_orders,
+            'increase': increase,
+        }
+        return stats
 
     @classmethod
     def total_orders(cls):
@@ -80,6 +102,15 @@ class Order(models.Model):
     @classmethod
     def total_orders_rejected(cls):
         return cls.objects.filter(state='No Aprobado').count()
+
+    def cantidad_prestamos(self):
+        return Order.objects.count()
+
+
+    def porcentaje_pendientes(self):
+        total_prestamos = self.total_orders()
+        prestamos_pendientes = self.total_orders_pending()
+        return (prestamos_pendientes / total_prestamos) * 100
 
 
 class OrderProduct(models.Model):

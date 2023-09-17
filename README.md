@@ -90,9 +90,9 @@ Para instalar las dependencias solo debe ejecutar:
 
     pip install -r requirements/develop.txt
 
-Este proyecto utiliza diferentes librerias que son necesarias instalarlas con anterioridad para su correcta ejecución.
+Este proyecto utiliza diferentes librerías que son necesarias instalarlas con anterioridad para su correcta ejecución.
 
-Para poderse conectar al LDAP de la UCI necesita la libreria   **python-ldap==3.4.0**, si usted es usuario de windows necesita instalar esta libreria de forma manual
+Para poderse conectar al LDAP de la UCI necesita la libreria **python-ldap==3.4.0**, si usted es usuario de windows necesita instalar esta libreria de forma manual
 #### Para instalar esta dependencia en Windows debe moverse al directorio deploy y ejecutar:
 
     pip install python_ldap-3.4.0-cp38-cp38-win_amd64.whl
@@ -100,9 +100,9 @@ Esta dependencia python_ldap-3.4.0-**cp38-cp38**-win_amd64 es compatible con **p
 
 
 
-#### Instalar Weasyprint => es una libreria para la creación de pdf
+#### Instalar Weasyprint ⇒ es una libreria para la creación de pdf
 
-Esta libreria se instala automaticamente con el requirements pero para los usuarios de windows necesitan instalar **GTK-for-Windows-Runtime-Environment-Installer**
+Esta librería se instala automáticamente con el requirements pero para los usuarios de windows necesitan instalar **GTK-for-Windows-Runtime-Environment-Installer**
 
 https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases
 
@@ -117,13 +117,6 @@ Después creas un usuario administrador:
 `python manage.py createsuperuser`
 
 Rellenas toda la información que te pide y ya está listo para ejecutar:
-## Ejecutar
-Ejecutar el proyecto localmente
-
-    python manage.py runserver
-
-Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose, si está conectado a
-la red UCI podrá autenticarse mendiante su usuario y contraseña usando el LDAP de la universidad 
 
 ## Cargar datos por defecto 
 
@@ -149,15 +142,17 @@ El rol de **tecnico** tiene permisos para:
 
         'approve_order',
         'view_all_order',
-Además un usuario tecnico podrá ver en el menu los módulo: **Pedidos, Préstamos, Inventario y Reportes**
+Además, un usuario técnico podrá ver en el menu los módulos: **Pedidos, Préstamos, Inventario y Reportes**
 
-El módulo de Pedido al que tiene acceso el tecnico podrá ver todos los pedidos del sitema
+El módulo de Pedido al que tiene acceso el técnico podrá ver todos los pedidos del sitema,
 pero no puede crear un pedido. 
 
 
-( _**Esta informacion necesita actualizarse**_ ) El rol de **administrador** tiene permisos para acceder:
+(_**Esta información necesita actualizarse**_) El rol de **administrador** tiene permisos para acceder:
 
          'view_category',
+
+
 ### Cargar datos de los Grupos o Roles
 
 ` python manage.py loadgroups`
@@ -171,3 +166,15 @@ Cargar datos de usuarios de prueba para el rol administrador y tecnico
 **username**='admin' y **password**='admin'
 
 **username**='tecnico' y **password**='tecnico'
+
+
+## Ejecutar
+Ejecutar el proyecto localmente
+
+`python manage.py runserver`
+
+
+Abre tu navegador en http://localhost:8000 y verás el sitio ejecutándose, si está conectado a
+la red UCI podrá autenticarse mendiante su usuario y contraseña usando el LDAP de la universidad.
+
+Hay que arreglar las configuraciones de la autenticación para cuando el servicio LDAP este caido el sistema use la autenticación del propio django

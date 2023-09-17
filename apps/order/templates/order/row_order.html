@@ -22,12 +22,12 @@
                 <span class="truncate">{{ object.manifestation }}</span>
             </td>
             <td class="cell">
-                {% if object.state == 'Pendiente' %}
+                {% if object.state == 'P' %}
                     <span class="badge bg-warning"> Pendiente </span>
-                {% elif object.state == 'Aprobado' %}
+                {% elif object.state == 'A' %}
                     <span class="badge bg-success"> Aprobado </span>
-                {% elif object.state == 'No Aprobado' %}
-                    <span class="badge bg-danger"> No Aprobado </span>
+                {% elif object.state == 'R' %}
+                    <span class="badge bg-danger"> Rechazado </span>
                 {% else %}
                     <span class="badge bg-danger"> N/A </span>
                 {% endif %}

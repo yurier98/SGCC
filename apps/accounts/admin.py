@@ -27,11 +27,12 @@ class PerfileAdmin(admin.ModelAdmin):
         return "\n".join([g.name for g in obj.groups.all()])
 
     def photo(self, obj):
-        img=obj.image
+        img = obj.get_image
         if img is None:
             print("No hay img")
             return format_html('<img src="" style="width: 50px; height: 50px; border-radius: 8px;" />')
-        return format_html('<img src={} style="width: 50px; height: 50px; border-radius: 8px;" />', obj.image.url)
+        else:
+            return format_html('<img src={} style="width: 50px; height: 50px; border-radius: 8px;" />', img)
 
 
 admin.site.register(UserProfile, PerfileAdmin)

@@ -35,15 +35,10 @@ THIRD_PARTY_APPS = [
     'widget_tweaks',
     'bootstrap_modal_forms',
     'pwa',
-    'django_extensions',
-    # "view_breadcrumbs",
     # 'django_extensions',
 ]
 
 LOCAL_APPS = [
-    # 'web_project.apps.CoreConfig',
-    # 'justshipto_core.core.apps.CoreConfig',
-    # 'justshipto_core.accounts.apps.AccountsConfig',
     'apps.accounts',
     'apps.custom_auth',
     'apps.nomenclatures',
@@ -167,7 +162,7 @@ AUTHENTICATION_BACKENDS = (
 )
 # *********************** END AUTENTICACION *********************
 
-ROOT_URLCONF = 'config.urls'
+
 LOGIN_REDIRECT_URL = '/'  # Route defined in home/urls.py
 # LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
 LOGIN_URL = reverse_lazy('login')
@@ -180,18 +175,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.uci.cu'
 # EMAIL_HOST = 'smtp.estudiantes.uci.cu'
 EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-# EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
-EMAIL_HOST_USER = 'guflyplay@gmail.com'
 
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_PASSWORD = '2021guf@'
+EMAIL_HOST_PASSWORD = 'password'
+
 # EMAIL_PORT = 25
 EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DOMAIN = ''
 # *********************** END CONFIG EMAIL*********************
-
 
 from .pwa import *
