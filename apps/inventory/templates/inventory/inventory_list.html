@@ -226,11 +226,12 @@
                                                     <img class="thumb-image"
                                                          src="{{ object.get_image }}" alt="">
                                                 </div>
-                                                {% if object.state  == 'D' %}
-                                                    <span class="badge bg-success"> DISPONIBLE </span>
-                                                {% elif object.state  == 'P' %}
-                                                    <span class="badge bg-warning"> PRESTADO </span>
+
+                                                {% if object.recently_created %}
+                                                    <span class="badge bg-success">NUEVO</span>
                                                 {% endif %}
+
+
                                                 <a class="app-card-link-mask"
                                                    href="{% url 'product_detail' object.pk %}"></a>
                                             </div>
@@ -289,10 +290,8 @@
                                                                 <img class="thumb-image"
                                                                      src="{{ object.get_image }}" alt="">
                                                             </div>
-                                                            {% if object.state  == 'D' %}
-                                                                <span class="badge bg-success"> DISPONIBLE </span>
-                                                            {% elif object.state  == 'P' %}
-                                                                <span class="badge bg-warning"> PRESTADO </span>
+                                                            {% if object.recently_created %}
+                                                                <span class="badge bg-success">NUEVO</span>
                                                             {% endif %}
                                                             <a class="app-card-link-mask"
                                                                href="{% url 'product_detail' object.pk %}"></a>
@@ -352,11 +351,12 @@
                                                         <img class="thumb-image"
                                                              src="{{ object.get_image }}" alt="">
                                                     </div>
-                                                    {% if object.state  == 'D' %}
-                                                        <span class="badge bg-success"> DISPONIBLE </span>
-                                                    {% elif object.state  == 'P' %}
-                                                        <span class="badge bg-warning"> PRESTADO </span>
+
+                                                    {% if object.recently_created %}
+                                                        <span class="badge bg-success">NUEVO</span>
                                                     {% endif %}
+
+
                                                     <a class="app-card-link-mask"
                                                        href="{% url 'product_detail' object.pk %}"></a>
                                                 </div>

@@ -92,6 +92,9 @@
                                                 <!--//icon-holder-->
                                             </div><!--//col-->
                                             <div class="col-auto">
+                                                  {% if object.recently_created %}
+                                                        <span class="badge bg-success">NUEVO</span>
+                                                    {% endif %}
                                                 {% block form-group %} {% endblock %}
                                             </div><!--//col-->
                                         </div><!--//row-->
