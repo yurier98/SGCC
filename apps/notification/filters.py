@@ -4,7 +4,6 @@ import django_filters
 from django_filters import filters
 
 # class NotificationFilter(django_filters.FilterSet):
-#
 
 
 class TimeFilter(django_filters.FilterSet):
