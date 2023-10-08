@@ -2,11 +2,12 @@ import uuid
 from datetime import datetime, timedelta
 from django.db import models
 from django.forms import model_to_dict
-
+from django.core.exceptions import ValidationError
 # Create your models here.
 from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
 from apps.nomenclatures.models import Manifestation
+
 
 
 class Order(models.Model):
@@ -42,6 +43,10 @@ class Order(models.Model):
             ("approve_order", "Aprobar Pedido"),
             ("view_all_order", "Ver todos los pedidos"),
         )
+
+    def clean(self):
+        if self.start_date > self.end_date:
+            raise ValidationError("End date cannot be before start date")
 
     def toJSON(self):
         item = model_to_dict(self)
