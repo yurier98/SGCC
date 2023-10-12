@@ -1,19 +1,22 @@
 from django.contrib import admin
 
 # Register your models here.
-from ..notification.models import Notification
+from apps.notification.models import  SystemNotification, EmailNotification
 
 
-class AbstractNotifyAdmin(admin.ModelAdmin):
-    raw_id_fields = ('destiny',)
-    list_dysplay = ('destiny', 'actor', 'verbo', 'read', 'publico')
-    list_filter = ('level', 'read', 'destiny')
-
-    def get_queryset(self, requets):
-        qs = super(AbstractNotifyAdmin, self).get_queryset(requets)
-        return qs.prefetch_related('actor')
+class SystemNotificationAdmin(admin.ModelAdmin):
+    list_display = ('user','level', 'message', 'read')
+    list_filter = ('level', 'read', 'is_delete')
 
 
+class EmailNotificationAdmin(admin.ModelAdmin):
+    list_display = ('email_to', 'subject')
+    # list_filter = ('created_at')
 
-# admin.site.register(Notification, NotificationAdmin)
-admin.site.register(Notification, AbstractNotifyAdmin)
+
+admin.site.register(SystemNotification, SystemNotificationAdmin)
+admin.site.register(EmailNotification, EmailNotificationAdmin)
+
+
+
+# admin.site.register(Notification, AbstractNotifyAdmin)

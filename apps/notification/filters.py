@@ -1,5 +1,5 @@
 from django import forms
-from .models import Notification
+from .models import SystemNotification
 import django_filters
 from django_filters import filters
 
@@ -8,11 +8,11 @@ from django_filters import filters
 
 
 class TimeFilter(django_filters.FilterSet):
-    start_date = filters.DateFilter(field_name='timestamp', lookup_expr='gte')
-    end_date = filters.DateFilter(field_name='timestamp', lookup_expr='lte')
+    start_date = filters.DateFilter(field_name='created_at', lookup_expr='gte')
+    end_date = filters.DateFilter(field_name='created_at', lookup_expr='lte')
 
     class Meta:
-        model = Notification
+        model = SystemNotification
         fields = ['start_date', 'end_date']
 
 

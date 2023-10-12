@@ -53,10 +53,11 @@
                     </div>
                 </div>
 
+
                 {% if object_list %}
                     {% for notify in object_list %}
                         {% if notify.level == 'info' %}
-                            <a class="" href="{% url 'notifications_detail' notify.pk %}">
+
                                 <div class="app-card alert alert-dismissible shadow-sm mb-4
                                 {% if  not notify.read %} border-left-decoration {% endif %} "
                                      role="alert">
@@ -82,11 +83,11 @@
                                                             <span class="badge bg-primary">Nuevo</span>
                                                         {% endif %}
                                                     </div>
-                                                    <h5 class="notification-title mb-1">{{ notify.verbo }}</h5>
+                                                    <h5 class="notification-title mb-1">{{ notify.message }}</h5>
 
                                                     <ul class="notification-meta list-inline mb-0">
                                                         <li class="list-inline-item">
-                                                            Hace {{ notify.timestamp| timesince }}</li>
+                                                            Hace {{ notify.created_at| timesince }}</li>
                                                         {# <li class="list-inline-item">|</li>#}
                                                         {# <li class="list-inline-item">Información</li>#}
                                                     </ul>
@@ -97,9 +98,9 @@
                                         </div><!--//app-card-body-->
                                     </div><!--//inner-->
                                 </div>
-                            </a>
+
                         {% elif notify.level == 'success' %}
-                            <a class="" href="{% url 'notifications_detail' notify.pk %}">
+
                                 <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout
                                 {% if  not notify.read %} border-left-decoration {% endif %} "
                                      role="alert">
@@ -125,11 +126,11 @@
                                                             <span class="badge bg-primary">Nuevo</span>
                                                         {% endif %}
                                                     </div>
-                                                    <h5 class="notification-title mb-1">{{ notify.verbo }}</h5>
+                                                    <h5 class="notification-title mb-1">{{ notify.message }}</h5>
 
                                                     <ul class="notification-meta list-inline mb-0">
                                                         <li class="list-inline-item">
-                                                            Hace {{ notify.timestamp| timesince }}</li>
+                                                            Hace {{ notify.created_at| timesince }}</li>
                                                         {# <li class="list-inline-item">|</li>#}
                                                         {# <li class="list-inline-item">Información</li>#}
                                                     </ul>
@@ -140,9 +141,9 @@
                                         </div><!--//app-card-body-->
                                     </div><!--//inner-->
                                 </div>
-                            </a>
+
                         {% else %}
-                            <a class="" href="{% url 'notifications_detail' notify.pk %}">
+
                                 <div class="app-card alert alert-dismissible shadow-sm mb-4
                                 {% if  not notify.read %} border-left-decoration {% endif %}"
                                      role="alert">
@@ -170,11 +171,11 @@
                                                             <span class="badge bg-primary">Nuevo</span>
                                                         {% endif %}
                                                     </div>
-                                                    <h5 class="notification-title mb-1">{{ notify.verbo }}</h5>
+                                                    <h5 class="notification-title mb-1">{{ notify.message }}</h5>
 
                                                     <ul class="notification-meta list-inline mb-0">
                                                         <li class="list-inline-item">
-                                                            Hace {{ notify.timestamp| timesince }}</li>
+                                                            Hace {{ notify.created_at| timesince }}</li>
                                                         {# <li class="list-inline-item">|</li>#}
                                                         {# <li class="list-inline-item">Información</li>#}
                                                     </ul>
@@ -192,7 +193,7 @@
                                     </div>
                                     <!--//inner-->
                                 </div>
-                            </a>
+
                         {% endif %}
                     {% endfor %}
                 {% else %}
@@ -259,7 +260,7 @@
             </div><!--//container-fluid-->
         </div><!--//app-content-->
 
-        {% include 'includes/footer.html' %}
+
     </div><!--//app-wrapper-->
 {% endblock %}
 

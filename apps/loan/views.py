@@ -42,15 +42,7 @@ class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
     template_name = 'loan/loan_list.html'
     permission_required = 'loan.view_loan'
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     start_date = self.request.GET.get('start_date')
-    #     end_date = self.request.GET.get('end_date')
-    #     if start_date and end_date:
-    #         start_date = timezone.datetime.strptime(start_date, '%Y-%m-%d')
-    #         end_date = timezone.datetime.strptime(end_date, '%Y-%m-%d')
-    #         queryset = queryset.filter(order__created__range=[start_date, end_date])
-    #     return queryset
+
     def get_queryset(self):
         return Loan.objects.all()
 
@@ -62,20 +54,6 @@ class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
         context['entity'] = 'Préstamos'
         context['filter'] = LoanFilter(self.request.GET, queryset=self.get_queryset())
         return context
-
-    # def post(self, request, *args, **kwargs):
-    #     data = {}
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         action = form.cleaned_data['action']
-    #         if action == 'search':
-    #             loans = self.get_queryset()
-    #             data = [loan.toJSON() for loan in loans]
-    #         else:
-    #             data['error'] = 'Ha ocurrido un error'
-    #     else:
-    #         data['error'] = form.errors
-    #     return JsonResponse(data, safe=False)
 
 
 class LoanListView2(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormView):
@@ -94,13 +72,10 @@ class LoanListView2(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormV
                 end_date = request.POST['end_date']
                 loan = Loan.objects.all()
 
-                # queryset = loan.get(order__created=)
-                # queryset = loan.filter(order__created__range=[start_date, end_date])
-                # queryset = Order.objects.all()
 
                 if len(start_date) and len(end_date):
                     queryset = loan.filter(order__created__range=[start_date, end_date])
-                    # queryset = queryset.filter(created__range=[start_date, end_date])
+
                 for i in queryset:
                     data.append(i.toJSON())
                     print(data)
@@ -225,11 +200,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
 
 
                     # user = UserProfile.objects.get(id=request.POST['user'])
-                    user = Order.objects.get(pk=order.pk).user
-                    notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente, '
-                                                            'para recogerlo contacte con nosotros.',
-                                   level='info')
-                    messages.success(request, '¡Préstamo guardado con éxito!')
+
 
                     data = {'id': order.id}
                     # detail = OrderProduct()

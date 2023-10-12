@@ -187,8 +187,13 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                         detail.product.save()
 
                     user = Order.objects.get(pk=order.pk).user
-                    notificar.send(user, destiny=user,
-                                   verb='Se ha creado un pedido a su usuario exitosamente. pedido: .....',
+                    # notificar.send(user, destiny=user,
+                    #                verb='Se ha creado un pedido a su usuario exitosamente. pedido: .....',
+                    #                level='info')
+
+                    #asi queda
+                    notificar.send(user, user=user,
+                                   message='Esto es una prueba ... ',
                                    level='info')
                     messages.success(request, 'Se ha creado el pedido exitosamente.')
                     data = {'id': order.id}

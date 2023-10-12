@@ -48,13 +48,12 @@
                             </div><!--//col-->
                             <div class="col">
                                 <div class="info">
-                                    <div class="desc">{{ notify.actor }}</div>
-                                    <div class="desc">{{ notify.verbo }}</div>
-                                    <div class="meta"> {{ notify.timestamp| timesince }}</div>
+                                    <div class="desc">{{ notify.message }}</div>
+                                    <div class="meta"> {{ notify.created_at| timesince }}</div>
                                 </div>
                             </div><!--//col-->
                         </div><!--//row-->
-                        <a class="link-mask" href="{% url 'notifications_detail' notify.pk %}"></a>
+
                     </div><!--//item-->
                 {% endfor %}
             {% else %}

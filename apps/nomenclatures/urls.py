@@ -5,7 +5,6 @@ from . import views
 
 
 urlpatterns = [
-
     #################  Manifestation   #####################################
     path('manifestations', views.ManifestationListView.as_view(), name='manifestation_list'),
     path('manifestation/add', views.ManifestationCreateView.as_view(), name='manifestation_create'),

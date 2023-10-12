@@ -131,4 +131,5 @@ def notify_signals(verb, **kwargs):
     return new_notify
 
 
-notificar.connect(notify_signals, dispatch_uid='notification.models.Notification')
+# notificar.connect(notify_signals, dispatch_uid='notification.models.Notification')
+#### aqui empiezan los cambios

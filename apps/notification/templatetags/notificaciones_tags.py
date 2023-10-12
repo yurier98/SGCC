@@ -9,8 +9,7 @@ def cantNotify(context):
 
     if not user:
         return ''
-
-    return user.notificaciones.no_leido().count()
+    return user.notifications.no_leido().count()
 
 
 notificaciones = register.simple_tag(takes_context=True)(cantNotify)
@@ -42,7 +41,7 @@ def Notify(context):
     if not user:
         return ''
 
-    return user.notificaciones.no_leido()[0:5]
+    return user.notifications.no_leido()[0:5]
 
 
 Notify = register.simple_tag(takes_context=True)(Notify)
