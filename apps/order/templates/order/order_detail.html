@@ -197,7 +197,7 @@
                                                 <div class="col text-end">
 
                                                     {% if request.user|has_group:"tecnico" %}
-                                                        {% if object.state == 'Pendiente' %}
+                                                        {% if object.state == 'P' %}
                                                             <div class="btn-group">
                                                                 <button type="button"
                                                                         class="btn-sm app-btn-secondary dropdown-toggle"
@@ -360,50 +360,57 @@
                         <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                              style="max-width: 40rem;">
                             <!-- Card -->
-                            <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                            <div class="app-card card-sm bg-dark bg-blur border border-2 border-primary shadow mx-2">
                                 <div class="card-body">
                                     <div class="row justify-content-center justify-content-sm-between">
                                         <div class="col">
-                                            {% if next_object_url %}
-                                                <a href="{{ next_object_url }}"
-                                                   class="btn btn-ghost-light btn-flat">
-                                                    Siguiente <i class="fas fa-arrow-right"></i>
-                                                </a>
-                                            {% endif %}
+                                            <a href="{{ list_url }}" class="btn btn-ghost-light">
+                                                <i class="fas fa-arrow-left"></i>
+                                                Regresar</a>
 
-
-                                        </div>
-                                        <!-- End Col -->
+                                        </div><!-- End Col -->
 
                                         <div class="col-auto">
                                             <div class="d-flex gap-3">
 
 
-                                                <a href="{{ list_url }}" class="btn btn-ghost-light">
-                                                    <i class="bi-arrow-left"></i>
-                                                    Regresar</a>
-
-                                                <a href="{% url 'order_invoice_pdf' object.pk %}" target="_blank"
-                                                   class="btn app-btn-primary">
-                                                    <i class="bi-printer"></i>
-                                                    Imprimir
-                                                </a>
-
-                                                {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
-                                                {% if object.state == 'P' %}
-                                                    <a href="{% url 'order_update' object.pk %} "
-                                                       class="btn app-btn-primary btn-flat">
-                                                        <i class="bi-pencil"></i>
-                                                        Editar
+                                                {% if next_object_url %}
+                                                    <a href="{{ next_object_url }}"
+                                                       class="btn btn-ghost-light btn-flat">
+                                                        Siguiente <i class="fas fa-arrow-right"></i>
                                                     </a>
                                                 {% endif %}
 
 
+                                                {# aki debveria comprobar si el usuario no pertenece a ningun rol entonces muestra este btn #}
+                                                {% if not request.user.groups.exists %}
+                                                    {% if object.state == 'P' %}
+                                                        <a href="{% url 'order_update' object.pk %} "
+                                                           class="btn app-btn-primary btn-flat">
+                                                            <i class="bi-pencil"></i>
+                                                            Editar
+                                                        </a>
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                {% if has_perm_approve_order %}
+                                                    {% if object.state == 'P' %}
+
+                                                        <a class="btn app-btn-outline-danger btn-flat"
+                                                           href="{% url 'order_deny' object.pk %}">
+                                                            <i class="bi bi-file-earmark-x"></i> Denegar</a>
+
+                                                        <a class="btn app-btn-outline-success btn-flat"
+                                                           href="{% url 'order_approve' object.pk %}">
+                                                            <i class="bi bi-file-earmark-check"></i> Aprobar</a>
+
+                                                    {% endif %}
+                                                {% endif %}
+
+
                                             </div>
-                                        </div>
-                                        <!-- End Col -->
-                                    </div>
-                                    <!-- End Row -->
+                                        </div><!-- End Col -->
+                                    </div><!-- End Row -->
                                 </div>
                             </div>
                             <!-- End Card -->

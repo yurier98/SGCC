@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block stylesheets %}
+
     <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
     <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
@@ -22,12 +23,17 @@
 {% block javascript %}
     <script src="{% static 'assets/plugins/glightbox/js/glightbox.js' %}"></script>
 
+    <!-- Moment -->
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
     <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
-    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+
+
     <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
 
@@ -40,7 +46,6 @@
 
     <script>
         order.details.products = {{ products|safe }};
-        // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
     </script>
 {% endblock %}
 
@@ -83,8 +88,8 @@
                                         <div class="app-card-header p-2 border-bottom-0">
                                             <h3 class="app-card-title">
                                                 <div class="app-icon-holder">
-                                                    {#                                                        <i class="bi bi-box-seam fa-2x" style="line-height: 0;"></i>#}
-                                                    <i class="fas fa-boxes"></i>
+                                                    <i class="bi bi-box-seam fa-2x"></i>
+                                                    {#                                                    <i class="fas fa-boxes"></i>#}
                                                 </div>
                                                 Detalles de los productos
                                             </h3>
@@ -94,35 +99,28 @@
                                             <div class="container-fluid settings-section">
                                                 <div class="form-group settings-form">
                                                     <label class="form-label">Buscador de productos</label>
-                                                    <div class="input-group">
-                                                        <select class="form-control select2"
-                                                                name="search_product"></select>
-                                                        {#                                        <input type="text" class="form-control" autocomplete="off"#}
-                                                        {#                                               placeholder="Ingrese una descripción" maxlength="50" name="search">#}
-                                                        <div class="input-group-append">
-                                                            <button class="btn app-btn-secondary dropdown-toggle"
-                                                                    type="button"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                Opciones
-                                                            </button>
-                                                            <div class="dropdown-menu dropdown-menu-right">
-                                                                <a class="dropdown-item btnSearchProducts">
-                                                                    <i class="bi bi-search"></i> Buscar productos
-                                                                </a>
-                                                                <a class="dropdown-item btnClearSearch">
-                                                                    <i class=" bi bi-x-circle"></i> Limpiar búsqueda
-                                                                </a>
-                                                                <li>
-                                                                    <hr class="dropdown-divider">
-                                                                </li>
-                                                                <a class="dropdown-item btnRemoveAll">
-                                                                    <i class="bi bi-trash"></i> Eliminar
-                                                                    todos mis
-                                                                    items
-                                                                </a>
-                                                            </div>
-                                                        </div>
+                                                    <div class="input-group input-group-sm mb-3">
+                                                        <select class="form-control select2" name="search_product">
+                                                        </select>
+                                                        <button class="btn app-btn app-btn-secondary dropdown-toggle"
+                                                                type="button" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">Opciones
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item btnSearchProducts" href="#">
+                                                                <i class="bi-search me-2"></i> Buscar productos</a>
+                                                            </li>
+                                                            <li><a class="dropdown-item btnClearSearch" href="#">
+                                                                <i class="bi-x-circle me-2"></i> Limpiar búsqueda</a>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li><a class="dropdown-item btnRemoveAll" href="#">
+                                                                <i class="bi-trash me-2"></i> Eliminar todos mis
+                                                                items</a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -130,13 +128,13 @@
                                                        id="tblProducts">
                                                     <thead>
                                                     <tr>
-                                                        <th class="cell">Eliminar</th>
-                                                        <th class="cell">Imagen</th>
-                                                        <th class="cell">Producto</th>
-                                                        <th class="cell">Categoría</th>
-                                                        <th class="cell">Cantidad disponible</th>
-                                                        <th class="cell">Cantidad deseada</th>
-                                                        <th class="cell">Estado</th>
+                                                        <th class="cell"></th>
+                                                        <th class="cell">IMAGEN</th>
+                                                        <th class="cell">PRODUCTO</th>
+                                                        <th class="cell">CATEGORIA</th>
+                                                        <th class="cell">DISPONIBLE</th>
+                                                        <th class="cell">CANT. DESEADA</th>
+                                                        <th class="cell">ESTADO</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -196,7 +194,7 @@
                             <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                                  style="max-width: 40rem;">
                                 <!-- Card -->
-                                <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                                <div class="app-card card-sm bg-dark bg-blur border border-2 border-primary shadow mx-2">
                                     <div class="card-body">
                                         <div class="row justify-content-center justify-content-sm-between">
                                             <div class="col">
@@ -252,11 +250,11 @@
                     <table class="table app-table-hover mb-0 text-left " id="tblSearchProducts">
                         <thead>
                         <tr>
-                            <th class="cell">Producto</th>
-                            <th class="cell">Imagen</th>
-                            <th class="cell">Cantidad disponible</th>
-                            <th class="cell">Categoría</th>
-                            <th class="cell">Acciones</th>
+                            <th class="cell">PRODUCTO</th>
+                            <th class="cell">IMAGEN</th>
+                            <th class="cell">DISPONIBILIDAD</th>
+                            <th class="cell">CATEGORIA</th>
+                            <th class="cell">ACCIONES</th>
                         </tr>
                         </thead>
                         <tbody>

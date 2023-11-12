@@ -329,11 +329,10 @@ $(function () {
         parameters.append('start_date', input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'));
         parameters.append('end_date', input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'));
 
-        submit_with_ajax(pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
-
+        submit_with_ajax(pathname, 'Confirmar pedido', '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
             location.href = success_url;
-
         });
+
     });
 
     order.listProducts();

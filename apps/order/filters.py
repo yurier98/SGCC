@@ -23,7 +23,7 @@ class OrderFilter(django_filters.FilterSet):
 
     class Meta:
         model = Order
-        fields = ['description', 'manifestation', 'state' , 'product__category']
+        fields = ['description', 'manifestation', 'state', 'product__category']
         # se necesita add un campo para filtar el tipo de producto
 
 

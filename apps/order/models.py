@@ -9,15 +9,20 @@ from apps.inventory.models import Product
 from apps.nomenclatures.models import Manifestation
 
 
-
 class Order(models.Model):
     """Pedido model. """
 
-    STATE = (
-        ('P', 'Pendiente'),
-        ('A', 'Aprobado'),
-        ('R', 'Rechazado'),
-    )
+    # STATE = (
+    #     ('P', 'Pendiente'),
+    #     ('A', 'Aprobado'),
+    #     ('R', 'Rechazado'),
+    # )
+
+    class State(models.TextChoices):
+        PENDIENTE = 'P', 'Pendiente'
+        APROBADO = 'A', 'Aprobado'
+        RECHAZADO = 'R', 'Rechazado'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -26,7 +31,7 @@ class Order(models.Model):
     description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
                                    null=True, blank=True)
     manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
-    state = models.CharField("Estado", max_length=11, choices=STATE, default='P')
+    state = models.CharField("Estado", max_length=1, choices=State.choices, default=State.PENDIENTE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_delete = models.BooleanField(default=False)
@@ -71,9 +76,9 @@ class Order(models.Model):
         today = datetime.now().date()
         # Calcular la fecha hace 30 días
         last_month = today - timedelta(days=30)
-        # Obtener el total de préstamos de los últimos 30 días
+        # Obtener el total de pedidos de los últimos 30 días
         last_month_orders = Order.objects.filter(created__gte=last_month).count()
-        # Obtener el total de préstamos
+        # Obtener el total de pedidos
         total_orders = Order.objects.all().count()
         # Calcular el porcentaje de aumento
         if last_month_orders > 0:
@@ -84,9 +89,9 @@ class Order(models.Model):
         # Crear un diccionario con los valores estadísticos
         stats = {
             'total_orders': total_orders,
-            'total_orders_pending': Order.objects.filter(state='P').count(),
-            'total_orders_approve': Order.objects.filter(state='A').count(),
-            'total_orders_rejected': Order.objects.filter(state='R').count(),
+            'total_orders_pending': Order.objects.filter(state=Order.State.PENDIENTE).count(),
+            'total_orders_approve': Order.objects.filter(state=Order.State.APROBADO).count(),
+            'total_orders_rejected': Order.objects.filter(state=Order.State.RECHAZADO).count(),
             'last_month_orders': last_month_orders,
             'increase': increase,
         }
@@ -110,7 +115,6 @@ class Order(models.Model):
 
     def cantidad_prestamos(self):
         return Order.objects.count()
-
 
     def porcentaje_pendientes(self):
         total_prestamos = self.total_orders()

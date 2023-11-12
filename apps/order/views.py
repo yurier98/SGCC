@@ -29,30 +29,25 @@ from apps.notification.signals import notificar
 
 
 ####################Vistas de Pedidos##################
-class OrderListAllView(GroupRequiredMixin, ExistsInventaryMixin, FilterView, ListView):
+class OrderListAllView(ValidatePermissionRequiredMixin, ExistsInventaryMixin, FilterView, ListView):
     """ Return all Order"""
     model = Order
     template_name = 'order/order_list.html'
     paginate_by = 10
-
     filterset_class = OrderFilter
-    # permission_required = 'order.view_all_order'
-    url_redirect = reverse_lazy('order_list')
-    group_names = ['tecnico', 'admin']
-    redirect_field_name = 'order_list'
 
-    # permission_required = 'view_order'
+    permission_required = {'order.view_all_order'}
+    url_redirect = 'order_list'
+    # url_redirect = reverse_lazy('order_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de pedidos'
-        context['create_url'] = reverse_lazy('order_create')
-        context['list_url'] = reverse_lazy('order_all_list')
         context['entity'] = 'Todos los Pedidos'
-        # Obtener los valores estadísticos
-        stats = self.model.stats()
-        # Agregar los valores al contexto
-        context['stats'] = stats
+        context['title'] = 'Listado de pedidos'
+        context['list_url'] = reverse_lazy('order_all_list')
+        # context['create_url'] = reverse_lazy('order_create')
+        # Obtener los valores estadísticos y los add a la variable stats
+        context['stats'] = self.model.stats()
         return context
 
 
@@ -394,20 +389,18 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
     def get_next_object(self):
         # Obtener el objeto actual
         object = self.get_object()
-
         # Obtener una lista de objetos con estado 'pendiente'
-        objects = Order.objects.filter(state='Pendiente').order_by('-created')
-
+        order_list = Order.objects.filter(state=Order.State.PENDIENTE).order_by('-created')
         # Obtener el índice del objeto actual en la lista
         current_index = 0
-        for i, obj in enumerate(objects):
+        for i, obj in enumerate(order_list):
             if obj.id == object.id:
                 current_index = i
                 break
         # Obtener el siguiente objeto en la lista
         next_object = None
-        if current_index < len(objects) - 1:
-            next_object = objects[current_index + 1]
+        if current_index < len(order_list) - 1:
+            next_object = order_list[current_index + 1]
 
         return next_object
 
@@ -415,19 +408,19 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Detalles del pedido'
         context['entity'] = 'Pedidos'
-        # context['action'] = 'edit'
         context['products'] = self.get_details_product()
 
-        # context['list_url'] = self.success_url
         user = self.request.user
-        if user.groups.filter(name='tecnico').exists():
+        if user.has_perm('order.approve_order'):
+            context['has_perm_approve_order'] = True
+        # if user.groups.filter(name='tecnico').exists():
+        if user.has_perm('order.view_all_order'):
             context['list_url'] = reverse('order_all_list')
             # Obtener el próximo objeto con estado 'pendiente'
             next_object = self.get_next_object()
             # Agregar la URL del próximo objeto al contexto
             if next_object:
                 context['next_object_url'] = reverse('order_detail', args=[next_object.pk])
-
         else:
             context['list_url'] = reverse('order_list')
 
@@ -617,7 +610,7 @@ class ApproveView(ValidatePermissionRequiredMixin, View):
             # if request.user.has_perm('order.approve_order'):
             if request.user.has_perm('order.approve_order'):
                 if current_url.__eq__('order_approve'):
-                    order.state = 'Aprobado'
+                    order.state = Order.State.APROBADO
                     order.save()
                     Loan.objects.create(state='PE', order_id=order.id, )
                     notificar.send(user, destiny=user, verb='😀 Se ha aprobado su pedido.',
@@ -625,12 +618,11 @@ class ApproveView(ValidatePermissionRequiredMixin, View):
                     messages.success(request, 'El pedido ha sido aprobado 😀.')
                     print('😀 Se ha aprobado ...')
                 elif current_url.__eq__('order_deny'):
-                    order.state = 'No Aprobado'
+                    order.state = Order.State.RECHAZADO
                     order.save()
                     notificar.send(user, destiny=user, verb='😕 Se denegado la aprobación de su pedido.',
                                    level='info')
-                    messages.error(request, 'El pedido no ha sido aprobado 😕.')
-
+                    messages.error(request, 'El pedido no ha sido rechazado 😕.')
         except:
             pass
         return redirect(prev_url)
