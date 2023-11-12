@@ -6,7 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import TemplateResponseMixin
 from django_filters.views import FilterView
-
+from django.contrib import messages
 # from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
 from ..security.Mixin.mixins import ValidatePermissionRequiredMixin
 from .filters import ProductFilter
@@ -196,6 +196,7 @@ class ProductDeleteView(SuccessMessageMixin, DeleteView):
         product.delete()
 
         if self.request.is_ajax():
+            messages.success(request, 'Se ha eliminado el producto exitosamente.')
             return JsonResponse({'message': 'Object deleted successfully.'})
         else:
             return super().delete(request, *args, **kwargs)

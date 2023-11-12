@@ -29,3 +29,14 @@ class ProductoForm(ModelForm):
             }),
 
         }
+
+    # def clean_img(self):
+    #     image = self.cleaned_data.get('img')
+    #     if image:
+    #         if image.size > 2 * 1024 * 1024:  # Tamaño máximo permitido: 2MB
+    #             raise forms.ValidationError("El tamaño de la imagen no puede exceder los 2MB.")
+    #         if not image.content_type.startswith('image/'):  # Solo se permiten imágenes
+    #             raise forms.ValidationError("El archivo seleccionado no es una imagen.")
+    #     else:
+    #         return None
+    #     return image

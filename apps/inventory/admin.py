@@ -1,11 +1,11 @@
 from django.contrib import admin
-
-# Register your models here.
 from django.utils.html import format_html
+# Register your models here.
 
 from .models import Category, ProductAttribute, Product
 
 
+@admin.register(Product)
 class ProductoAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'state', 'active', 'photo')
     list_filter = ['category', 'state', 'active']
@@ -15,7 +15,6 @@ class ProductoAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(ProductoAdmin)
+admin.site.register(Category)
+admin.site.register(ProductAttribute)
 
-admin.site.register(Category, )
-admin.site.register(ProductAttribute, )
-admin.site.register(Product, ProductoAdmin)

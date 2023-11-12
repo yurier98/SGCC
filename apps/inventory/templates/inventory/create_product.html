@@ -4,13 +4,35 @@
 
 
 {% block stylesheets %}
-    <link href="{% static 'assets/css/drag_drog.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.css' %}" rel="stylesheet">
+    {#    <link href="{% static 'assets/css/drag_drog.css' %}" rel="stylesheet">#}
+    {#    <link href="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.css' %}" rel="stylesheet">#}
+
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css"/>
 {% endblock %}
 
 {% block javascript %}
-    <script src="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.js' %}"></script>
-    <script src="{% static 'assets/js/drag&drop.js' %}"></script>
+    {#    <script src="{% static 'assets/plugins/dropzone-5.9.3/dropzone.min.js' %}"></script>#}
+    {#    <script src="{% static 'assets/js/drag&drop.js' %}"></script>#}
+
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.myDropzone = {
+            paramName: "image", // Nombre del parámetro que recibirá el archivo en el servidor
+            maxFilesize: 2, // Tamaño máximo del archivo en MB
+            acceptedFiles: "image/*", // Tipos de archivos permitidos (en este caso, solo imágenes)
+            init: function () {
+                this.on("success", function (file, response) {
+                    console.log("Archivo subido con éxito:", response);
+                });
+                this.on("error", function (file, errorMessage) {
+                    console.log("Error al subir el archivo:", errorMessage);
+                });
+            }
+        };
+
+    </script>
+
+
 {% endblock %}
 
 {% block content %}
@@ -33,7 +55,8 @@
                         </div><!--//table-utilities-->
                     </div><!--//col-auto-->
                 </div>
-                <form class="row " enctype="multipart/form-data" method="post" action="">
+                <form id="my-dropzone" class="row" method="post" action="{% url 'product_create' %}"
+                      enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="col-lg-8 mb-3 mb-lg-0">
@@ -52,20 +75,7 @@
                             <div class="app-card-body px-4 w-100">
                                 <!-- Form -->
                                 <div class="mb-4">
-                                    <label for="" class="form-label">Nombre</label>
-                                    <label for="setting-input-1" class="form-label">Business Name
-                                        <span class="ms-2"
-                                              data-bs-container="body"
-                                              data-bs-toggle="popover"
-                                              data-bs-trigger="hover focus"
-                                              data-bs-placement="top"
-                                              data-bs-content="This is a Bootstrap popover example. You can use popover to provide extra info."><svg
-                                                width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle"
-                                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-  <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"></path>
-  <circle cx="8" cy="4.5" r="1"></circle>
-</svg></span></label>
+                                    <label for="" class="form-label">{{ form.name.label }}</label>
                                     {% render_field form.name class="form-control" type="text" name="name" required="required" %}
                                 </div>
                                 <!-- End Form -->
@@ -74,7 +84,7 @@
                                     <div class="col-sm-6">
                                         <!-- Form -->
                                         <div class="mb-4">
-                                            <label for="" class="form-label">Categoria</label>
+                                            <label for="" class="form-label">{{ form.category.label }}</label>
                                             {% render_field form.category class="form-select" placeholder="First Name" type="text" %}
 
                                         </div>
@@ -85,10 +95,10 @@
                                     <div class="col-sm-6">
                                         <!-- Form -->
                                         <div class="mb-4">
-                                            <label for="" class="form-label">Estado</label>
+                                            <label for="" class="form-label">{{ form.state.label }}</label>
                                             {% render_field form.state class="form-select" placeholder="First Name" type="text" %}
                                             <small class="form-text">Used to calculate shipping rates at checkout and
-                                                label prices during fulfillment.</small>
+                                                label prices during fulfillment. {{ form.state.help_text }}</small>
                                         </div>
                                         <!-- End Form -->
                                     </div>
@@ -128,31 +138,27 @@
                             <!-- Body -->
                             <div class="card-body">
                                 <div class="mb-4">
-                                    <label for="" class="form-label">Imagen del producto</label>
-                                    <div class="drop-zone">
-                                        <span class="drop-zone__prompt">  <i class="bi bi-card-image"></i></span>
-                                        {% render_field form.img class="drop-zone__input" type="file" %}
+                                    <label for="{{ form.img.id_for_label }}" class="form-label">{{ form.img.label }}</label>
+                                    <!-- Dropzone -->
+                                    <div id="my-dropzone"
+                                         class="js-dropzone dz-dropzone dz-dropzone dz-dropzone-boxed gradient-overlay-half-primary-v4">
+                                        <div class="dz-message py-6">
+                                            <figure class="max-w-10rem mx-auto mb-3">
+                                                <img class="img-fluid avatar-xl avatar-4x3 mb-3"
+                                                     src="{% static 'assets/images/illustrations/oc-browse.svg' %}"
+                                                     alt="Image Description">
+                                            </figure>
+                                            <span class="d-block">Drag files here to upload</span>
+                                            {% render_field form.img type="file" %}
+                                        </div>
                                     </div>
-                                    {% render_field form.img class="form-control" type="file" %}
+                                    <!-- End Dropzone -->
+                                    <small class="form-text">{{ form.img.help_text }}</small>
+
                                 </div>
                                 {% render_field form.img class="form-control" type="file" %}
-                                <!-- Dropzone -->
-                                <div id="attachFilesNewProjectLabel"
-                                     class="js-dropzone dz-dropzone dz-dropzone-card dz-clickable">
-                                    <div class="dz-message">
-                                        <img class="avatar avatar-xl avatar-4x3 mb-3"
-                                             src="{% static 'assets/images/illustrations/oc-browse.svg' %}"
-                                             alt="Image Description"
-                                             data-hs-theme-appearance="default">
+                                <small class="form-text">{{ form.img.help_text }}</small>
 
-                                        <h5>Drag and drop your file here</h5>
-
-                                        <p class="mb-2">or</p>
-
-                                        <span class="btn btn-white btn-sm">Browse files</span>
-                                    </div>
-                                </div>
-                                <!-- End Dropzone -->
                             </div>
                             <!-- Body -->
                         </div>
@@ -174,7 +180,7 @@
                                         </div><!--//icon-holder-->
                                     </div><!--//col-->
                                     <div class="col-auto">
-                                        <h4 class="app-card-title">Variante del producto</h4>
+                                        <h4 class="app-card-title">Variantes del producto</h4>
                                     </div><!--//col-->
                                 </div><!--//row-->
                                 <hr>
@@ -183,10 +189,6 @@
 
                             <!-- Body -->
                             <div class="card-body">
-                                <div class="mb-4">
-                                    <label for="" class="form-label">Imagen del producto</label>
-                                    {% render_field form.img class="form-control" type="file" %}
-                                </div>
 
                                 <h6 class="text-cap">Options</h6>
 
@@ -207,40 +209,7 @@
                                                     <option value="Title">Title</option>
                                                     <option value="Size">Size</option>
                                                 </select>
-                                                <div class="ts-wrapper js-select form-select single plugin-change_listener plugin-hs_smart_position input-hidden full has-items">
-                                                    <div class="ts-control">
-                                                        <div data-value="Size" class="item" data-ts-item="">Size</div>
-                                                    </div>
-                                                    <div class="tom-select-custom">
-                                                        <div class="ts-dropdown single plugin-change_listener plugin-hs_smart_position"
-                                                             style="display: none; visibility: visible; opacity: 1;">
-                                                            <div role="listbox" tabindex="-1"
-                                                                 class="ts-dropdown-content"
-                                                                 id="tomselect-2-ts-dropdown">
-                                                                <div data-selectable="" data-value="Size"
-                                                                     class="option selected active" role="option"
-                                                                     id="tomselect-2-opt-1" aria-selected="true">Size
-                                                                </div>
-                                                                <div data-selectable="" data-value="Color"
-                                                                     class="option" role="option"
-                                                                     id="tomselect-2-opt-2">Color
-                                                                </div>
-                                                                <div data-selectable="" data-value="Material"
-                                                                     class="option" role="option"
-                                                                     id="tomselect-2-opt-3">Material
-                                                                </div>
-                                                                <div data-selectable="" data-value="Style"
-                                                                     class="option" role="option"
-                                                                     id="tomselect-2-opt-4">Style
-                                                                </div>
-                                                                <div data-selectable="" data-value="Title"
-                                                                     class="option" role="option"
-                                                                     id="tomselect-2-opt-5">Title
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
                                             </div>
                                             <!-- End Select -->
                                         </div>
@@ -262,37 +231,7 @@
                                     </a>
                                 </div>
 
-                                <!-- Add Another Option Input Field -->
-                                <div id="addAnotherOptionFieldTemplate" style="display: none;">
-                                    <div class="row mb-4">
-                                        <div class="col-sm-4 mb-2 mb-sm-0">
-                                            <!-- Select -->
-                                            <div class="tom-select-custom">
-                                                <select class="js-select-dynamic form-select"
-                                                        data-hs-tom-select-options="{
-                                &quot;searchInDropdown&quot;: false,
-                                &quot;hideSearch&quot;: true
-                              }">
-                                                    <option value="Size">Size</option>
-                                                    <option value="Color">Color</option>
-                                                    <option value="Material">Material</option>
-                                                    <option value="Style">Style</option>
-                                                    <option value="Title">Title</option>
-                                                </select>
-                                            </div>
-                                            <!-- End Select -->
-                                        </div>
-                                        <!-- End Col -->
 
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" placeholder="Enter tags"
-                                                   aria-label="Enter tags">
-                                        </div>
-                                        <!-- End Col -->
-                                    </div>
-                                    <!-- End Row -->
-                                </div>
-                                <!-- End Add Another Option Input Field -->
                             </div>
                             <!-- Body -->
                         </div>
@@ -338,14 +277,16 @@
 
                                 <div class="md-4">
                                     <div class="form-check form-switch">
-                                        {% render_field form.available class="form-check-input" name="available" id="id_available" type="checkbox" %}
-                                        <label for="id_available" class="form-check-label form-label">Está
-                                            disponible
-                                            <i class="bi-question-circle text-body ms-1"
-                                               data-bs-toggle="tooltip" data-bs-placement="top"
-                                               aria-label="Product availability switch toggler."
-                                               data-bs-original-title="Product availability switch toggler."></i>
+
+                                        <label for="" class="form-label">{{ form.available.label }}
+                                            <span class="ms-2" data-bs-container="body" data-bs-toggle="popover"
+                                                  data-bs-trigger="hover focus" data-bs-placement="top"
+                                                  data-bs-content="{{ form.available.help_text }}">
+                                                   <i class="bi-info-circle"></i>
+                                                </span>
                                         </label>
+                                        {% render_field form.available class="form-check-input" name="available" id="id_available" type="checkbox" %}
+
                                         <span class="help-block valid-feedback text-black-50">{{ form.available.help_text }}</span>
                                         <span class="help-block valid-feedback text-black-50">{{ form.available.error_messages }}</span>
                                     </div>
@@ -353,9 +294,15 @@
 
                                 <div class="md-4">
                                     <div class="form-check form-switch">
+                                        <label for="" class="form-label">{{ form.active.label }}
+                                            <span class="ms-2" data-bs-container="body" data-bs-toggle="popover"
+                                                  data-bs-trigger="hover focus" data-bs-placement="top"
+                                                  data-bs-content="{{ form.active.help_text }}">
+                                                   <i class="bi-info-circle"></i>
+                                                </span>
+                                        </label>
                                         {% render_field form.active class="form-check-input" type="checkbox" name="active" id="id_active" %}
-                                        <label class="form-check-label form-label" for="id_active">Está
-                                            activo</label>
+
                                         <span class="help-block  valid-feedback text-black-50">{{ form.active.help_text }}</span>
                                     </div>
                                 </div>
@@ -372,7 +319,7 @@
                     <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                          style="max-width: 40rem;">
                         <!-- Card -->
-                        <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                        <div class="app-card card-sm bg-dark bg-blur border border-2 border-primary shadow mx-2">
                             <div class="card-body">
                                 <div class="row justify-content-center justify-content-sm-between">
                                     <div class="col">

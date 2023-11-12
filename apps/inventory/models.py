@@ -35,13 +35,14 @@ class Product(models.Model):
     category = models.ForeignKey(Category, verbose_name=("Categoria del producto"), on_delete=models.PROTECT)
     name = models.CharField("Nombre del producto", max_length=100)
     img = ImageField(verbose_name='Imagen del producto', upload_to='products/%Y/%m/%d', null=True, blank=True,
-                     default='no_picture.jpg')
+                     default='no_picture.jpg',
+                     help_text="Se recomienda que las imágenes que seleccione tenga el formato PNG o JPG.")
 
     state = models.CharField("Estado", max_length=1, choices=ESTADO, default='D')
     stock = models.PositiveIntegerField('Cantidad de unidades')
-    active = models.BooleanField('Activo', default=True,
+    active = models.BooleanField('Está activo', default=True,
                                  help_text="Si no está marcado, le permitirá ocultar el producto sin eliminarlo.")
-    available = models.BooleanField("Disponible", default=True,
+    available = models.BooleanField("Está disponible", default=True,
                                     help_text="Marcar si el producto está disponible en el sistema.")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
