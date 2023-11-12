@@ -138,7 +138,7 @@ dmypy.json
 staticfiles
 
 #Carpeta excluida
-GEPRE/mediafiles/products
-GEPRE/mediafiles/users
-GEPRE/db.sqlite3
+/mediafiles/products
+/mediafiles/users
+
 
