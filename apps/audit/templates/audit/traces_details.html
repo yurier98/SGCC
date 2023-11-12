@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <div style="border: 1px solid #ccc; padding: 250px; text-align: center;">
+
+             <h1>Detalles de la traza</h1>
+
+                    <p><strong>Dirección IP:</strong> {{ traza.ip }}</p>
+                    <p><strong>Acción:</strong> {{ traza.action }}</p>
+                    <p><strong>Detalles:</strong> {{ traza.message }}</p>
+                    <p><strong>Contenido:</strong> {{ traza.content_type }}</p>
+                    <p><strong>Usuario:</strong> {{ traza.user }}</p>
+                    <p><strong>Sistema operativo:</strong> {{ traza.os }}</p>
+                    <p><strong>Objeto:</strong> {{ traza.content_object }}</p>
+
+            <form method="GET" action="">
+                {% csrf_token %}
+                 <a href="{% url 'traces_list' %}" class="btn btn-secondary">Atrás</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

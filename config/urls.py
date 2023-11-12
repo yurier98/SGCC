@@ -42,6 +42,7 @@ urlpatterns = [
     path('reports/', include(('apps.reports.urls', 'reports'))),
 
     path('security/', include('apps.security.urls')),
+    path('audit/', include('apps.audit.urls')),
     path('admin/', admin.site.urls),
 ]
 

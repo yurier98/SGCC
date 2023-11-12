@@ -1,0 +1,17 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 20px; text-align: center;">
+            <h2>Eliminar Regla</h2>
+            <p>¿Estás seguro de que deseas eliminar esta regla "{{ x.content_type}}"?</p>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+                 <a href="{% url 'rule_list' %}" class="btn btn-secondary">Cancelar</a>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

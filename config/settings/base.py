@@ -48,14 +48,12 @@ LOCAL_APPS = [
     'apps.reports',
     'apps.core',
     'apps.security',
-    # 'apps.audit',
+    'apps.audit',
     'apps.notification',
 
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
-ROOT_URLCONF = 'config.urls'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,10 +64,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # middleware
-    'crum.CurrentRequestUserMiddleware'
-    # 'django_ip_access.middleware.IpAccessMiddleware',
-    # 'audit.middleware.RequestMiddleware',
+    'crum.CurrentRequestUserMiddleware',
+    'apps.audit.middleware.TracingMiddleware'
+
 ]
+ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -112,7 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Havana'
 
 USE_I18N = True
 

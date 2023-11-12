@@ -1,0 +1,413 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+    {#    <!-- DataTables CSS -->#}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script>
+
+
+    <script>
+        var table;
+        $(document).ready(function () {
+            tbl = $('#table2').DataTable({
+                responsive: true,
+                autoWidth: false,
+                destroy: true,
+                deferRender: true,
+                ajax: {
+                    url: pathname,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        var table = $('#table').DataTable();
+                        table.clear().rows.add(data).draw();
+
+                    }
+                },
+
+
+            });
+
+            table = $('#table').DataTable({
+                //  dom: 'Bfrtip',
+                //  buttons: [
+                //      'copy', 'csv', 'excel', 'pdf', 'print'
+                //  ],
+                select: {
+                    style: 'multi'
+                },
+                "order": [], // Ajusta si necesitas un orden predeterminado
+                "columnDefs": [
+                    {"orderable": false, "targets": [0, -1]} // Ajusta las columnas no ordenables
+                ],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                },
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+
+                "isResponsive": false,
+                "isShowPaging": false,
+                "pagination": "datatableWithPaginationPagination",
+
+                "initComplete": function () {
+                    var table = $('#table').DataTable();
+
+                    var buttons = table.buttons([
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5',
+                        'print',
+                        'colvis'
+                    ], {
+                        dropup: true
+                    }).container();
+                    $(buttons).appendTo('#usersExportDropdown+.dropdown-menu');
+                }
+            });
+        });
+
+
+        $('#checkboxID').click(function () {
+            var checkboxValue = $(this).attr('value');
+            console.log(checkboxValue);
+
+            $('#datatableCounter').text($('input[name="checkbox[]"]:checked').length);
+            $('#datatableCounterInfo').show();
+            //$('#datatableCounterInfo').hide();
+        });
+
+
+        $('#traceViewModel').on('show.bs.modal', function (event) {
+            console.log('hola bebe')
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id')
+            console.log(id)
+            let params = new FormData()
+            params.append('id', id)
+            submit_without_alert(location.url, params, (response) => {
+                let trace = response.trace
+                console.log(trace)
+                document.querySelector('#ip-modal span').innerHTML = trace.ip
+                document.querySelector('#accion-modal span').innerHTML = trace.action
+                document.querySelector('#detalles-modal span').innerHTML = trace.message
+                document.querySelector('#usuario-modal span').innerHTML = trace.user
+                document.querySelector('#so-modal span').innerHTML = trace.os
+                document.querySelector('#contenido-modal span').innerHTML = trace.content_type
+                document.querySelector('#date-modal span').innerHTML = trace.date
+            })
+        })
+
+        function deleteTrace(id) {
+            var parameters = new FormData();
+            parameters.append('id', id)
+            var url = `/audit/delete_trace/${id}/`
+
+            delete_with_ajax(url, 'Confirmar Eliminación', '¿Estás seguro de que quieres eliminar este objeto? Esta acción no se puede deshacer.', parameters, function (response) {
+                //table.ajax.reload();
+                if (response.ok)
+                    location.reload()
+            });
+        }
+
+        //Filtros
+        updateFilterCount(['date', 'action']);
+        $('#clear-filters').click(function () {
+            clearFilters(['date', 'action']);
+        });
+
+
+    </script>
+
+
+    <script>
+        $('#modalDetalles').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);  // Botón que activó el modal
+            var id = button.data('id');  // Extraer la información del atributo de datos
+            var url = `/audit/view_traza/${id}/`
+
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    $('#modalDetalles .modal-body').html(data.user);
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-md-4">
+                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="page-utilities ">
+
+                        </div><!--//row-->
+                    </div><!--//table-utilities-->
+                </div><!--//col-auto-->
+            </div><!--//row-->
+
+
+            <div class="dropdown">
+
+
+                <div class="app-card app-card-basic align-items-start shadow-sm">
+
+
+                    <div class="app-card-header p-3 border-bottom-0">
+                        <div class="row  justify-content-between align-items-center gx-3">
+                            <div class="col-auto">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto">
+                                        <div class="app-icon-holder">
+                                            <i class="fas fa-user-secret fa-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <h4 class="app-card-title">{{ title }}</h4>
+                                    </div><!--//col-->
+                                </div>
+
+                            </div><!--//col-->
+                            <div class="col-auto">
+                                {% include 'audit/traces_option.html' %}
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <hr>
+                    </div><!--//app-card-header-->
+
+
+                    <div class="app-card-body app-card-orders-table px-3">
+                        {% if object_list %}
+
+                            <div class="table-responsive">
+                                <table id="table" class="table app-table-hover mb-0 text-left">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th class="cell"><input type="checkbox" id="marcarTodos"></th>
+                                        <th class="cell" style="width: 5%;">ACCION</th>
+                                        <th class="cell" style="width: 8%;">USUARIO</th>
+                                        <th class="cell" style="width: 10%;">FECHA</th>
+                                        <th class="cell">IP</th>
+                                        <th class="cell">SO</th>
+                                        <th class="cell">OBJETO</th>
+                                        <th class="cell" style="width: 6%;">ACCIONES</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for trace in traces_list %}
+                                        <tr>
+                                            <td class="cell">
+                                                <input id="checkboxID" type="checkbox" name="checkbox[]"
+                                                       value="{{ object.id }}">
+                                            </td>
+                                            <td class="cell">
+                                                {% if trace.action == 'create' %}
+                                                    <span class="badge bg-primary rounded-pill"> Creado </span>
+                                                {% elif trace.action == 'edit' %}
+                                                    <span class="badge bg-warning rounded-pill"> Actualizado </span>
+                                                {% elif trace.action == 'delete' %}
+                                                    <span class="badge bg-danger rounded-pill"> Eliminado </span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="cell">{{ trace.user }}</td>
+                                            <td class="cell">
+                                                <span>{{ trace.date |date:"d/m/Y" }}</span>
+                                                <span class="note">{{ trace.date|date:' H:i' }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <span>{{ trace.ip }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <span>{{ trace.os }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <span>{{ trace.content_type }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                <button class="btn btn-sm text-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#traceViewModel" data-id="{{ trace.id }}"
+                                                        name="{{ trace.id }}"><i class="fas fa-eye"></i>
+                                                </button>
+                                                {#          <button onclick="eliminarFila(this)"><i class="fas fa-trash-alt"></i></button>#}
+                                                <a role="button" onclick="deleteTrace({{ trace.id }})"
+                                                   class="btn btn-sm text-danger"><i class="fas fa-trash-alt"></i></a>
+
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Agrega esta línea en el head para usar los íconos de Font Awesome -->
+                            <link rel="stylesheet"
+                                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+                        {% else %}
+                            {% include 'includes/_no_data.html' %}
+                        {% endif %}
+
+                    </div><!--//app-card-body-->
+
+                    <div class="app-card-footer p-4 mt-auto">
+                        <div class="row justify-content-between align-items-center ">
+                            <div class="col-auto">
+
+                                <!-- Pagination -->
+                                <div class="d-flex justify-content-center justify-content-sm-end">
+                                    <nav id="datatableWithPaginationPagination"
+                                         aria-label="Activity pagination"></nav>
+                                </div>
+                                <!-- End Pagination -->
+
+
+                            </div><!--//col-->
+                            <div class="col-auto">
+                                {% include 'includes/app_pagination.html' %}
+                            </div><!--//col-->
+                        </div>
+                    </div><!--//app-card-footer-->
+
+                </div>
+
+
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+        {% include 'includes/footer.html' %}
+
+    </div><!--//app-wrapper-->
+{% endblock %}
+
+<!-- Modal del eliminar traza -->
+
+{% block modal %}
+
+    <div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog" aria-labelledby="modalDetallesLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetallesLabel">Detalles del registro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Aquí se insertarán los detalles del registro -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal del visualizar traza -->
+
+    <div class="modal fade" id="traceViewModel" tabindex="-1" role="dialog" aria-labelledby="traceViewModelLabel"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-8">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="traceViewModel">Visualizar detalles de la traza</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!--Body-->
+                <div class="modal-body">
+                    <input name="action" type="hidden" value="traceView">
+                    <div class="form-group" id="contenido-modal">
+                        <strong>Tipo de contenido: </strong>
+                        <span></span>
+                    </div>
+
+                    <div class="form-group" id="accion-modal">
+                        <strong>Acción: </strong>
+                        <span class="badge bg-secondary"></span>
+                    </div>
+
+
+                    <div class="form-group" id="ip-modal">
+                        <strong>IP: </strong>
+                        <span class="text-primary"></span>
+                    </div>
+                    <div class="form-group" id="so-modal">
+                        <strong>Sistema operativo: </strong>
+                        <span></span>
+                    </div>
+
+
+                    <div class="form-group" id="usuario-modal">
+                        <strong>Usuario: </strong>
+                        <span class="badge bg-secondary rounded-pill"></span>
+                    </div>
+
+                    <div class="form-group" id="date-modal">
+                        <strong>Fecha: </strong>
+                        <span></span>
+                    </div>
+
+
+                    <div class="form-group" id="detalles-modal">
+                        <strong>Detalles: </strong>
+                        <span></span>
+                    </div>
+
+                </div>
+                <!--End Body-->
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn app-btn-primary" data-bs-dismiss="modal" aria-label="Cancel">
+                        Aceptar
+                    </button>
+                    {#                    <button type="submit" class="btn btn-primary">Aceptar</button>#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
