@@ -2,12 +2,10 @@ import threading
 from urllib import request
 
 from django_auth_ldap.backend import LDAPBackend, _LDAPUser
-from django.contrib.auth import get_user_model
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 from django.conf import settings
 from django.contrib.auth.models import User
-# from apps.accounts.models import UserProfile
 
 """
 Back-end de autenticación LDAP
@@ -25,12 +23,23 @@ Forzar from_ldap campo a True cuando se crea un usuario de esta manera.
     así como los atributos de usuario a mapear con los campos de usuario en Django.
 """
 
+# Si la conexión LDAP no se establece en 10 segundos, Django utilizará la autenticación interna en lugar de intentar
+# conectarse al servidor LDAP. Esto ayudará a evitar retrasos prolongados cuando el servidor LDAP esté caído.
+# Configuración de timeout
+ldap.set_option(ldap.OPT_NETWORK_TIMEOUT, 10)
+
+# settings.AUTH_LDAP_CONNECTION_OPTIONS = {
+#     ldap.OPT_NETWORK_TIMEOUT: 5
+# }
+
+# Configuración de conexión LDAP
 settings.AUTH_LDAP_SERVER_URI = 'ldap://10.0.0.4'
 settings.AUTH_LDAP_BIND_DN = 'cn=ad search, ou=Systems, ou=UCI Domain Impersonals, dc=uci, dc=cu'
 settings.AUTH_LDAP_BIND_PASSWORD = 'uF2SODWAHiW0eJboFFQEAvVzJ'
+
+# Configuración de búsqueda de usuarios LDAP
 ldap_user_search = 'OU=uci domain users,DC=uci,DC=cu'
 ldap_user_search_scope_tree = '(sAMAccountName=%(user)s)'
-
 settings.AUTH_LDAP_USER_SEARCH = LDAPSearch(ldap_user_search, ldap.SCOPE_SUBTREE,
                                             ldap_user_search_scope_tree)
 
@@ -147,8 +156,6 @@ class MyLDAPBackend(LDAPBackend):
         #
         # return user
 
-
-
     def get_or_create_user(self, username, ldap_user):
         """ Overrides LDAPBackend.get_or_create_user to force from_ldap to True """
         kwargs = {
@@ -157,9 +164,6 @@ class MyLDAPBackend(LDAPBackend):
         }
         user_model = get_user_model()
         return user_model.objects.get_or_create(**kwargs)
-
-
-
 
     def Obtener_Resultado(self, username, **kwargs):
         """Dado un nombre de usuario, devuelve todos sus datos y su cn"""
