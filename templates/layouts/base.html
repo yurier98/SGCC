@@ -28,6 +28,8 @@
     <!-- Favicons -->
     <link href="{% static 'assets/images/app-logo.svg' %}" rel="icon">
     <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <!-- FontAwesome JS-->
+    <script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
     <!-- CSS File  -->
     <link href="{% static 'assets/css/myStyles.css' %}" rel="stylesheet">
 
@@ -66,33 +68,42 @@
 
 
 
+
 <!-- JavaScript -->
 
-<!-- FontAwesome JS-->
-<script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
-<script src="{% static 'assets/plugins/fontawesome-free-6.1.1-web/js/all.min.js' %}"></script>
+
+
+<!-- jQuery -->
+{#<script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>#}
+<script src="{% static 'assets/plugins/jquery/jquery-3.7.0.min.js' %}"></script>
+{#<script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>#}
+<!-- Bootstrap 4 -->
+{#<script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>#}
+{#<script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>#}
+
+<!-- Sweetalert2 -->
+<script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+
+<!-- Jquery Confirm -->
+<link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
+<script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+
+{#<script src="{% static 'assets/plugins/jquery.bootstrap.modal.forms.js' %}"></script>#}
 <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
 <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+{#<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>#}
 
 <!-- Page Specific JS -->
 <script src="{% static 'assets/js/app.js' %}"></script>
-<script src="{% static 'assets/plugins/jquery.bootstrap.modal.forms.js' %}"></script>
-<script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+<!-- Functions -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/functions.js' %}"></script>
+<script src="{% static 'assets/js/form-validation.js' %}"></script>
 
+{% block javascript %}
+{% endblock %}
 
 <script>
-    {#    {% if messages %}#}
-    {#        var html = '<p>';#}
-    {#        {% for message in messages %}#}
-    {#            html += '{{ message }}<br>';#}
-    {#        {% endfor %}#}
-    {#        html += '</p>';#}
-    {#        Swal.fire({#}
-    {#            title: 'Error!',#}
-    {#            html: html,#}
-    {#            icon: 'error'#}
-    {#        });#}
-    {#    {% endif %}#}
 
     var toastLiveExample = document.getElementById('liveToast')
     {% if messages %}
@@ -100,87 +111,13 @@
         toast.show()
     {% endif %}
 
-
-    {#    {% if messages %}#}
-    {#        var html = '<p>';#}
-    {#        {% for message in messages %}#}
-    {#            html += '{{ message }}<br>';#}
-    {#        {% endfor %}#}
-    {#        html += '</p>';#}
-    {#        Swal.fire({#}
-    {#            title: 'Error!',#}
-    {#            html: html,#}
-    {#            icon: 'error'#}
-    {#        });#}
-    {#    {% endif %}#}
-
-    var progressBar = new ProgressBar.Line('#container', {
-        color: '#04966b', // El color de la barra de progreso
-        strokeWidth: 4, // El ancho de la barra de progreso
-        easing: 'easeInOut', // La función de interpolación utilizada para animar la barra de progreso
-        duration: 1000, // La duración de la animación de la barra de progreso (en milisegundos)
-        trailColor: '#f4f4f4', // El color de la pista de la barra de progreso
-        trailWidth: 1, // El ancho de la pista de la barra de progreso
-    });
-
-    function updateProgressBar() {
-        var total = 0;
-        var loaded = 0;
-        var tags = document.getElementsByTagName('*');
-        for (var i = 0; i < tags.length; i++) {
-            total++;
-            if (tags[i].complete) {
-                loaded++;
-            }
-        }
-        var progress = loaded / total;
-        progressBar.animate(progress, {
-            duration: 1000
-        });
-    }
-
-    window.onload = function () {
-        updateProgressBar();
-    };
-
-    // Muestra la barra de progreso cuando se empieza a cargar la página
-    NProgress.start();
-
-    // Muestra la barra de progreso cuando se empieza a cargar la página
-    NProgress.set(0.9); // Puedes establecer manualmente la cantidad de progreso que se ha completado
-
-    // Oculta la barra de progreso cuando se completa la carga de la página
-    $(window).on('load', function () {
-        NProgress.done();
-    });
-
 </script>
-<script src="{% static 'assets/js/form-validation.js' %}"></script>
 
-<!-- jQuery -->
-<script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
-{#        <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>#}
-<!-- Bootstrap 4 -->
-<script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>
-<script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
-<!-- Sweetalert2 -->
-<script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
-<!-- Jquery Confirm -->
-<link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
-<script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
-<!-- Moment -->
-<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
-<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
-<!-- Functions -->
-<script src="{% static 'assets/js/main.js' %}"></script>
-<script src="{% static 'assets/js/functions.js' %}"></script>
+{#<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css">#}
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>#}
+{#<script src="https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js"></script>#}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js"></script>
 
-{% block javascript %}
-{% endblock %}
 
 </body>
 </html>

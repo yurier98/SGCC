@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 # Create your views here.
+from django.http import JsonResponse
+from django.contrib import messages
 from django.views.generic import TemplateView
 from apps.inventory.models import Product
 from apps.loan.models import Loan
@@ -14,7 +16,7 @@ class HomePage(LoginRequiredMixin, TemplateView):
         if self.request.user.is_authenticated:
             if self.request.user.groups.filter(name='Administradores').exists():
                 template_name = 'admin_index.html'
-            elif self.request.user.groups.filter(name='Tecnicos').exists():
+            elif self.request.user.groups.filter(name='tecnico').exists():
                 template_name = 'tecnicos_index.html'
             elif self.request.user.groups.filter(name='Superusuario').exists():
                 template_name = 'superuser_index.html'
@@ -54,3 +56,11 @@ def custom_permission_denied_view(request, exception=None):
     }
     return render(request, 'error/403.html', context, status=403)
 
+
+def get_messages(request):
+    # Obtener los mensajes del usuario actual
+    msgs = messages.get_messages(request)
+    # Convertir los mensajes a una lista
+    list_messages = [str(m) for m in msgs]
+    # Devolver los mensajes en formato JSON
+    return JsonResponse({'messages': list_messages})

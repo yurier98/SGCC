@@ -34,7 +34,8 @@ function message_error(obj) {
     });
 }
 
-function submit_with_ajax(url, title, content, parameters, callback) {
+
+function submit_with_ajaxx(url, title, content, parameters, callback) {
     $.confirm({
         theme: 'material',
         title: title,
@@ -42,13 +43,13 @@ function submit_with_ajax(url, title, content, parameters, callback) {
         content: content,
         columnClass: 'small',
         typeAnimated: true,
-        cancelButtonClass: 'btn-primary',
+        cancelButtonClass: 'btn app-btn-secondary',
         draggable: true,
         dragWindowBorder: false,
         buttons: {
             info: {
-                text: "Si",
-                btnClass: 'btn-primary',
+                text: "Aceptar",
+                btnClass: 'btn app-btn-primary',
                 action: function () {
                     $.ajax({
                         url: url,
@@ -75,7 +76,7 @@ function submit_with_ajax(url, title, content, parameters, callback) {
             },
             danger: {
                 text: "No",
-                btnClass: 'btn-red',
+                btnClass: 'btn app-btn-secondary app-btn-outline-danger',
                 action: function () {
 
                 }
@@ -83,6 +84,7 @@ function submit_with_ajax(url, title, content, parameters, callback) {
         }
     })
 }
+
 
 function alert_action(title, content, callback, cancel) {
     $.confirm({
@@ -155,4 +157,221 @@ function validate_decimals(el, evt) {
     }
 
     return true;
+}
+
+//MIS FUNCIONES
+
+function submit_with_ajax(url, title, content, parameters, callback) {
+    // Crear el modal personalizado
+    var modalHTML = `
+         <div id="confirm-modal" class="modal fade" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-8">
+                
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title">${title}</h5>
+                        <button type="button" class="position-absolute top-0 end-0 m-3 btn-close bg-soft-secondary rounded-pill" data-bs-dismiss="modal"  aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body py-0">
+                      <p class="">${content}</p>
+                    </div>
+                          
+                    <div class="modal-footer flex-nowrap border-top-0 gap-2 ">              
+                        <button id="cancel-button" type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal">Cerrar</button>
+                        <button id="confirm-button" type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Guardar</button>                  
+                    </div>
+                </div>
+            </div>
+         </div>
+  `;
+
+    // Agregar el modal al DOM
+    var modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+
+    // Obtener los botones del modal
+    var modal = document.getElementById('confirm-modal');
+    var confirmButton = document.getElementById('confirm-button');
+    var cancelButton = document.getElementById('cancel-button');
+
+    // Mostrar el modal
+    var modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+
+
+    // Agregar eventos a los botones
+    confirmButton.addEventListener('click', function () {
+        // Realizar la solicitud AJAX para eliminar el objeto
+        $.ajax({
+            url: url,
+            data: parameters,
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+            success: function (request) {
+                if (!request.hasOwnProperty('error')) {
+                    callback(request);
+                    return false;
+                }
+                message_error(request.error);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                message_error(errorThrown + ' ' + textStatus);
+            }
+        });
+
+        // Ocultar el modal y eliminarlo del DOM
+        modalInstance.hide();
+        modalContainer.parentNode.removeChild(modalContainer);
+    });
+
+    cancelButton.addEventListener('click', function () {
+        // Ocultar el modal y eliminarlo del DOM sin hacer nada
+        modalInstance.hide();
+        modalContainer.parentNode.removeChild(modalContainer);
+    });
+}
+
+
+function submit_without_alert(url, parameters, callback) {
+    $.ajax({
+        url: url,
+        data: parameters,
+        type: 'POST',
+        dataType: 'json',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        processData: false,
+        contentType: false,
+        success: function (request) {
+            if (!request.hasOwnProperty('error')) {
+                callback(request);
+                return false;
+            }
+            message_error(request.error);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            message_error(errorThrown + ' ' + textStatus);
+        }
+    });
+}
+
+
+function delete_with_ajax(url, title, content, parameters, callback) {
+    // Crear el modal personalizado
+    var modalHTML = `
+         <div id="confirm-delete-modal" class="modal fade" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-8">
+          <div class="modal-body p-4 text-center">
+            <h5 class="mb-0">${title}</h5>
+            <p class="mb-0">${content}</p>
+          </div>
+          <div class="modal-footer flex-nowrap p-0">
+            <button type="button" id="confirm-delete-button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-right">
+              <strong class="text-danger">Sí, eliminar</strong>
+            </button>
+            <button type="button" id="cancel-delete-button" class="btn btn-lg btn-dark fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">
+              No gracias
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+    // Agregar el modal al DOM
+    var modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+
+    // Obtener los botones del modal
+    var modal = document.getElementById('confirm-delete-modal');
+    var confirmButton = document.getElementById('confirm-delete-button');
+    var cancelButton = document.getElementById('cancel-delete-button');
+
+    // Mostrar el modal
+    var modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+
+
+    // Agregar eventos a los botones
+    confirmButton.addEventListener('click', function () {
+        // Realizar la solicitud AJAX para eliminar el objeto
+        $.ajax({
+            url: url,
+            data: parameters,
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+            success: function (request) {
+                if (!request.hasOwnProperty('error')) {
+                    callback(request);
+                    return false;
+                }
+                message_error(request.error);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                message_error(errorThrown + ' ' + textStatus);
+            }
+        });
+
+        // Ocultar el modal y eliminarlo del DOM
+        modalInstance.hide();
+        modalContainer.parentNode.removeChild(modalContainer);
+    });
+
+    cancelButton.addEventListener('click', function () {
+        // Ocultar el modal y eliminarlo del DOM sin hacer nada
+        modalInstance.hide();
+        modalContainer.parentNode.removeChild(modalContainer);
+    });
+}
+
+
+function updateFilterCount(filterParams) {
+    //funcion para mostrar el valor del  filterCount
+    //solo muestra el span si se aplico algun filtro
+
+    // Obtén la URL actual
+    const urlParams = new URLSearchParams(window.location.search);
+    // Contador para realizar el seguimiento de los filtros utilizados
+    let filtersUsed = 0;
+    // Recorre los nombres de los parámetros de filtro
+    filterParams.forEach(param => {
+        if (urlParams.has(param) && urlParams.get(param) !== '') {
+            filtersUsed++;
+        }
+    });
+    // Actualiza el valor del contador de filtros
+    const filterCount = document.getElementById('filterCount');
+    filterCount.textContent = filtersUsed;
+    if (filtersUsed > 0) {
+        filterCount.style.display = 'inline'; // Muestra el elemento <span> si se están utilizando filtros
+    } else {
+        filterCount.style.display = 'none'; // Oculta el elemento <span> si no se están utilizando filtros
+    }
+}
+
+function clearFilters(filterParams) {
+    //funcion para limpiar los filtros aplicados
+    // Obtén la URL actual
+    let url = new URL(window.location.href);
+    // Elimina los parámetros de filtro de la URL
+    filterParams.forEach(param => {
+        url.searchParams.delete(param);
+    });
+    // Recarga la página con la URL actualizada
+    window.location.href = url.toString();
 }
