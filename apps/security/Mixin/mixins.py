@@ -29,7 +29,7 @@ class IsSuperuserMixin(object):
 
 class ValidatePermissionRequiredMixin(object):
     permission_required = ''
-    url_redirect = None
+    url_redirect = 'home'
 
     def get_perms(self):
         perms = []
@@ -39,10 +39,24 @@ class ValidatePermissionRequiredMixin(object):
             perms = list(self.permission_required)
         return perms
 
-    def get_url_redirect(self):
-        if self.url_redirect is None:
+    # def get_url_redirect(self):
+    #     if self.url_redirect is None:
+    #         return reverse_lazy('home')
+    #     return self.url_redirect
+
+    def get_url_redirect(self, request):
+        """
+            Devuelve la URL a la que se redireccionará al usuario si no tiene permisos.
+        """
+        prev_url = request.META.get('HTTP_REFERER', reverse(self.url_redirect))
+        # url_actual = request.path
+        # url_con_next = f"{url_actual}?next={url_actual}"
+        if self.url_redirect:
+            return prev_url
+        else:
             return reverse_lazy('home')
-        return self.url_redirect
+
+
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
@@ -58,10 +72,10 @@ class ValidatePermissionRequiredMixin(object):
             # print(request.user.has_perms(perms_required))
             if request.user.has_perms(perms_required) == False:
                 messages.error(request, 'No tiene permiso para ingresar a este módulo')
-                return HttpResponseRedirect(self.get_url_redirect())
+                return HttpResponseRedirect(self.get_url_redirect(request))
             return super().get(request, *args, **kwargs)
         messages.error(request, 'No tiene permiso para ingresar a este módulo')
-        return HttpResponseRedirect(self.get_url_redirect())
+        return HttpResponseRedirect(self.get_url_redirect(request))
 
 
 class ExistsInventaryMixin(object):
@@ -70,9 +84,6 @@ class ExistsInventaryMixin(object):
             return super().dispatch(request, *args, **kwargs)
         messages.warning(request, 'No se puede continuar si no hay productos en el inventario')
         return redirect('home')
-
-
-
 
 
 class GroupRequiredMixin(UserPassesTestMixin):
@@ -102,8 +113,10 @@ class GroupRequiredMixin(UserPassesTestMixin):
         else:
             return reverse_lazy('login')
 
+
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
+
 
 class GroupNotAllowedMixin(UserPassesTestMixin):
     """
