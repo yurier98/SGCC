@@ -56,11 +56,12 @@ class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = 'Préstamos'
         context['title'] = 'Listado de Préstamos'
         context['create_url'] = reverse_lazy('loan_create')
         context['list_url'] = reverse_lazy('loan_list')
-        context['entity'] = 'Préstamos'
         context['filter'] = LoanFilter(self.request.GET, queryset=self.get_queryset())
+        context['stats'] = self.model.stats()
         return context
 
     # def post(self, request, *args, **kwargs):
@@ -156,7 +157,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                 products = Product.objects.filter(name__icontains=term, stock__gt=0)
                 for i in products.exclude(id__in=ids_exclude).exclude(state__exact='P')[0:10]:
                     item = i.toJSON()
-                    item['text'] = i.__str__()
+                    item['te  xt'] = i.__str__()
                     data.append(item)
             elif action == 'search_user':
                 data = []
@@ -177,8 +178,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                     order.end_date = request.POST['end_date']
                     order.user_id = int(request.POST['user'])
                     order.description = request.POST['description']
-                    order.state = Order.STATE[1:2]  # aki toma el valor del estado en aprobado (arreglar xq no le pone estado )
-                    # order.state = Order.STATE.index(2)
+                    order.state = Order.State.APROBADO
                     order.manifestation_id = int(request.POST['manifestation'])
                     order.save()
 
@@ -220,8 +220,6 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                             i.product.save()
 
                     loan.save()
-
-
 
 
                     # user = UserProfile.objects.get(id=request.POST['user'])
@@ -276,7 +274,7 @@ class LoanUpdateView(UpdateView):
     def get_details_product(self):
         data = []
         loan = self.get_object()
-        for i in loan.order.orderproduct_set.all():
+        for i in loan.order.products.all():
             item = i.product.toJSON()
             item['cant'] = i.cant
             data.append(item)
@@ -332,7 +330,7 @@ class LoanUpdateView(UpdateView):
                             order_product.quantity = i['cant']
                             order_product.save()
                             product = Product.objects.get(pk=i['id'])
-                            if loan.state == 'E':
+                            if loan.state == Loan.State.ENTREGADO:
                                 product.stock = int(product.stock) + int(i['cant'])
                                 product.state = 'D'
                             product.save()

@@ -45,6 +45,7 @@ def order_detail(instance):
 order_detail.allow_tags = True
 
 
+@admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
     list_display = ('order', 'state', order_detail)
     list_filter = ('state', 'order__updated')
@@ -52,6 +53,3 @@ class LoanAdmin(admin.ModelAdmin):
     # autocomplete_fields = ['user']
     # inlines = [LoanItemInline]
     actions = [export_to_csv]
-
-
-admin.site.register(Loan, LoanAdmin)

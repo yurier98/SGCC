@@ -3,35 +3,20 @@
 {% load widget_tweaks %}
 
 {% block stylesheets %}
-    {#    <link rel="stylesheet" type="text/css"#}
-    {#          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.css"/>  #}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <!-- DataTables CSS -->
+    <link href="{% static 'assets/plugins/datatables/1.13.6/dataTables.bootstrap5.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/datatables/1.13.6/buttons.dataTables.min.css' %}" rel="stylesheet">
+    <!-- DataTables Buttons CSS -->
 
-    {#    <!-- DataTables CSS -->#}
-    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet"
-          href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
-
-    {#    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">#}
-    {#    <!-- DataTables Buttons CSS -->#}
-    {#    <link rel="stylesheet" type="text/css"#}
-    {#          href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">#}
 
 
 {% endblock %}
 
 {% block javascript %}
-    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
-
-
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script>
+    <!-- DataTables javascript -->
+    <script src="{% static 'assets/plugins/datatables/1.13.6/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatables/1.13.6/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatables/1.13.6/dataTables.buttons.min.js' %}"></script>
 
     {#    <!-- jQuery -->#}
     {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
@@ -48,10 +33,10 @@
     <script>
         $(document).ready(function () {
             $('#LoanTabla').DataTable({
-                //  dom: 'Bfrtip',
-                //  buttons: [
-                //      'copy', 'csv', 'excel', 'pdf', 'print'
-                //  ],
+                {#dom: 'Bfrtip',#}
+                {#buttons: [#}
+                {#    'copy', 'csv', 'excel', 'pdf', 'print'#}
+                {#],#}
                 select: {
                     style: 'multi'
                 },
@@ -60,7 +45,7 @@
                     {"orderable": false, "targets": [0, -1]} // Ajusta las columnas no ordenables
                 ],
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                    "url": "{% static 'assets/plugins/datatables/1.13.6/es-ES.json' %}"
                 },
                 "paging": true,
                 "ordering": true,
@@ -73,20 +58,60 @@
                 "initComplete": function () {
                     var table = $('#LoanTabla').DataTable();
 
-                    var buttons = table.buttons([
-                        'copyHtml5',
-                        'excelHtml5',
-                        'csvHtml5',
-                        'pdfHtml5',
-                        'print',
-                        'colvis'
-                    ], {
-                        dropup: true
-                    }).container();
-                    $(buttons).appendTo('#usersExportDropdown+.dropdown-menu');
+                    var buttons = new $.fn.dataTable.Buttons(table, {
+                        buttons: [
+                            {
+                                extend: 'copyHtml5',
+                                text: 'Copy',
+                                titleAttr: 'Copy',
+                                className: 'dropdown-item'
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel',
+                                titleAttr: 'Excel',
+                                className: 'dropdown-item'
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                text: 'CSV',
+                                titleAttr: 'CSV',
+                                className: 'dropdown-item'
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'PDF',
+                                titleAttr: 'PDF',
+                                className: 'dropdown-item'
+                            },
+                            {
+                                extend: 'print',
+                                text: 'Print',
+                                titleAttr: 'Print',
+                                className: 'dropdown-item'
+                            }
+                        ],
+                        dom: {
+                            container: {
+                                tag: 'div',
+                                className: 'btn-group',
+                                button: {
+                                    tag: 'button',
+                                    className: 'btn btn-secondary dropdown-toggle',
+                                    id: 'TableExportDropdown',
+                                    'data-toggle': 'dropdown',
+                                    'aria-haspopup': true,
+                                    'aria-expanded': false
+                                }
+                            },
+                            button: {
+                                tag: 'button',
+                                className: ''
+                            }
+                        }
+                    }).container().appendTo('#TableExportDropdown+.dropdown-menu');
                 }
             });
-
 
             $('#marcarTodos').click(function () {
                 $('input[name="checkbox[]"]').prop('checked', this.checked);
@@ -130,7 +155,6 @@
                 $('#confirmarEliminar').modal('hide');
             });
 
-
         });
 
         function eliminarFilas(id) {
@@ -153,8 +177,9 @@
             });
         }
 
-
+        updateFilterCount(['date_update', 'state']);
     </script>
+
 {% endblock %}
 
 
@@ -164,7 +189,9 @@
             <div class="container-xl">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
                     <div class="col-md-4">
-                        <h1 class="app-page-title mb-0">{{ entity }}</h1>
+                        <h1 class="app-page-title mb-0">{{ entity }}
+                            <span class="badge bg-soft-secondary text-primary rounded-pill ms-2">{{ stats.total_loans }}</span>
+                        </h1>
                         {% include "includes/_breadcrumbs.html" %}
                     </div>
                     <div class="col-md-8">
@@ -188,7 +215,7 @@
 
                                 <div class="col-auto">
                                     <a class="btn app-btn-primary" href="{{ create_url }}">
-                                         <i class="bi-cart-plus"></i>
+                                        <i class="bi-cart-plus"></i>
                                         Registrar préstamo</a>
                                 </div>
                             </div><!--//row-->
@@ -224,7 +251,6 @@
                             </div><!--//col-->
                             <div class="col-auto">
                                 {% include 'loan/option_loan.html' %}
-
                             </div><!--//col-->
                         </div><!--//row-->
                         <hr>
@@ -232,8 +258,9 @@
 
                     <div class="app-card-body app-card-orders-table px-3">
                         {% if object_list %}
-                            <div class="table-responsive">
+                            <div class="table-responsive datatable">
                                 <table id="LoanTabla" class="table app-table-hover mb-0 text-left">
+
                                     <thead class="thead-light">
                                     <tr>
                                         <th class="cell"><input type="checkbox" id="marcarTodos"></th>
@@ -271,14 +298,16 @@
                                             </td>
 
                                             <td class="cell">
-                                                {% if object.state  == 'Prestado' %}
+                                                {% if object.state  == 'PR' %}
                                                     <span class="badge bg-success"> Prestado </span>
-                                                {% elif object.state  == 'Pendiente' %}
+                                                {% elif object.state  == 'P' %}
                                                     <span class="badge bg-warning"> Pendiente a autorización </span>
-                                                {% elif object.state  == 'Entregado' %}
+                                                {% elif object.state  == 'E' %}
                                                     <span class="badge bg-secondary"> Entregado </span>
-                                                {% else %}
+                                                {% elif object.state  == 'A' %}
                                                     <span class="badge bg-danger"> Atrasado </span>
+                                                {% else %}
+                                                    <span class="badge bg-danger"> N/A </span>
                                                 {% endif %}
                                             </td>
                                             <td class="cell">{{ object.order.manifestation }}</td>

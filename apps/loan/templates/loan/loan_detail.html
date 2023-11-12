@@ -185,13 +185,13 @@
                                                         <div class="col-auto">
                                                             <div class="item-label"><strong>Estado</strong></div>
                                                             <div class="item-data">
-                                                                {% if object.state == 'Pendiente' %}
+                                                                {% if object.state == 'P' %}
                                                                     <span class="badge bg-warning"> Pendiente a autorización </span>
-                                                                {% elif object.state == 'Prestado' %}
+                                                                {% elif object.state == 'PR' %}
                                                                     <span class="badge bg-success"> Prestado </span>
-                                                                {% elif object.state == 'Entregado' %}
+                                                                {% elif object.state == 'E' %}
                                                                     <span class="badge bg-secondary"> Entregado </span>
-                                                                {% elif object.state == 'Atrasado' %}
+                                                                {% elif object.state == 'A' %}
                                                                     <span class="badge bg-danger"> Atrasado </span>
                                                                 {% else %}
                                                                     <span class="badge bg-danger"> N/A </span>
@@ -201,7 +201,7 @@
                                                         <div class="col text-end">
 
                                                             {% if request.user|has_group:"tecnico" %}
-                                                                {% if object.state == 'Pendiente' %}
+                                                                {% if object.state == 'P' %}
                                                                     <div class="btn-group">
                                                                         <button type="button"
                                                                                 class="btn-sm app-btn-secondary dropdown-toggle"
@@ -338,12 +338,14 @@
                                                                 <dt class="col-sm-10">Cantidad de productos:</dt>
                                                                 <dd class="col-sm-2">{{ loan.order.products.all.count }}</dd>
                                                                 <dt class="col-sm-10">Total de unidades:</dt>
-                                                                <dd class="col-sm-2">{{ loan.order.products.all.count }}</dd>
+                                                                <dd class="col-sm-2">{{ loan.order.products.all }}</dd>
                                                             </dl>
                                                             <!-- End Row -->
                                                         </div>
                                                         <!-- End Col -->
+                                                       
                                                     </div>
+
                                                 {% endif %}
                                             </div>
                                         </div><!--//app-card-->
@@ -358,7 +360,7 @@
                             <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                                  style="max-width: 40rem;">
                                 <!-- Card -->
-                                <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                                <div class="app-card card-sm bg-dark bg-blur border border-2 border-primary shadow mx-2">
                                     <div class="card-body">
                                         <div class="row justify-content-center justify-content-sm-between">
                                             <div class="col">

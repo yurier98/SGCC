@@ -1,4 +1,5 @@
-{% extends 'includes/list.html' %}
+{#{% extends 'includes/list.html' %}#}
+{% extends 'layouts/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
 
@@ -16,12 +17,17 @@
 {% endblock %}
 
 {% block javascript %}
+    <!-- Moment -->
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+    {#<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>#}
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
     <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
-    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+
     <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
     <script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
 
@@ -58,7 +64,7 @@
 
                 <form id="frmLoan" class="app-card-settings " method="post" data-url="{{ list_url }}">
                     {% csrf_token %}
-                    <div class=" settings-form row g-3 mb-5  align-items-start">
+                    <div class="settings-form row g-3 mb-5 align-items-start">
 
                         <div class="app-card-header p-3 border-bottom-0">
                             <h4 class="app-card-title">{{ title }}</h4>
@@ -67,13 +73,14 @@
 
                         <div class="app-card-body w-100">
                             <div class="row">
+                                <!--    Detalles de los productos -->
                                 <div class="col-lg-8">
                                     <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start">
                                         <div class="app-card-header p-2 border-bottom-0">
                                             <h3 class="app-card-title">
                                                 <div class="app-icon-holder">
-                                                    {#                                                        <i class="bi bi-box-seam fa-2x" style="line-height: 0;"></i>#}
-                                                    <i class="fas fa-boxes"></i>
+                                                    <i class="bi bi-box-seam fa-2x"></i>
+{#                                                    <i class="fas fa-boxes"></i>#}
                                                 </div>
                                                 Detalles de los productos
                                             </h3>
@@ -83,33 +90,28 @@
                                             <div class="container-fluid settings-section">
                                                 <div class="form-group settings-form">
                                                     <label class="form-label">Buscador de productos</label>
-                                                    <div class="input-group">
-                                                        <select class="form-control select2"
-                                                                name="search_product"></select>
-                                                        <div class="input-group-append">
-                                                            <button class="btn app-btn-secondary dropdown-toggle"
-                                                                    type="button"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                Opciones
-                                                            </button>
-                                                            <div class="dropdown-menu dropdown-menu-right">
-                                                                <a class="dropdown-item btnSearchProducts">
-                                                                    <i class="bi bi-search"></i> Buscar productos
-                                                                </a>
-                                                                <a class="dropdown-item btnClearSearch">
-                                                                    <i class=" bi bi-x-circle"></i> Limpiar búsqueda
-                                                                </a>
-                                                                <li>
-                                                                    <hr class="dropdown-divider">
-                                                                </li>
-                                                                <a class="dropdown-item btnRemoveAll">
-                                                                    <i class="bi bi-trash"></i> Eliminar
-                                                                    todos mis
-                                                                    items
-                                                                </a>
-                                                            </div>
-                                                        </div>
+                                                    <div class="input-group input-group-sm mb-3">
+                                                        <select class="form-control select2" name="search_product">
+                                                        </select>
+                                                        <button class="btn app-btn app-btn-secondary dropdown-toggle"
+                                                                type="button" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">Opciones
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item btnSearchProducts" href="#">
+                                                                <i class="bi-search me-2"></i> Buscar productos</a>
+                                                            </li>
+                                                            <li><a class="dropdown-item btnClearSearch" href="#">
+                                                                <i class="bi-x-circle me-2"></i> Limpiar búsqueda</a>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li><a class="dropdown-item btnRemoveAll" href="#">
+                                                                <i class="bi-trash me-2"></i> Eliminar todos mis
+                                                                items</a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -134,6 +136,7 @@
                                         <div class="app-card-footer p-2"></div>
                                     </div>
                                 </div>
+                                <!--   Datos del pedido -->
                                 <div class="col-lg-4">
                                     <div class="app-card  app-card-orders-table shadow-sm mb-5 align-items-start">
                                         <div class="app-card-header p-2 border-bottom-0">
@@ -169,11 +172,6 @@
                                                     {{ form.description }}
                                                 </div>
 
-                                                {#                                                        <div class="form-group py-1">#}
-                                                {#                                                            <label class="form-label">Estado</label>#}
-                                                {#                                                            {{ form.state }}#}
-                                                {#                                                        </div>#}
-
                                                 <div class="form-group py-1">
                                                     <label class="form-label">Estado del préstamo</label>
                                                     {{ form.state_loan }}
@@ -193,7 +191,7 @@
                             <div class="position-fixed start-50 bottom-0 translate-middle-x w-100 zi-99 mb-3"
                                  style="max-width: 40rem;">
                                 <!-- Card -->
-                                <div class="app-card card-sm bg-dark bg-blur shadow mx-2">
+                                <div class="app-card card-sm bg-dark bg-blur border border-2 border-primary shadow mx-2">
                                     <div class="card-body">
                                         <div class="row justify-content-center justify-content-sm-between">
                                             <div class="col">

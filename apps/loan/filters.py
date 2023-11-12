@@ -41,15 +41,16 @@ class LoanFilter(filters.FilterSet):
 
     STATUS_CHOICES = [
         ('', 'Todos'),  # Opción "Todos" sin valor de filtro
-        ('Pendiente', 'Pendiente a autorización'),
-        ('Prestado', 'Prestado'),
-        ('Entregado', 'Entregado'),
-        ('Atrasado', 'Atrasado'),
+        ('P', 'Pendiente a autorización'),
+        ('PR', 'Prestado'),
+        ('E', 'Entregado'),
+        ('A', 'Atrasado'),
     ]
 
     state = filters.CharFilter(
         field_name='state',
         widget=forms.Select(choices=STATUS_CHOICES, attrs={'class': 'form-control'}),
+        # widget=forms.Select(choices=Loan.State.choices, attrs={'class': 'form-control'}),
     )
 
     INTERVAL_CHOICES = [

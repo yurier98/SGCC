@@ -82,11 +82,11 @@ var loan = {
 $(function () {
 
     select_user = $('select[name="username"]');
-    select_search_product = $('select[name="search_product"]');
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
-    });
+        select_search_product = $('select[name="search_product"]');
+        $('.select2').select2({
+            theme: "bootstrap4",
+            language: 'es'
+        });
     // Usuario
     select_user.select2({
         theme: "bootstrap4",
@@ -161,9 +161,9 @@ $(function () {
                 '                                    </span>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <div class="item-label"><strong>' + repo.name + '</strong></div>\n' +
-                '                                    <div class="item-data">Categoría: ' + repo.category.name + '</div>\n' +
-                '                                    <div class="item-data">En almacen: ' + '<span class="badge  bg-success">' + repo.stock + '</span>' + '</div>\n' +
+                '                                    <div class="item-label"><strong>Nombre: ' + repo.name + '</strong></div>\n' +
+                '                                    <div class="item-data"><strong>Categoría: </strong>' + repo.category.name + '</div>\n' +
+                '                                    <div class="item-data"><strong>En almacen: </strong>' + '<span class="badge  bg-success">' + repo.stock + '</span>' + '</div>\n' +
                 '                                </div>\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
