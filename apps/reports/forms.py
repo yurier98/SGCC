@@ -1,28 +1,16 @@
 from django import forms
-
-from apps.inventory.models import Product, Category
-
-
-class ReportForm(forms.Form):
-    date_range = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'autocomplete': 'off'
-    }))
+from .models import ReportDefinition
 
 
-class ReportFilter(forms.Form):
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = ReportDefinition
+        fields = ['report_type', ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['category'].queryset = Category.objects.all()
+    def clean_report_type(self):
+        report_type = self.cleaned_data.get('report_type')
 
-    # type = forms.ChoiceField(choices=Book.BOOK_TYPES)
-    state = forms.CharField(widget=forms.Select(attrs={
-        'class': 'form-select',
-        # 'style': 'width: 100%'
-    }))
-    category = forms.CharField(widget=forms.Select(attrs={
-        # 'class': 'custom-select select2',
-        'class': 'form-select',
-        'style': 'width: 100%'
-    }))
+        if ReportDefinition.objects.filter(report_type=report_type).exists():
+            raise forms.ValidationError('Ya existe un report_type con este nombre.')
+
+        return report_type

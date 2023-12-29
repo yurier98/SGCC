@@ -31,6 +31,7 @@ urlpatterns = [
 
     path('', include('apps.core.urls')),
     path('', include('apps.custom_auth.urls')),
+
     path('nomenclatures/', include('apps.nomenclatures.urls')),
     path('accounts/', include('apps.accounts.urls')),
 
@@ -39,7 +40,7 @@ urlpatterns = [
     path('order/', include('apps.order.urls')),
 
     path('notification/', include('apps.notification.urls')),
-    path('reports/', include(('apps.reports.urls', 'reports'))),
+    path('reports/', include('apps.reports.urls')),
 
     path('security/', include('apps.security.urls')),
     path('audit/', include('apps.audit.urls')),
@@ -48,4 +49,3 @@ urlpatterns = [
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
-

@@ -1,7 +1,7 @@
-import datetime
 import json
 import uuid
-
+from datetime import timedelta
+from django.utils import timezone
 from django.db.models import Sum
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseServerError
 from django.shortcuts import render
@@ -12,8 +12,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from reportbro import Report, ReportBroError
 from timeit import default_timer as timer
 
-from apps.reports.models import ReportDefinition, ReportRequest
-from apps.reports.utils import create_base_report_template, json_default
+from .models import ReportDefinition, ReportRequest
+from .utils import create_base_report_template, json_default
 
 # keep max. 1000 MB of generated pdf files in db
 MAX_CACHE_SIZE = 1000 * 1024 * 1024
@@ -30,6 +30,7 @@ def edit(request, report_type):
     row = ReportDefinition.objects.get(report_type=report_type)
     context['report_type'] = report_type
     context['report_definition'] = SafeString(row.report_definition)
+    context['list_ReportDefinition'] = ReportDefinition.objects.all()
     return render(request, 'reports/edit.html', context)
 
 
@@ -41,7 +42,7 @@ def run(request):
     the url is defined when initializing the Designer, see *reportServerUrl*
     in edit.html
     """
-    now = datetime.datetime.now()
+    now = timezone.now()
 
     response = HttpResponse('')
     response['Access-Control-Allow-Origin'] = '*'
@@ -87,13 +88,15 @@ def run(request):
         try:
             # delete old reports (older than 3 minutes) to avoid table getting too big
             ReportRequest.objects.filter(created_on__lt=(
-                now - datetime.timedelta(minutes=3))).delete()
+                # now - datetime.timedelta(minutes=3))).delete()
+                # now - timezone.timedelta(minutes=5).delete()
+                now - timedelta(minutes=3))).delete()
 
             total_size = ReportRequest.objects.aggregate(Sum('pdf_file_size'))
             if total_size['pdf_file_size__sum'] and total_size['pdf_file_size__sum'] > MAX_CACHE_SIZE:
                 # delete all reports older than 10 seconds to reduce db size for cached pdf files
                 ReportRequest.objects.filter(created_on__lt=(
-                    now - datetime.timedelta(seconds=10))).delete()
+                    now - timedelta(seconds=10))).delete()
 
             start = timer()
             report_file = report.generate_pdf()
@@ -215,7 +218,7 @@ def save(request, report_type):
         parameters=json_data.get('parameters'),
         documentProperties=json_data.get('documentProperties'), version=json_data.get('version')))
 
-    now = datetime.datetime.now()
+    now = timezone.now()
     if ReportDefinition.objects.filter(report_type=report_type).update(
             report_definition=report_definition, last_modified_at=now) == 0:
         ReportDefinition.objects.create(

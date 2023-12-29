@@ -1,72 +1,68 @@
 # Create your views here.
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import ListView
 from django_filters.views import FilterView
-
-from apps.loan.models import Loan
-from apps.inventory.models import Product
-from apps.reports.forms import ReportForm
-from apps.inventory.filters import ProductFilter
+from django.contrib.auth.decorators import permission_required
+from django.contrib import messages
+from django.shortcuts import redirect
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
-from apps.reports.report import report
+from apps.inventory.models import Product
+from apps.inventory.filters import ProductFilter
+
+from .forms import ReportForm
+from .models import ReportDefinition
+from .report import report
 from apps.reports.utils import convert_to_64
 
+MODULE_NAME = 'Reportes'
 
-class ReportLoanView(ValidatePermissionRequiredMixin, FormView):
-    template_name = 'reports/reports_loan.html'
-    form_class = ReportForm
-    permission_required = 'loan.report_loan'
+
+class ReportsView(ListView):
+    model = ReportDefinition
+    template_name = 'reports/reports.html'
+
+    # permission_required = 'reports.reports_view'
 
     def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'search':
-                data = []
-                start_date = request.POST.get('start_date', '')
-                end_date = request.POST.get('end_date', '')
-                queryset = Loan.objects.all()
-                if len(start_date) and len(end_date):
-                    queryset = queryset.filter(created__range=[start_date, end_date])
-                    # queryset = queryset.filter(start_date=start_date)
-                    # queryset = queryset.filter(end_date=end_date)
-                    for q in queryset:
-                        print(q)
-                # lists=queryset
+        ReportDefinition_id = request.POST.get('id')
 
-                for s in queryset:
-                    # print(s)
-                    # for i in s:
-                    #     print(i.toJSON)
-                    data.append(s.toJSON())
-
-                    # data.append([
-                    #     s.id,
-                    #     # f'{s.user.first_nam + s.user.last_name}',
-                    #     s.user.get_full_name(),
-                    #     s.user.area,
-                    #     s.user.phone,
-                    #     s.user.phone,
-                    #     s.user.phone,
-                    #     # s.loanproduct_set.product.name,
-                    #     # s.loanproduct_set,
-                    #     # s.user.first_name,
-                    #     # s.created.strftime('%Y-%m-%d'),
-                    #
-                    # ])
+        if ReportDefinition_id:
+            instance = ReportDefinition_id.objects.get(id=ReportDefinition_id)
+            form = ReportForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Se ha modificado el nombre un reporte.')
             else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
+                print(form.errors)
+                messages.error(request, 'Formulario inválido.')
+        else:
+            form = ReportForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Se ha creado un reporte nuevo.')
+            else:
+                messages.error(request, 'Formulario inválido.')
+        return redirect('reports')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Reporte de Préstamos'
-        context['entity'] = 'Reportes'
-        context['list_url'] = reverse_lazy('reports:report_loan')
+        context['entity'] = MODULE_NAME
+        context['title'] = 'Listado de plantillas'
+        context['list_url'] = reverse_lazy('reports')
+        context['ReportForm'] = ReportForm()
         return context
+
+
+@permission_required('reports.delete_reportdefinition', raise_exception=True)
+def report_delete(request, pk):
+    object = ReportDefinition.objects.get(pk=pk)
+    if request.method == 'POST':
+        object.delete()
+        messages.success(request, 'Se ha eliminado la plantilla del reporte correctamente.')
+        return JsonResponse({'ok': True}, safe=False)
+    else:
+        messages.error(request, 'Eliminación rechazada.')
 
 
 class ReportInventoryView(ValidatePermissionRequiredMixin, FilterView):
@@ -78,7 +74,7 @@ class ReportInventoryView(ValidatePermissionRequiredMixin, FilterView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte de Inventario'
         context['entity'] = 'Reportes'
-        context['list_url'] = reverse_lazy('reports:report_inventory')
+        context['list_url'] = reverse_lazy('reports')
         return context
 
 

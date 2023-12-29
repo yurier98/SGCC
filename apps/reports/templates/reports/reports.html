@@ -1,96 +1,200 @@
-{% extends 'includes/list.html' %}
+{% extends "layouts/base.html" %}
 {% load static %}
-{% block head_list %}
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
-    <link rel="stylesheet"
-          href="{% static 'lib/datatables-1.10.25/plugins/buttons-1.7.1/css/buttons.bootstrap.min.css' %}"/>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/buttons-1.7.1/js/dataTables.buttons.min.js' %}"
-            type="text/javascript"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/jszip-2.5.0/jszip.min.js' %}"
-            type="text/javascript"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/pdfmake-0.1.36/pdfmake.min.js' %}"
-            type="text/javascript"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/pdfmake-0.1.36/vfs_fonts.js' %}"
-            type="text/javascript"></script>
-    <script src="{% static 'lib/datatables-1.10.25/plugins/buttons-1.7.1/js/buttons.html5.min.js' %}"
-            type="text/javascript"></script>
+{% load widget_tweaks %}
 
-    {% block head_report %}
+{% block stylesheets %}
 
-    {% endblock %}
 {% endblock %}
 
-{% block content %}
-    <div class="app-wrapper">
-    <div>
+{% block javascript %}
+    <script>
+        function deleteReportDefinition(id) {
+            var parameters = new FormData();
+            parameters.append('id', id)
+            var url = `/reports/delete/${id}/`
 
-    </div>
+            delete_with_ajax(url, 'Eliminar plantilla de reporte', '¿Estás seguro de que quieres eliminar esta plantilla? Esta acción no se puede deshacer.', parameters, function (response) {
+                if (response.ok)
+                    location.reload()
+            });
+        }
+    </script>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="app-wrapper">
+
+
         <div class="app-content pt-3 p-md-3 p-lg-4">
-            <div class="container-xl app-card-settings">
+            <div class="container-xl">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
                     <div class="col-auto">
                         <h1 class="app-page-title mb-0">{{ entity }}</h1>
                         {% include "includes/_breadcrumbs.html" %}
-
                     </div>
                     <div class="col-auto">
                         <div class="page-utilities">
                             <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-                                <div class="col-auto ">
+                                <div class="col-auto">
 
-                                    {% block content_list_before %}{% endblock %}
-                                </div><!--//col-->
+                                </div><!--//col-auto-->
+                                <div class="col-auto">
+                                    <a class="btn app-btn-primary" href="#" data-bs-toggle="modal"
+                                       data-bs-target="#ReportFormModel">
+                                        <i class="bi bi-file-earmark-plus me-2"></i>
+                                        Registrar reporte
+                                    </a>
+                                </div><!--//col-auto-->
                             </div><!--//row-->
                         </div><!--//table-utilities-->
                     </div><!--//col-auto-->
-                    <hr>
-                </div>
+                </div><!--//row-->
 
 
 
-                <div class="container-fluid">
-                    <div class="app-card app-card-orders-table shadow-sm mb-5  align-items-start ">
-                        <div class="app-card-header p-3 border-bottom-0">
-                            <div class="row justify-content-between align-items-center gx-3">
-                                <div class="col-auto">
-                                    <div class="row align-items-center gx-3">
-                                        <div class="col-auto">
-                                            <div class="app-icon-holder">
-                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt"
-                                                     fill="currentColor"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                          d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"></path>
-                                                    <path fill-rule="evenodd"
-                                                          d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"></path>
-                                                </svg>
-                                            </div>
+
+                {% if object_list %}
+                    <div class="row g-4">
+                        {% for object in object_list %}
+                            <div class="col-6 col-md-4 col-xl-3 col-xxl-2">
+                                <div id="object-{{ object.id }}"
+                                     class="app-card app-card-doc  h-100 card-sm text-center">
+
+                                    <div class="app-card-header card-header-content-between border-0 ">
+                                        <div class="row justify-content-center justify-content-sm-between p-2">
+                                            <div class="col-auto">
+                                                {% if object.created_at %}
+                                                    <span class="badge bg-soft-success text-success rounded-pill ms-2">
+                                                      NUEVO
+                                                    </span>
+
+                                                {% endif %}
+                                            </div><!-- End Col -->
+
+                                            <div class="col-auto">
+                                                <div class="app-card-actions">
+                                                    <div class="dropdown">
+
+                                                        <button type="button"
+                                                                class="btn btn-ghost-light btn-icon btn-sm card-dropdown-btn rounded-circle"
+                                                                data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                            <i class="bi-three-dots-vertical"></i>
+                                                        </button><!--//dropdown-toggle-->
+
+
+                                                        <ul class="dropdown-menu ">
+                                                            <li><a class="dropdown-item"
+                                                                   href="{% url 'product_detail' object.pk %}">
+                                                                <i class="bi-eye me-2"></i> Renombrar</a></li>
+                                                            <li><a class="dropdown-item"
+                                                                   href="{% url 'product_update' object.pk %}"><i
+                                                                    class="bi-pencil me-2"></i>
+                                                                Editar</a>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item text-danger"
+                                                                        onclick="deleteReportDefinition({{ object.pk }})">
+                                                                    <i class="bi-trash me-2"></i>Eliminar
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div><!--//dropdown-->
+
+                                                </div><!--//app-card-actions-->
+                                            </div><!-- End Col -->
                                         </div>
-                                        <div class="col-auto">
-                                            <h4 class="app-card-title">{{ title }}</h4>
-                                        </div><!--//col-->
                                     </div>
 
-                                    <!--//icon-holder-->
-                                </div><!--//col-->
-                                <div class="col-auto">
-                                    {% block form-group %} {% endblock %}
-                                </div><!--//col-->
-                            </div><!--//row-->
-                            <hr>
-                        </div><!--//app-card-header-->
-                        <div class="app-card-body">
-                            <div class="table-responsive p-3">
-                                {% block content_report %}
+                                    <a href="{% url 'report_edit' object.report_type %}">
+                                        <div class="app-card-body">
+                                            <img class="avatar avatar-md avatar-xl"
+                                                 src="{% static 'assets/images/options/pdf-icon.svg' %}"
+                                                 alt="Image Description">
+                                        </div>
+                                    </a>
 
-                                {% endblock %}
+                                    <div class="app-card-body p-2">
+                                        <h6 class="card-title text-inherit  text-secondary">{{ object.report_type }}</h6>
+                                        <span class="text-body fs-6 ms-1">Actualizado hace {{ object.last_modified_at | timesince }}</span>
+                                    </div>
+
+
+                                </div><!--//app-card-->
+                            </div><!--//col-->
+                        {% endfor %}
+                    </div><!--//row-->
+                {% else %}
+
+                    {% include 'includes/_no_data.html' %}
+
+                {% endif %}
+
+            </div><!--//container-fluid-->
+
+        </div><!--//app-content-->
+        {#        {% include 'includes/footer.html' %}#}
+    </div><!--//app-wrapper-->
+
+    <div id="productos-container"></div>
+
+{% endblock %}
+
+
+{% block modal %}
+
+    <!-- Modal de ReportForm -->
+    <div class="modal fade" id="ReportFormModel" tabindex="-1" role="dialog"
+         aria-labelledby="ReportFormModelLabel"
+         style="display: none;" aria-hidden="true">
+        <form id="frmReport" class="needs-validation" novalidate method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-8">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ReportFormModelLabel">Registrar reporte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!--Body-->
+                    <div class="modal-body">
+                        <!--Form-->
+                        <input name="action" type="hidden" value="createReport">
+                        <div class="md-4">
+                            <div class="form-group py-1">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">{{ ReportForm.report_type.label }}</label>
+                                        {% render_field ReportForm.report_type class="form-control" type="text" required="required" %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group py-1">
+                                <strong class="form-label mb-2">{{ RuleForm.content_type.field.label }}</strong>
+                                {% render_field RuleForm.content_type class="form-select" %}
                             </div>
                         </div>
+                        <!--End Form-->
+                    </div>
+                    <!--End Body-->
+
+                    <!--Footer-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost-light" data-bs-dismiss="modal" aria-label="Cancel">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
+
+
 {% endblock %}

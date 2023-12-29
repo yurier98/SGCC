@@ -1,0 +1,103 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<div class="d-grid d-sm-flex gap-2">
+
+    {#    <!-- Datatable Info -->#}
+    {#    <div id="datatableCounterInfo" style="display: none;">#}
+    {#        <div class="d-flex align-items-center">#}
+    {#                <span class=" me-3">#}
+    {#                  <span id="datatableCounter">0</span>#}
+    {#                  Seleccionado#}
+    {#                </span>#}
+    {##}
+    {#            <a role="button" onclick="deleteTrace({{ trace.id }})"#}
+    {#               class="btn app-btn-secondary app-btn-outline-danger btn-sm"><i class="bi-trash"></i> Eliminar#}
+    {#            </a>#}
+    {##}
+    {#        </div>#}
+    {#    </div>#}
+    {#    <!-- End Datatable Info -->#}
+
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <button type="button" class="btn app-btn-secondary w-100" id="FilterDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-filter me-1"></i> Filtrar
+            <span id="filterCount" class="badge bg-soft-secondary text-primary rounded-pill ms-2">2</span>
+        </button>
+
+        <div class="dropdown-menu bg-dark bg-blur shadow pt-0"
+             aria-labelledby="FilterDropdown" style="min-width: 20rem;">
+            <!-- Card -->
+            <div class="app-card-settings">
+                <form method="get" class="settings-form">
+                    <div class="app-card-header card-header-content-between mx-auto px-2">
+                        <div class="row  justify-content-between align-items-center gx-3">
+                            <div class="col-auto">
+                                <div class="card-header-title">
+                                    <h5 class="text-primary">Filtros</h5>
+                                </div>
+                            </div><!--//col-->
+                            <div class="col-auto px-0">
+                                <!-- Toggle Button -->
+                                <button type="button" class="btn-close" aria-label="Close"></button>
+                                <!-- End Toggle Button -->
+                            </div><!--//col-->
+                        </div><!--//row-->
+
+                    </div>
+                    <div class="app-card-body mx-auto px-2">
+
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                {#                                <label class="form-label text-body">Por fecha del pedido</label>#}
+                                <small class="text-cap text-body"><strong>Por fecha</strong></small>
+                                {% render_field filter.form.date class="form-select" %}
+                            </div>
+                            <!-- End Col -->
+                            <div class="col-12 mb-2">
+                                <small class="text-cap text-body"><strong>Por acción</strong></small>
+                                {% render_field filter.form.action class="form-select" %}
+                            </div>
+                            <!-- End Col -->
+                        </div>
+                        <!-- End Row -->
+
+                    </div>
+                    <div class="app-card-footer mx-auto px-2">
+                        <hr>
+                        <div class="row gx-3">
+                            <div class="col">
+                                <div class="d-grid">
+                                    <button type="button" id="clear-filters" class="btn app-btn-secondary">
+                                        <i class="bi-arrow-counterclockwise"></i> Restablecer
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="col">
+                                <div class="d-grid">
+                                    <button type="submit"  class="btn btn-primary btn-lg">
+                                        <i class="eye-visible"></i> Aplicar
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- End Col -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- End Card -->
+        </div>
+    </div>
+    <!-- End Dropdown -->
+
+
+    <a href="{{ list_url }}" class="btn app-btn-secondary">
+        <i class="fas fa-redo-alt"></i> Refrescar</a>
+
+</div>
+
+
