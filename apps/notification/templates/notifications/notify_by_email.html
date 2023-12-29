@@ -1,0 +1,106 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <h1 class="app-page-title mb-2">{{ entity }}</h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div><!--//col-auto-->
+                    <div class="col-auto">
+                        <div class="page-utilities">
+                            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                <div class="col-auto ">
+                                    {% block content_list_before %}{% endblock %}
+                                </div><!--//col-->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                    <hr>
+                </div>
+
+
+                <div class="row justify-content-lg-center">
+                    <div class="col-lg-8">
+                        <form id="" class="app-card app-card-orders-table shadow-sm mb-5  align-items-start "
+                              method="post" data-url="{{ list_url }}">
+
+                            {% csrf_token %}
+                            <div class="app-card-header p-2 border-bottom-0">
+                                <h3 class="app-card-title">
+                                    <div class="app-icon-holder">
+                                        <i class="bi bi-box-seam fa-2x"></i>
+                                        {#                                                    <i class="fas fa-boxes"></i>#}
+                                    </div>
+                                    {{ title }}
+                                </h3>
+                                <hr>
+                            </div>
+                            <div class="container-fluid settings-section">
+                                <div class="app-card-body w-100">
+
+                                    <div class="form-group">
+                                        <label for="id_email_to"><strong>Para:</strong></label>
+                                        <input type="email" id="id_email_to" class="form-control"
+                                               name="email_to" value="{{ email_value }}" readonly>
+                                    </div>
+
+
+                                    <!-- Iterar sobre los campos del formulario -->
+                                    {% for field in form %}
+                                        <div class="mb-3">
+                                            <label class="item-label"
+                                                   for="{{ field.id_for_label }}"><strong>{{ field.label }}</strong></label>
+                                            {{ field }}
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endfor %}
+
+                                    <hr>
+
+                                </div>
+                                <div class="app-card-footer ">
+                                    <div class="row justify-content-center justify-content-sm-between">
+                                        <div class="col">
+
+                                        </div>
+                                        <!-- End Col -->
+                                        <div class="col-auto mb-3">
+                                            <div class="d-flex gap-3">
+                                                <a href="{{ request.META.HTTP_REFERER }} "
+                                                   class="btn btn-ghost-light">Cancelar</a>
+                                                <button type="submit" name="send" class="btn btn-primary">
+                                                    Enviar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- End Col -->
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

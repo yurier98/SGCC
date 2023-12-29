@@ -42,11 +42,6 @@
                                             <i class="bi bi-person"></i> Mi Perfil
                                         </span>
                                         </a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="{% url 'user_change_password' %}">
-                                        <span style="font-size: 15px;">
-                                            <i class="bi bi-key"></i> Cambiar contraseña
-                                        </span> </a>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li><a class="dropdown-item align-items-center"
@@ -97,6 +92,18 @@
                         </a>
                         <!--//nav-link-->
                     </li><!--//nav-item-->
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="{% if request.resolver_match.url_name == 'reports' %} active {% endif %} nav-link"
+                           href="{% url 'reports' %}">
+                            <span class="nav-icon">
+                              <i class="bi-file-earmark-text fa-lg"></i>
+                            </span>
+                            <span class="nav-link-text">Reportes</span>
+                        </a>
+                        <!--//nav-link-->
+                    </li><!--//nav-item-->
+                
                     <li class="nav-item has-submenu">
                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                         <a class="nav-link submenu-toggle
@@ -255,8 +262,14 @@
                         <div id="audit" class="collapse submenu audit
                               {% if request.resolver_match.url_name == 'traces_list' %} show
                               {% elif request.resolver_match.url_name == 'rule_list' %} show
+                              {% elif request.resolver_match.url_name == 'request_list' %} show
                               {% endif %}" data-bs-parent="#menu-accordion">
                             <ul class="submenu-list list-unstyled">
+                                <li class="submenu-item">
+                                    <a class="submenu-link
+                                       {% if request.resolver_match.url_name == 'request_list' %} active {% endif %}"
+                                       href="{% url 'request_list' %}">Request Event</a>
+                                </li>
                                 <li class="submenu-item">
                                     <a class="submenu-link
                                        {% if request.resolver_match.url_name == 'traces_list' %} active {% endif %}"
@@ -271,6 +284,21 @@
                                 </li>
                             </ul>
                         </div>
+                    </li><!--//nav-item-->
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link {% if request.resolver_match.url_name == 'blocked_ip_list' %} active
+                                            {% elif request.resolver_match.url_name == 'permission_update' %} active
+                                            {% elif request.resolver_match.url_name == 'permission_delete' %} active
+                                            {% elif request.resolver_match.url_name == 'permission_create' %} active
+                                            {% endif %}"
+                           href="{% url 'blocked_ip_list' %}">
+                                            <span class="nav-icon">
+                                              <i class="fas fa-location-pin-lock fa-lg"></i>
+                                            </span>
+                            <span class="nav-link-text">IP Bloqueados</span>
+                        </a>
+                        <!--//nav-link-->
                     </li><!--//nav-item-->
 
                 </ul><!--//app-menu-->

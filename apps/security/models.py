@@ -5,6 +5,7 @@ from django.db.models import Q
 # from apps..models import User
 from django.core.exceptions import ValidationError
 
+
 # # Create your models here.
 # class Rol(models.Model):
 #     nombre = models.CharField(max_length=50, default="")
@@ -37,3 +38,12 @@ from django.core.exceptions import ValidationError
 #
 #     def __str__(self):
 #         return self.nombre
+
+
+class BlockedIP(models.Model):
+    ip_address = models.CharField(max_length=255, unique=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_unblocked = models.DateTimeField("Fecha de desbloqueo",null=True, blank=True)
+
+    def __str__(self):
+        return self.ip_address

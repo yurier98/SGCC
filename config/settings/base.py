@@ -35,7 +35,11 @@ THIRD_PARTY_APPS = [
     'widget_tweaks',
     'bootstrap_modal_forms',
     'pwa',
-    # 'django_extensions',
+    'axes',  # Axes
+    'django_extensions',
+    'easyaudit',
+    'import_export',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 LOCAL_APPS = [
@@ -61,15 +65,20 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     # middleware
+    # 'apps.security.middleware.BlockedIPMiddleware',
+    'axes.middleware.AxesMiddleware',  # Axes
+    'apps.security.middleware.BlockedIPMiddleware',
     'crum.CurrentRequestUserMiddleware',
-    'apps.audit.middleware.TracingMiddleware'
+    'apps.audit.middleware.TracingMiddleware',
+    'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 
 ]
 ROOT_URLCONF = 'config.urls'
-
 
 TEMPLATES = [
     {
@@ -155,38 +164,47 @@ AUTH_USER_MODEL = 'accounts.UserProfile'
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
 AUTHENTICATION_BACKENDS = (
+    'axes.backends.AxesBackend',  # Axes must be first
     'apps.custom_auth.backends.MyLDAPBackend',
     'apps.custom_auth.backends.MyAuthBackend',
 
     # 'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# ajustar el número de intentos de inicio de sesión fallidos antes de bloquear a un usuario usando django-axes
+# AXES_FAILURE_LIMIT = 4
+AXES_LOCKOUT_TEMPLATE = 'error/lockout_template.html'
+# SILENCED_SYSTEM_CHECKS = ['axes.W003']
+
+
+# Agrega la dirección IP que deseas bloquear a la lista de bloqueo
+AXES_IP_BLACKLIST = ['123.456.789.0']
+
+# Define cuántos intentos fallidos de inicio de sesión se permiten antes de bloquear la dirección IP
+AXES_FAILURE_LIMIT = 3
+
+# Define cuánto tiempo se debe bloquear la dirección IP después de alcanzar el límite de intentos fallidos
+AXES_LOCK_OUT_AT_FAILURE = True
+AXES_COOLOFF_TIME = 24  # Bloquea durante 24 horas
+
 # *********************** END AUTENTICACION *********************
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+BLOCKED_IP_TEMPLATE = 'error/blocked.html'
 
-
-LOGIN_REDIRECT_URL = '/'  # Route defined in home/urls.py
+LOGIN_REDIRECT_URL = '/order'  # Route defined in home/urls.py
 # LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
 LOGIN_URL = reverse_lazy('login')
 
 LOGOUT_REDIRECT_URL = '/login/'
 # LOGIN_URL = '/login/'
 
-# ***********************CONFIG EMAIL*********************
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.uci.cu'
-# EMAIL_HOST = 'smtp.estudiantes.uci.cu'
-EMAIL_HOST = 'smtp.gmail.com'
 
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_USER = 'yurierjhl@estudiantes.uci.cu'
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_PASSWORD = 'password'
-
-# EMAIL_PORT = 25
-EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-DOMAIN = ''
-# *********************** END CONFIG EMAIL*********************
+DEFAULT_REPORT_TEMPLATE_PATH = 'apps/reports/resources/default_report_template.json'
 
 from .pwa import *

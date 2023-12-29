@@ -10,3 +10,6 @@ def delete_old_notifications():
     limit= now-timedelta(minutes=5)
     #eliminar las notificaciones creadas antes de la fecha limite
     SystemNotification.objects.filter(created_at__lt=limit).delete()
+
+
+

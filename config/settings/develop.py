@@ -30,8 +30,23 @@ DATABASES = {
     }
 }
 
-# email settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ***********************CONFIG EMAIL*********************
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.smtp2go.com'
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'estudiantes.uci.cu'
+EMAIL_HOST_PASSWORD = 'KoxeCSdDtVLtMc8g'
+
+# EMAIL_HOST = 'smtp.uci.cu'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'yurierjhl@uci.cu'
+# EMAIL_HOST_PASSWORD = 'password'
+
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# DOMAIN = ''
+# *********************** END CONFIG EMAIL*********************
 

@@ -7,6 +7,7 @@ from django.contrib import admin
 from apps.order.models import Order
 from .models import Loan
 from apps.accounts.models import UserProfile
+from apps.nomenclatures.models import Manifestation
 from datetime import datetime
 
 
@@ -28,6 +29,7 @@ class LoanForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['user'].queryset = UserProfile.objects.all().filter(is_active=True)
+        self.fields['manifestation'].queryset = Manifestation.objects.all().filter(is_active=True)
         self.fields['description'].widget.attrs['rows'] = 3
         self.fields['state_loan'].choices = Loan.State.choices
         # self.fields['state'].choices = Order.STATE[1:2]

@@ -8,6 +8,10 @@
     <link href="{% static 'assets/plugins/datatables/1.13.6/buttons.dataTables.min.css' %}" rel="stylesheet">
     <!-- DataTables Buttons CSS -->
 
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/datatables.min.css"
+          rel="stylesheet">
+
+
 
 
 {% endblock %}
@@ -17,6 +21,12 @@
     <script src="{% static 'assets/plugins/datatables/1.13.6/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'assets/plugins/datatables/1.13.6/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'assets/plugins/datatables/1.13.6/dataTables.buttons.min.js' %}"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/datatables.min.js"></script>
 
     {#    <!-- jQuery -->#}
     {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
@@ -55,6 +65,9 @@
                 "isShowPaging": false,
                 "pagination": "datatableWithPaginationPagination",
 
+                //BUTTONS
+                dom: 'lBfrtip',
+
                 "initComplete": function () {
                     var table = $('#LoanTabla').DataTable();
 
@@ -70,7 +83,11 @@
                                 extend: 'excelHtml5',
                                 text: 'Excel',
                                 titleAttr: 'Excel',
-                                className: 'dropdown-item'
+                                className: 'dropdown-item',
+                                //Choose the columns you with to export
+                                exportOptions: {
+                                    columns: [1, 2, 3, 4, 5, 6, 7]
+                                }
                             },
                             {
                                 extend: 'csvHtml5',
@@ -110,6 +127,12 @@
                             }
                         }
                     }).container().appendTo('#TableExportDropdown+.dropdown-menu');
+
+                    // Remover contenedor de botones existente
+                    $('.dt-buttons').remove();
+
+                    // Agregar contenedor de botones al dropdown
+                    $('#TableExportDropdown+.dropdown-menu').append(buttons.container());
                 }
             });
 
@@ -178,6 +201,17 @@
         }
 
         updateFilterCount(['date_update', 'state']);
+
+        $('.btn-email').click(function () {
+            var email = $(this).data('email');
+            $('#email_to').val(email);
+        });
+
+
+        function OpenModalEmail(email) {
+            document.querySelector('#frmEmail input[name=email_to]').value = email
+            // document.querySelector('#frmEmail input[name=id_email_to]').value = email
+        }
     </script>
 
 {% endblock %}
@@ -265,7 +299,7 @@
                                     <tr>
                                         <th class="cell"><input type="checkbox" id="marcarTodos"></th>
                                         <th class="cell">Usuario</th>
-                                        <th class="cell">Facultad</th>
+                                        <th class="cell">Área</th>
                                         <th class="cell">Fecha solicitud</th>
                                         <th class="cell">Fecha de inicio</th>
                                         <th class="cell">Fecha de devolucion</th>
@@ -287,7 +321,7 @@
                                             <td class="cell">{{ object.order.user.area }}</td>
 
                                             <td class="cell">
-                                                <span>{{ object.order.created |date:"j F, Y" }}</span><span
+                                                <span>{{ object.order.created_at |date:"j F, Y" }}</span><span
                                                     class="note">{{ object.order.created|date:' H:i' }}</span>
                                             </td>
                                             <td class="cell">
@@ -297,15 +331,24 @@
                                                 <span>{{ object.order.end_date |date:"j F, Y" }}</span>
                                             </td>
 
-                                            <td class="cell">
+                                            <td class="cell h6">
                                                 {% if object.state  == 'PR' %}
-                                                    <span class="badge bg-success"> Prestado </span>
+                                                     <span class="badge bg-soft-success text-success rounded-pill ms-2">
+                                                        <i class="bi-check-circle-fill me-1"></i>Prestado
+                                                    </span>
                                                 {% elif object.state  == 'P' %}
-                                                    <span class="badge bg-warning"> Pendiente a autorización </span>
+                                                    <span class="badge bg-soft-warning text-warning rounded-pill ms-2">
+                                                        <i class="bi-clock-fill me-1"></i>Pendiente a autorización
+                                                    </span>
+
                                                 {% elif object.state  == 'E' %}
-                                                    <span class="badge bg-secondary"> Entregado </span>
+                                                     <span class="badge bg-soft-secondary text-secondary rounded-pill ms-2">
+                                                        <i class="bi-check-circle-fill me-1"></i>Entregado
+                                                    </span>
                                                 {% elif object.state  == 'A' %}
-                                                    <span class="badge bg-danger"> Atrasado </span>
+                                                     <span class="badge bg-soft-danger text-danger rounded-pill ms-2">
+                                                        <i class="bi-x-circle-fill me-1"></i>Atrasado
+                                                    </span>
                                                 {% else %}
                                                     <span class="badge bg-danger"> N/A </span>
                                                 {% endif %}
@@ -356,26 +399,68 @@
 
 
 {% block modal %}
-    <!-- Modal de confirmación -->
-    <div class="modal fade" id="confirmarEliminar" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar las filas seleccionadas?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="btnEliminar">Eliminar</button>
+    <!-- Modal de send email -->
+    <div class="modal fade" id="SendEmailModel" data-bs-backdrop="static" tabindex="-1" role="dialog"
+         aria-labelledby="SendEmailModelLabel"
+         aria-hidden="true">
+        <form id="frmEmail" class="needs-validation" novalidate method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content rounded-8">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="SendEmailModelLabel">Enviar correo electrónico</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!--Body-->
+                    <div class="modal-body">
+                        <!--Form-->
+                        <input name="action" type="hidden" value="sendEmail">
+
+                        <div class="mb-3">
+
+                            {#                            <input type="email" id="email_to" class="form-control" name="email_to" placeholder="Correo electrónico" readonly>#}
+
+                            <label class="form-label"
+                                   for="exampleFormControlInput1"><strong>{{ form.email_to.field.label }}</strong></label>
+                            {% render_field form.email_to class="form-control" %}
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"
+                                   for="exampleFormControlInput1"><strong> {{ form.subject.field.label }}</strong></label>
+                            {% render_field form.subject class="form-control" %}
+                            {% if form.subject.errors %}
+                                {% for error in form.subject.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"
+                                   for="exampleFormControlInput1"><strong>{{ form.body.field.label }}</strong></label>
+                            {% render_field form.body class="form-control" %}
+                        </div>
+
+                    </div>
+                    <!--End Body-->
+
+                    <!--Footer-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost-light" data-bs-dismiss="modal"
+                                aria-label="Cancel">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
+
 {% endblock %}
 
 

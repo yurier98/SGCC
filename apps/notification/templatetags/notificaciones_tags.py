@@ -10,10 +10,10 @@ def cantNotify(context):
     if not user:
         return ''
 
-    return user.notificaciones.no_leido().count()
+    return user.notifications.unread().count()
 
 
-notificaciones = register.simple_tag(takes_context=True)(cantNotify)
+notifications = register.simple_tag(takes_context=True)(cantNotify)
 
 
 def user_context(context):
@@ -42,7 +42,7 @@ def Notify(context):
     if not user:
         return ''
 
-    return user.notificaciones.no_leido()[0:5]
+    return user.notifications.unread()[0:5]
 
 
 Notify = register.simple_tag(takes_context=True)(Notify)

@@ -9,17 +9,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from django_filters.views import FilterView
-
+from easyaudit.models import RequestEvent, CRUDEvent, LoginEvent
 from .models import Rule, Trace
 from .forms import RuleForm
-from .filters import TraceFilter
+from .filters import TraceFilter, RequestFilter
 
+MODULE_NAME = 'Auditorías'
 
 class TracesListView(LoginRequiredMixin, FilterView, ListView):
     model = Trace
     template_name = 'audit/traces_list.html'
     context_object_name = 'traces_list'
-    paginate_by = 10
+    # paginate_by = 10
     filterset_class = TraceFilter
 
     # queryset = Trace.objects.order_by('-timestamp')
@@ -38,10 +39,10 @@ class TracesListView(LoginRequiredMixin, FilterView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Auditorias'
+        context['entity'] = MODULE_NAME
         context['title'] = 'Listado de trazas'
         context['list_url'] = reverse_lazy('traces_list')
-        context['filter'] = TraceFilter(self.request.GET, queryset=self.get_queryset())
+        # context['filter'] = TraceFilter(self.request.GET, queryset=self.get_queryset())
         # context['details'] = self.get_details_traces()
         return context
 
@@ -123,7 +124,7 @@ class RuleListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Auditorias'
+        context['entity'] = MODULE_NAME
         context['title'] = 'Listado de reglas'
         context['list_url'] = reverse_lazy('traces_list')
         context['RuleForm'] = RuleForm()
@@ -148,6 +149,7 @@ def eliminartraza(request, pk):
     traza = Trace.objects.get(id=pk)
     if request.method == 'POST':
         traza.delete()
+        messages.success(request, 'Se ha eliminado la traza correctamente.')
         return JsonResponse({'ok': True}, safe=False)
     else:
         return render(request, 'audit/traces_delete.html', {'traza': traza})
@@ -157,6 +159,8 @@ def eliminarregla(request, pk):
     regla = Rule.objects.get(id=pk)
     if request.method == 'POST':
         regla.delete()
+        # mensaje = f'{self.model.__name__} eliminado correctamente'
+        messages.success(request, 'Se ha eliminado la regla correctamente.')
         return JsonResponse({'ok': True}, safe=False)
     else:
         return render(request, 'audit/rule_delete.html', {'x': regla})
@@ -165,3 +169,28 @@ def eliminarregla(request, pk):
 def viewtraza(request, pk):
     traza = Trace.objects.get(id=pk)
     return render(request, 'audit/traces_details.html', {'traza': traza})
+
+
+
+class RequestEventListView(LoginRequiredMixin, FilterView, ListView):
+    model = RequestEvent
+    template_name = 'audit/request_list.html'
+    filterset_class = RequestFilter
+    paginate_by = 100
+
+    def get_details_traces(self, request, pk):
+        trace = get_object_or_404(Trace, pk=pk)
+        if request.is_ajax():
+            return JsonResponse({'detalles': trace.user})
+            # return render(request, 'audit/traces_details.html', {'registro': registro})
+        return render(request, 'audit/traces_details.html', {'registro': trace})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
+        context['title'] = 'Listado de RequestEvent'
+        context['list_url'] = reverse_lazy('request_list')
+        # context['filter'] = TraceFilter(self.request.GET, queryset=self.get_queryset())
+        # context['details'] = self.get_details_traces()
+        return context
+

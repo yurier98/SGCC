@@ -1,6 +1,9 @@
 from django.contrib.auth.models import Group, Permission
 from django.http import JsonResponse
+from django.contrib import messages
+from django.core import serializers
 from django.urls import reverse_lazy
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from ..Forms.groups_forms import GroupsForm
 from ..Mixin.mixins import ValidatePermissionRequiredMixin
@@ -11,21 +14,34 @@ from ..Mixin.mixins import ValidatePermissionRequiredMixin
 
 class GroupListView(ValidatePermissionRequiredMixin, ListView):
     model = Group
-    template_name = 'groups/list.html'
+    template_name = 'groups/groups_list.html'
     permission_required = 'view_group'
     url_redirect = reverse_lazy('home')
+
+    # def post(self, request, *args, **kwargs):
+    #     data = {}
+    #     try:
+    #         action = request.POST['action']
+    #         if action == 'search':
+    #             data = []
+    #             data = list(Group.objects.values())
+    #             grupos = Group.objects.all()
+    #             # for i in grupos:
+    #             #
+    #             #     data.append(i.id,)
+    #         else:
+    #             data['error'] = 'Ha ocurrido un error'
+    #     except Exception as e:
+    #         data['error'] = str(e)
+    #     return JsonResponse(data, safe=False)
 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
             action = request.POST['action']
             if action == 'search':
-                data = []
-                data = list(Group.objects.values())
-                grupos = Group.objects.all()
-                # for i in grupos:
-                #
-                #     data.append(i.id,)
+                groups = Group.objects.prefetch_related('permissions')
+                data = serializers.serialize('json', groups)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -38,6 +54,7 @@ class GroupListView(ValidatePermissionRequiredMixin, ListView):
         context['create_url'] = reverse_lazy('group_create')
         context['list_url'] = reverse_lazy('group_list')
         context['entity'] = 'Grupos'
+        context['GroupsForm'] = GroupsForm()
         return context
 
 
@@ -132,3 +149,14 @@ class GroupDeleteView(ValidatePermissionRequiredMixin, DeleteView):
         context['entity'] = 'Roles'
         context['list_url'] = self.success_url
         return context
+
+
+
+def delete_group(request, pk):
+    group = get_object_or_404(Group, id=pk)
+    if request.method == 'POST':
+        group.delete()
+        messages.success(request, 'Se ha eliminado el grupo correctamente.')
+        return JsonResponse({'ok': True}, safe=False)
+    else:
+        return redirect('group_list')

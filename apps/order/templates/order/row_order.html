@@ -2,12 +2,12 @@
 {% if page_obj %}
     {% with offset=page_obj.start_index|add:0 %}
 
-        <tr >
+        <tr>
 
             <td>{{ offset|add:forloop.counter0 }}  </td>
 
             <td class="cell">
-                <span>{{ object.created |date:"j F, Y" }}</span>
+                <span>{{ object.created_at |date:"j F, Y" }}</span>
                 <span class="note">{{ object.created|date:' H:i' }}</span>
             </td>
             <td class="cell">
@@ -21,13 +21,19 @@
             <td class="cell">
                 <span class="truncate">{{ object.manifestation }}</span>
             </td>
-            <td class="cell">
+            <td class="cell h6">
                 {% if object.state == 'P' %}
-                    <span class="badge bg-warning"> Pendiente </span>
+                    <span class="badge bg-soft-warning text-warning rounded-pill ms-2">
+                        <i class="bi-clock-fill me-1"></i>Pendiente
+                    </span>
                 {% elif object.state == 'A' %}
-                    <span class="badge bg-success"> Aprobado </span>
+                    <span class="badge bg-soft-success text-success rounded-pill ms-2">
+                        <i class="bi-check-circle-fill me-1"></i>Aprobado
+                    </span>
                 {% elif object.state == 'R' %}
-                    <span class="badge bg-danger"> Rechazado </span>
+                    <span class="badge bg-soft-danger text-danger rounded-pill ms-2">
+                        <i class="bi-x-circle-fill me-1"></i>Rechazado
+                    </span>
                 {% else %}
                     <span class="badge bg-danger"> N/A </span>
                 {% endif %}

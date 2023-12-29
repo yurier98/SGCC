@@ -1,30 +1,37 @@
 from django.db import models
 from django.forms import model_to_dict
-
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
+from datetime import datetime, timedelta
+from django.utils import timezone
 
-class Category(models.Model):
-    name = models.CharField("Categoría del producto", max_length=50, unique=True)
-    # slug = models.SlugField(max_length=200, default='null', db_index=True, unique=True)
+
+class AbstractBaseNomenclature(models.Model):
+    """Nomenclatures base model which every models inherit."""
+
+    created_date = models.DateTimeField(
+        auto_now_add=True, verbose_name="fecha de creación"
+    )
+    modified_date = models.DateTimeField(
+        auto_now=True, verbose_name="última fecha de modificación"
+    )
+
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
+        ),
+    )
 
     class Meta:
-       # ordering = 'name'
-        verbose_name = 'Categoría de producto'
-        verbose_name_plural = 'Categorías de los productos'
-
-    def __str__(self):
-        return self.name
-
-    # def get_absolute_url(self):
-    #     return reverse('shop:product_list_by_category', args=[self.slug])
-    def toJSON(self):
-        item = model_to_dict(self)
-        return item
+        """Meta options."""
+        abstract = True
 
 
-
-class Manifestation(models.Model):
+class Manifestation(AbstractBaseNomenclature):
     """Manifestación model."""
     name = models.CharField("nombre", max_length=100, unique=True)
 
@@ -39,4 +46,3 @@ class Manifestation(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         return item
-

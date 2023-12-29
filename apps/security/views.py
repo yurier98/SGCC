@@ -23,5 +23,6 @@ def json(request, self=None):
 
 from .Views.views_groups import *
 from .Views.views_permission import *
+from .Views.views_blocked_ip import *
 
 

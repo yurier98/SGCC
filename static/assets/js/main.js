@@ -1,7 +1,6 @@
 var pathname = window.location.pathname;
 
 
-
 // var progressBar = new ProgressBar.Line('#container', {
 //     color: '#04966b', // El color de la barra de progreso
 //     strokeWidth: 4, // El ancho de la barra de progreso

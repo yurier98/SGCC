@@ -204,7 +204,7 @@
 
                             </div><!--//col-->
                             <div class="col-auto">
-                                {% include 'audit/traces_option.html' %}
+                                {% include 'audit/request_option.html' %}
                             </div><!--//col-->
                         </div><!--//row-->
                         <hr>
@@ -219,45 +219,48 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th class="cell"><input type="checkbox" id="marcarTodos"></th>
-                                        <th class="cell" style="width: 5%;">ACCION</th>
-                                        <th class="cell" style="width: 8%;">USUARIO</th>
+
                                         <th class="cell" style="width: 10%;">FECHA</th>
-                                        <th class="cell">IP</th>
-                                        <th class="cell">SO</th>
-                                        <th class="cell">OBJETO</th>
+                                        <th class="cell" style="width: 8%;">USUARIO</th>
+                                         <th class="cell">IP</th>
+                                        <th class="cell" style="width: 5%;">MÉTODO</th>
+                                        <th class="cell">URL</th>
+
+
                                         <th class="cell" style="width: 6%;">ACCIONES</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for trace in traces_list %}
+                                    {% for object in object_list %}
                                         <tr>
                                             <td class="cell">
                                                 <input id="checkboxID" type="checkbox" name="checkbox[]"
                                                        value="{{ object.id }}">
                                             </td>
+
                                             <td class="cell">
-                                                {% if trace.action == 'create' %}
-                                                    <span class="badge bg-primary rounded-pill"> Creado </span>
-                                                {% elif trace.action == 'edit' %}
-                                                    <span class="badge bg-warning rounded-pill"> Actualizado </span>
-                                                {% elif trace.action == 'delete' %}
-                                                    <span class="badge bg-danger rounded-pill"> Eliminado </span>
+                                                <span>{{ object.datetime |date:"d/m/Y" }}</span>
+                                                <span class="note">{{ object.datetime|date:' H:i' }}</span>
+                                            </td>
+
+                                            <td class="cell">{{ object.user }}</td>
+                                            <td class="cell">
+                                                <span>{{ object.remote_ip }}</span>
+                                            </td>
+                                            <td class="cell">
+                                                {% if object.method == 'GET' %}
+                                                    <span class="badge bg-primary rounded-pill"> GET </span>
+                                                {% elif object.method == 'POST' %}
+                                                    <span class="badge bg-warning rounded-pill"> POST </span>
+                                                {% elif object.method == 'DELETE' %}
+                                                    <span class="badge bg-danger rounded-pill"> DELETE </span>
                                                 {% endif %}
                                             </td>
-                                            <td class="cell">{{ trace.user }}</td>
                                             <td class="cell">
-                                                <span>{{ trace.date |date:"d/m/Y" }}</span>
-                                                <span class="note">{{ trace.date|date:' H:i' }}</span>
+                                                <span>{{ object.url }}</span>
                                             </td>
-                                            <td class="cell">
-                                                <span>{{ trace.ip }}</span>
-                                            </td>
-                                            <td class="cell">
-                                                <span>{{ trace.os }}</span>
-                                            </td>
-                                            <td class="cell">
-                                                <span>{{ trace.content_type }}</span>
-                                            </td>
+
+
                                             <td class="cell">
                                                 <button class="btn btn-sm text-primary" data-bs-toggle="modal"
                                                         data-bs-target="#traceViewModel" data-id="{{ trace.id }}"

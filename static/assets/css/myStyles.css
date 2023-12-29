@@ -2,34 +2,32 @@
  *  myStyles file #####################################
  */
 
-.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn.dropdown-toggle-split:first-child, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn-group:not(:last-child) > .btn, .btn-group > .btn.dropdown-toggle-split:first-child, .btn-group > .btn:not(:last-child):not(.dropdown-toggle) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
-.btn-group>.btn-group:not(:first-child), .btn-group>:not(.btn-check:first-child)+.btn {
+
+.btn-group > .btn-group:not(:first-child), .btn-group > :not(.btn-check:first-child) + .btn {
     margin-left: -.0625rem;
 }
 
-.btn-group-vertical>.btn, .btn-group>.btn {
+.btn-group-vertical > .btn, .btn-group > .btn {
     position: relative;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 }
 
 
-
-.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn-group:not(:last-child) > .btn, .btn-group > .btn:not(:last-child):not(.dropdown-toggle) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: -1px !important;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
-
-
 
 
 .avatar.avatar-4x3 {
@@ -121,6 +119,7 @@
     color: #EE5D58;
     border-color: #EE5D58;
 }
+
 .app-btn-outline-success {
     color: var(--bs-primary) !important;
     border-color: var(--bs-primary) !important;
@@ -147,6 +146,7 @@
     border-color: #EE5D58;
     background: #EE5D58;
 }
+
 .app-btn-outline-success:hover {
     color: #fff !important;
     border-color: var(--bs-primary) !important;
@@ -173,6 +173,16 @@
 /*!
  *  Drag&Drog file #####################################
  */
+
+.app-card-doc {
+    border-color: #8c98a4 !important;
+}
+
+.app-card-doc:hover {
+    box-shadow: 0 .1875rem .75rem rgba(140, 152, 164, .25) !important;
+    border: .0625rem solid rgba(231, 234, 243, 0.7) !important;
+}
+
 
 .img-product {
     /*width: 40px;*/
@@ -266,6 +276,27 @@ tr:hover {
 
 .bg-soft-secondary {
     background-color: rgba(113, 134, 157, .1) !important;
+}
+
+.bg-soft-warning {
+    background-color: rgba(237, 191, 64, 0.1) !important;
+}
+
+.btn-round {
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    border-radius: 50% !important;
+    padding: 0;
+    text-align: center;
+}
+
+.btn-success-soft {
+    background-color: rgba(0, 201, 167, .1) !important;
+}
+
+.btn-danger-soft {
+    background-color: rgba(238, 93, 88, .1) !important;
 }
 
 .card-subtitle {
@@ -395,108 +426,108 @@ tr:hover {
   Dropzone
 ------------------------------------*/
 .dz-dropzone {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .dz-dropzone-boxed {
-  width: 100%;
-  background-color: #f8fafd;
-  border: 0.125rem dashed #e7eaf3;
-  border-radius: 0.3125rem;
-  padding: 3rem 3rem;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+    width: 100%;
+    background-color: #f8fafd;
+    border: 0.125rem dashed #e7eaf3;
+    border-radius: 0.3125rem;
+    padding: 3rem 3rem;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .dz-dropzone .dz-message {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 .dz-dropzone .dz-details {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .dz-dropzone .dz-file-preview {
-  background-color: #fff;
-  border-radius: 0.3125rem;
-  padding: 1rem 1rem;
-  box-shadow: 0px 3px 6px 0px rgba(140, 152, 164, 0.25);
+    background-color: #fff;
+    border-radius: 0.3125rem;
+    padding: 1rem 1rem;
+    box-shadow: 0px 3px 6px 0px rgba(140, 152, 164, 0.25);
 }
 
 .dz-dropzone .dz-file-wrapper {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .dz-dropzone .dz-filename {
-  margin-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
 }
 
 .dz-dropzone .dz-img {
-  max-width: 3.125rem;
-  border-radius: 0.3125rem;
-  margin-right: 0.75rem;
+    max-width: 3.125rem;
+    border-radius: 0.3125rem;
+    margin-right: 0.75rem;
 }
 
 .dz-dropzone .dz-img-inner {
-  border-radius: 0.3125rem;
+    border-radius: 0.3125rem;
 }
 
 .dz-dropzone .dz-close-icon,
 .dz-dropzone .dz-size {
-  color: #677788;
+    color: #677788;
 }
 
 .dz-dropzone .dz-title {
-  font-size: 0.75rem;
-  font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .dz-dropzone .dz-size {
-  font-size: 80%;
+    font-size: 80%;
 }
 
 .dz-dropzone .dz-file-initials {
-  display: inline-block;
-  width: 3.125rem;
-  height: 3.125rem;
-  line-height: 3.125rem;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #377dff;
-  text-align: center;
-  background-color: rgba(55, 125, 255, 0.1);
-  border-radius: 0.3125rem;
-  margin-right: 0.75rem;
+    display: inline-block;
+    width: 3.125rem;
+    height: 3.125rem;
+    line-height: 3.125rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #377dff;
+    text-align: center;
+    background-color: rgba(55, 125, 255, 0.1);
+    border-radius: 0.3125rem;
+    margin-right: 0.75rem;
 }
 
 .dz-dropzone [data-dz-thumbnail]:not([src]) {
-  display: none;
-  margin-bottom: 0;
+    display: none;
+    margin-bottom: 0;
 }
 
 .dz-dropzone .dz-progress {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .dz-dropzone .dz-processing .dz-error-mark,
 .dz-dropzone .dz-processing .dz-success-mark {
-  display: none;
+    display: none;
 }
 
 .dz-dropzone .dz-processing.dz-error .dz-error-mark,
 .dz-dropzone .dz-processing.dz-success .dz-success-mark {
-  display: block;
+    display: block;
 }
 
 .dz-dropzone .dz-processing .dz-error-mark {
-  color: #de4437;
+    color: #de4437;
 }
 
 .dz-dropzone .dz-processing .dz-success-mark {
-  color: #00c9a7;
+    color: #00c9a7;
 }

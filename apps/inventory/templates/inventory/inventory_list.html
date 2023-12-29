@@ -79,60 +79,16 @@
     </script>
 
     <script>
-        $(document).ready(function () {
+        function deleteProduct(id) {
+            var parameters = new FormData();
+            parameters.append('id', id)
+            var url = `/inventory/delete/${id}/`
 
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            $('.delete-btn').click(function () {
-                var id = $(this).data('id');
-                console.log('El id es:' + id)
-                // Asigna el ID del objeto al botón de confirmación del modal
-                $('#delete-confirm-btn').data('id', id);
-                $('#delete-modal').modal('show');
-
+            delete_with_ajax(url, 'Confirmar Eliminación', '¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.', parameters, function (response) {
+                if (response.ok)
+                    location.reload()
             });
-            $('#delete-confirm-btn').click(function () {
-                var id = $(this).data('id');
-                {#const csrf = document.getElementsByName('csrfmiddlewaretoken');#}
-                var csrf_token = getCookie('csrftoken');
-
-                console.log('El id es:' + id)
-                console.log('El csrf es:' + csrf_token)
-
-
-                $.ajax({
-                    {#url: "{% url 'product_delete' id %}",  // Usa la URL correcta para tu vista de eliminación#}
-                    {#url: "{% url 'product_delete' id %}" + id + "/",  // Corregir la URL concatenando el ID#}
-                    url: "/inventory/delete/" + id + "/",  // Reemplazar con la URL correcta para tu vista de eliminación
-                    type: 'POST',
-                    headers: {"X-CSRFToken": csrf_token},
-                    success: function (data) {
-                        $('#delete-modal').modal('hide');
-                        $('#notification').html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
-                        $('#object-' + id).remove();
-                    },
-                    error: function () {
-                        $('#delete-modal').modal('hide');
-                        $('#notification').html('<div class="alert alert-danger" role="alert">Ocurrió un error al eliminar el objeto.' +
-                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-                    }
-                });
-            });
-        });
-
+        }
     </script>
 
 {% endblock %}

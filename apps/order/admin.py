@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Order, OrderProduct, Manifestation
+from .models import Order, OrderProduct
 
 
 class OrderItemInline(admin.TabularInline):
@@ -47,11 +47,11 @@ order_detail.allow_tags = True
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user', 'start_date', 'end_date', 'manifestation', 'state',
                     order_detail]
-    list_filter = ['manifestation', 'state', 'updated']
+    list_filter = ['manifestation', 'state', 'updated_at']
     autocomplete_fields = ['user']
     inlines = [OrderItemInline]
     actions = [export_to_csv]
 
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Manifestation)
+

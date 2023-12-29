@@ -1,17 +1,31 @@
 from django import forms
+from .models import EmailNotification
 
 
-class EmailForm(forms.Form):
-    email_to = forms.EmailField(label='To')
-    title = forms.CharField(max_length=140)
-    message = forms.CharField(widget=forms.Textarea)
+class EmailForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['body'].widget.attrs['rows'] = 3
 
     class Meta:
-        fields = ('email_to', 'title', 'message')
-
-
-class NotificationFilterForm(forms.Form):
-    date_range = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'autocomplete': 'off'
-    }))
+        model = EmailNotification
+        fields = ['email_to', 'subject', 'body']
+        widgets = {
+            'email_to': forms.TextInput(attrs={
+                'placeholder': 'Dirección email',
+                'class': 'form-control',
+                'readonly': True
+            }),
+            'subject': forms.TextInput(attrs={
+                'placeholder': 'Asunto',
+                'class': 'form-control',
+            }),
+            'body': forms.Textarea(attrs={
+                'placeholder': 'Escribe algo ... ',
+                'class': 'form-control',
+                'style': 'height: 100px',
+                'rows': 3,
+                'cols': 3
+            }),
+        }

@@ -3,7 +3,7 @@ from .models import Order
 import django_filters
 from django_filters import filters
 
-from ..nomenclatures.models import Category
+from apps.inventory.models import Category
 
 
 class OrderFilter(django_filters.FilterSet):
@@ -15,7 +15,7 @@ class OrderFilter(django_filters.FilterSet):
     #     label='Categoría del producto',
     # )
     product__category = django_filters.ModelChoiceFilter(
-        queryset=Category.objects.all(),  # Asegúrate de importar el modelo Category
+        queryset=Category.objects.all().filter(is_active=True),  # Asegúrate de importar el modelo Category
         field_name='products__product__category',
         # Ajusta el campo según las relaciones entre Order, Product y Category
         label='Categoría del producto',

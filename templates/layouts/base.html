@@ -33,6 +33,9 @@
     <!-- CSS File  -->
     <link href="{% static 'assets/css/myStyles.css' %}" rel="stylesheet">
 
+    <!-- HTMX -->
+    <script src="{% static 'assets/plugins/htmx/htmx1.6.0.min.js' %}"></script>
+
     {% block stylesheets %}
     {% endblock %}
 
@@ -67,10 +70,7 @@
 {% include 'error/_message.html' %}
 
 
-
-
 <!-- JavaScript -->
-
 
 
 <!-- jQuery -->
@@ -111,12 +111,15 @@
         toast.show()
     {% endif %}
 
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+
 </script>
 
 {#<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css">#}
 {#<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>#}
 {#<script src="https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js"></script>#}
-
 
 
 </body>

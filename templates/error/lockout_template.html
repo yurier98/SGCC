@@ -1,10 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Permiso Denegado</title>
 </head>
 <body>
-$END$
+
 </body>
+</html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    {% block title %}<title>Sistema de Gestión de Préstamos</title>{% endblock title %}
+
+    {% block meta %}
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta content="" name="keywords">
+        <meta name="author" content="Yurier Herrera Lugo">
+        <link rel="shortcut icon" href="favicon.ico">
+    {% endblock meta %}
+    {% block stylesheets %}
+        <!-- App CSS -->
+        {#        <link id="theme-style" rel="stylesheet" href="assets/css/portal.css">#}
+        <link href="{% static 'assets/scss/portal.css' %}" rel="stylesheet">
+        <!-- Favicons -->
+        <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+        <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+        <!-- CSS File  -->
+        {#        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">#}
+        {#        <link href="{% static 'assets/css/tabla.css' %}" rel="stylesheet">#}
+
+    {% endblock stylesheets %}
+</head>
+
+<body class="app">
+
+
+<!-- Contenido de la pagina -->
+{% block content %}
+
+    <div class="app app-404-page">
+
+        <div class="container mb-5">
+            <div class="row">
+                <div class="col-12 col-md-11 col-lg-7 col-xl-6 mx-auto">
+                    <div class="app-branding text-center mb-5">
+                        <a class="app-logo" href="{% url 'home' %}"><img class="logo-icon me-2"
+                                                                         src="{% static 'assets/images/app-logo.svg' %}"
+                                                                         alt="logo"><span
+                                class="logo-text">GEPRE</span></a>
+
+                    </div><!--//app-branding-->
+                    <div class="app-card p-5 text-center shadow-sm">
+                        <img class=" img-fluid me-2" style="width: 200px; height: 200px;"
+                             src="{% static 'assets/images/illustrations/oc-thinking.svg' %}">
+                        <h1 class="page-title mb-4">Permiso denegado<br>
+                            <span class="font-weight-light">
+                                Cuenta bloqueada: demasiados intentos de inicio de sesión. </span>
+                        </h1>
+                        <div class="mb-4">
+                            {{ username }}
+                            {{ failure_limit }}
+
+                            Póngase en contacto con un administrador para desbloquear su cuenta.
+                        </div>
+                    </div>
+                </div><!--//col-->
+            </div><!--//row-->
+        </div><!--//container-->
+
+        {% include 'includes/footer.html' %}<!--//app-footer-->
+
+
+    </div>
+
+{% endblock %}
+
+
+
+<!-- JavaScript -->
+{% block scripts %}
+    <!-- FontAwesome JS-->
+    <script src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- Page Specific JS -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+{% endblock scripts %}
+
+
+</body>
+
 </html>

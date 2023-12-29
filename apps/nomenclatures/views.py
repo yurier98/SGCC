@@ -3,8 +3,10 @@ from django.urls import reverse_lazy
 from django.db import transaction
 from django.http import JsonResponse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+from apps.inventory.models import Category
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
-from apps.nomenclatures.models import Manifestation, Category
+from apps.nomenclatures.models import Manifestation
 from apps.nomenclatures.forms import ManifestationForm, CategoryForm
 # Create your views here.
 

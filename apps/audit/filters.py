@@ -2,7 +2,7 @@ import datetime
 from django_filters import rest_framework as filters
 from django import forms
 from .models import Trace
-
+from easyaudit.models import RequestEvent, CRUDEvent, LoginEvent
 
 
 def your_filter_date_update(queryset, value):
@@ -65,4 +65,24 @@ class TraceFilter(filters.FilterSet):
         if value == 'ultimos_tres_meses':
             three_months_ago = today - datetime.timedelta(days=3 * 30)
             return queryset.filter(order__updated__gte=three_months_ago)
+
+
+
+class RequestFilter(filters.FilterSet):
+    INTERVAL_CHOICES = [
+        ('esta_semana', 'Esta Semana'),
+        ('este_mes', 'Este Mes'),
+        ('last_3_months', 'Últimos 3 Meses'),
+    ]
+
+    date = filters.ChoiceFilter(choices=INTERVAL_CHOICES,
+                                       widget=forms.Select(attrs={'class': 'form-select w-auto'}),
+                                       empty_label="Todos", # Aquí definimos el texto para la opción "Todos"
+                                       method=lambda queryset, name, value: your_filter_date_update(queryset, value)
+                                       )
+
+    class Meta:
+        model = RequestEvent
+        fields = ['method', 'datetime',]
+
 

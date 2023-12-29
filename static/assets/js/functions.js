@@ -271,7 +271,7 @@ function delete_with_ajax(url, title, content, parameters, callback) {
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content rounded-8">
           <div class="modal-body p-4 text-center">
-            <h5 class="mb-0">${title}</h5>
+            <h5 class="mb-2">${title}</h5>
             <p class="mb-0">${content}</p>
           </div>
           <div class="modal-footer flex-nowrap p-0">

@@ -1,6 +1,7 @@
 """ Audit signals """
 
 import json
+from uuid import UUID
 from datetime import date, datetime
 
 from django.db.models import ImageField
@@ -8,12 +9,14 @@ from django.db.models.fields.files import FieldFile
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.contrib.auth import get_user_model
+from apps.accounts.models import UserProfile
 
 from .middleware import TracingMiddleware
 from .models import BaseModel, Rule, Trace
 
 """ Util function """
-
+# User = get_user_model()
 
 def prepare(dict_object):
     for key in dict_object:
@@ -43,12 +46,17 @@ def get_diff(instance, created):
     postsave = prepare(model_to_dict(instance))
     diff = {key: value for key, value in postsave.items() - presave.items()}
     diff = postsave if created else diff
-    return diff
+
+    # Convertir UUID a cadenas para poderlo pasar despues como un json
+    for key, value in diff.items():
+        if isinstance(value, UUID):
+            diff[key] = str(value)
+
+    # Devolver resultado como JSON
+    return json.dumps(diff)
 
 
 """Signals for reload rules"""
-
-
 @receiver(post_save, sender=Rule)
 def save_rule(sender, **kwargs):
     TracingMiddleware.reload_rules()
@@ -61,7 +69,6 @@ def delete_rule(sender, **kwargs):
 
 """ Signal for presave instance """
 
-
 @receiver(pre_save)
 def presave_log(sender, instance, **kwargs):
     try:
@@ -73,8 +80,6 @@ def presave_log(sender, instance, **kwargs):
 
 
 """ Signal for postsave instance """
-
-
 @receiver(post_save)
 def save_log(sender, instance, created, **kwargs):
     rule = TracingMiddleware.get_rule_by_classname(sender._meta.model_name)
@@ -88,9 +93,11 @@ def save_log(sender, instance, created, **kwargs):
         name = str(instance)
     except:
         name = "%s (%s)" % (instance._meta.verbose_name.capitalize(), instance.id)
+
+
     options = {
         "name": name,
-        "message": json.dumps(diff),
+        "message": diff,
         "content_object": instance,
         "user": info.get("user"),
         "ip": info.get("ip"),
@@ -106,8 +113,6 @@ def save_log(sender, instance, created, **kwargs):
 
 
 """ Signal for post_delete instance """
-
-
 @receiver(post_delete)
 def save_delete(sender, instance, **kwargs):
     rule = TracingMiddleware.get_rule_by_classname(sender._meta.model_name)

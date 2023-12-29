@@ -21,28 +21,36 @@ class CustomLoginForm(AuthenticationForm):
                                    'autocomplete': 'off',
                                }))
 
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super().__init__(*args, **kwargs)
+
     # clean validation
     def clean(self):
-        super(CustomLoginForm, self).clean()
+        cleaned_data = super().clean()
 
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
 
         if not username:
-            self._errors['username'] = self.error_class([
-                'Por favor ingrese un nombre de usuario.'])
+            self.add_error('username', 'Por favor ingrese un nombre de usuario.')
             self.fields['username'].widget.attrs.update({'class': 'form-control is-invalid'})
 
         if not password:
-            self._errors['password'] = self.error_class([
-                'Por favor ingrese la contraseña.'])
+            self.add_error('password', 'Por favor ingrese la contraseña.')
             self.fields['password'].widget.attrs.update({'class': 'form-control is-invalid'})
 
-        if username and password:
-            user = authenticate(username=username, password=password)
+        # if not username:
+        #     self._errors['username'] = self.error_class([
+        #         'Por favor ingrese un nombre de usuario.'])
+        #     self.fields['username'].widget.attrs.update({'class': 'form-control is-invalid'})
 
-        return self.cleaned_data
+        # if not password:
+        #     self._errors['password'] = self.error_class([
+        #         'Por favor ingrese la contraseña.'])
+        #     self.fields['password'].widget.attrs.update({'class': 'form-control is-invalid'})
 
+        return cleaned_data
 
 
 class ResetPasswordForm(Form):

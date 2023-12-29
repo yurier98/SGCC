@@ -3,12 +3,14 @@ from django.urls import path
 # from apps.traces.views import TracesListView, TracesDeleteView, TracesDetailsView
 # from apps.traces.views import TracesDeleteView
 # from apps.traces.views import TracesDetailsView
-from .views import TracesListView, RuleListView
 from . import views
 
 urlpatterns = [
-    path('traces/', TracesListView.as_view(), name='traces_list'),
-    path('rules/', RuleListView.as_view(), name='rule_list'),
+    path('requestevent/', views.RequestEventListView.as_view(), name='request_list'),
+
+
+    path('traces/', views.TracesListView.as_view(), name='traces_list'),
+    path('rules/', views.RuleListView.as_view(), name='rule_list'),
 
 
     path('create_rule/', views.createregla, name='rule_create'),
@@ -18,7 +20,7 @@ urlpatterns = [
 
     path('view_traza/<int:pk>/', views.viewtraza, name='view_traza'),
 
-    path('list_traces/filter/', TracesListView.as_view(), name='traces_list_filter'),
+    path('list_traces/filter/', views.TracesListView.as_view(), name='traces_list_filter'),
 
     # path('list_rule/modify_rule', RuleCreateView.as_view(), name='rule_modify'),
     # path('delete_trace/<int:pk>/', TracesDeleteView.as_view(), name='traces_delete'),

@@ -6,11 +6,12 @@ from django.db import transaction
 from django.forms import ModelForm
 from django import forms
 from .models import Order, OrderProduct
-from ..accounts.models import UserProfile
+from apps.accounts.models import UserProfile
 from datetime import datetime
 from crum import get_current_request
 
-from ..inventory.models import Product
+from apps.inventory.models import Product
+from apps.nomenclatures.models import Manifestation
 
 
 class ReportForm(forms.Form):
@@ -29,6 +30,7 @@ class OrderForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['user'].queryset = UserProfile.objects.all().filter(id=get_current_request().user.id)
+        self.fields['manifestation'].queryset = Manifestation.objects.all().filter(is_active=True)
         self.fields['description'].widget.attrs['rows'] = 3
 
     class Meta:

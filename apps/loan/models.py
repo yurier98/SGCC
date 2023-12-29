@@ -60,7 +60,7 @@ class Loan(models.Model):
     class Meta:
         verbose_name = "Préstamo"
         verbose_name_plural = "Préstamos"
-        ordering = ["-order__created"]
+        ordering = ["-order__created_at"]
         permissions = (
             ("report_loan", "Puede reportar Préstamos"),
         )
@@ -80,7 +80,7 @@ class Loan(models.Model):
         # Calcular la fecha hace 30 días
         last_month = today - timedelta(days=30)
         # Obtener el total de préstamos de los últimos 30 días
-        last_month_loans = Loan.objects.filter(order__created__gte=last_month).count()
+        last_month_loans = Loan.objects.filter(order__created_at__gte=last_month).count()
         # Calcular el porcentaje de aumento
         if last_month_loans > 0:
             increase = (total_orders - last_month_loans) / last_month_loans * 100
@@ -102,7 +102,8 @@ class Loan(models.Model):
 
 def notify_post(sender, instance, created, **kwargs):
     user = instance.order.user
-    notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente.',
+    notificar.send(user, user=user,
+                   message='Se ha creado un préstamo a su usuario exitosamente.',
                    level='success')
 
 

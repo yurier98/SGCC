@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 # Create your views here.
 from django.template.loader import get_template
 from django.views.generic.detail import SingleObjectMixin
@@ -27,6 +27,8 @@ from .models import Order, OrderProduct, Manifestation
 from apps.inventory.models import Product
 from apps.notification.signals import notificar
 
+MODULE_NAME = 'Pedidos'
+
 
 ####################Vistas de Pedidos##################
 class OrderListAllView(ValidatePermissionRequiredMixin, ExistsInventaryMixin, FilterView, ListView):
@@ -38,6 +40,7 @@ class OrderListAllView(ValidatePermissionRequiredMixin, ExistsInventaryMixin, Fi
 
     permission_required = {'order.view_all_order'}
     url_redirect = 'order_list'
+
     # url_redirect = reverse_lazy('order_list')
 
     def get_context_data(self, **kwargs):
@@ -111,10 +114,10 @@ class OrderListView2(ExistsInventaryMixin, LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Listado de pedidos'
         context['create_url'] = reverse_lazy('create')
         context['list_url'] = reverse_lazy('loan_list')
-        context['entity'] = 'Pedidos'
         return context
 
 
@@ -182,9 +185,11 @@ class OrderCreateView(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowedM
                         detail.product.save()
 
                     user = Order.objects.get(pk=order.pk).user
-                    notificar.send(user, destiny=user,
-                                   verb='Se ha creado un pedido a su usuario exitosamente. pedido: .....',
+
+                    notificar.send(user, user=user,
+                                   message='Se ha creado un pedido a su usuario exitosamente',
                                    level='info')
+
                     messages.success(request, 'Se ha creado el pedido exitosamente.')
                     data = {'id': order.id}
             else:
@@ -254,8 +259,8 @@ class OrderCreateView2(ExistsInventaryMixin, LoginRequiredMixin, GroupNotAllowed
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Hacer pedido'
-        context['entity'] = 'Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['products'] = []
@@ -362,8 +367,8 @@ class OrderUpdateView(LoginRequiredMixin, GroupNotAllowedMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Editar pedido'
-        context['entity'] = 'Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['products'] = self.get_details_product()
@@ -390,7 +395,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
         # Obtener el objeto actual
         object = self.get_object()
         # Obtener una lista de objetos con estado 'pendiente'
-        order_list = Order.objects.filter(state=Order.State.PENDIENTE).order_by('-created')
+        order_list = Order.objects.filter(state=Order.State.PENDIENTE).order_by('-created_at')
         # Obtener el índice del objeto actual en la lista
         current_index = 0
         for i, obj in enumerate(order_list):
@@ -406,8 +411,8 @@ class OrderDetailView(LoginRequiredMixin, DetailView, SingleObjectMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Detalles del pedido'
-        context['entity'] = 'Pedidos'
         context['products'] = self.get_details_product()
 
         user = self.request.user
@@ -510,8 +515,10 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
                             detail.product.save()
                         user = UserProfile.objects.get(id=request.POST['user'])
                         if state.__eq__('No Aprobado'):
-                            notificar.send(user, destiny=user, verb='😕 Se denegado la aprobación de su pedido.',
-                                           level='info')
+                            notificar.send(user, user=user,
+                                           message='Se denegado la aprobación de su pedido 😕',
+                                           level='wrong')
+
                             messages.error(request, 'El pedido no ha sido aprobado 😕.')
                         if state.__eq__('Aprobado'):
                             lo = Loan.objects.create(user_id=int(request.POST['user']),
@@ -522,9 +529,10 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
                                                      manifestation_id=int(request.POST['manifestation']),
                                                      )
                             # LoanProduct.objects.create(loan=lo, product_id=int(i['id']), cant=int(i['cant']), )
-                            notificar.send(user, destiny=user, verb='😀 Se ha aprobado su pedido.',
+                            notificar.send(user, user=user,
+                                           message='Se ha aprobado su pedido , por favor pase a recogerlo 😀',
                                            level='success')
-                            messages.success(request, 'El pedido ha sido aprobado 😀.')
+                            messages.success(request, 'El pedido ha sido aprobado.')
 
                         data = {'id': order.id}
                     data = {'id': order.id}
@@ -538,8 +546,8 @@ class OrderUpdatePermissionView(ValidatePermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Aprobación del pedido'
-        context['entity'] = 'Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['products'] = self.get_details_product()
@@ -562,7 +570,7 @@ class OrderDeleteView(LoginRequiredMixin, DeleteView):
         order = Order.objects.get(pk=self.kwargs['pk'])
         user = order.user
         try:
-            notificar.send(user, destiny=user, verb='⚠ Se ha eliminado su pedido.',
+            notificar.send(user, user=user, message='⚠ Se ha eliminado su pedido.',
                            level='wrong')
             self.object.delete()
 
@@ -572,11 +580,20 @@ class OrderDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Eliminar un pedido'
-        context['entity'] = 'Pedido'
         context['list_url'] = self.success_url
         return context
 
+
+def order_delete(request, pk):
+    object = Order.objects.get(id=pk)
+    if request.method == 'POST':
+        object.delete()
+        messages.success(request, 'Se ha eliminado el pedido correctamente.')
+        return JsonResponse({'ok': True}, safe=False)
+    else:
+        return render(request, 'order/delete.html', {'order': object})
 
 class OrderPdfView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

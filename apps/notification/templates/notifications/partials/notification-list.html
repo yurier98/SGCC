@@ -1,0 +1,215 @@
+{% if notifications %}
+
+    {% csrf_token %}
+
+    {% for notify in notifications %}
+        {% if notify.level == 'info' %}
+
+            <div class="app-card alert alert-dismissible shadow-sm mb-4
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
+                 role="alert">
+                <div class="inner">
+                    <div class="app-card-body p-0 ">
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <i class="bi-info-circle-fill text-body fa-2x"></i>
+                            </div><!--//col-->
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+
+                                <h5 class="notification-title mb-1">{{ notify.message }}</h5>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    {% if not notify.read %}
+                                        <li class="list-inline-item">
+                                            <span class=" text-success">●</span>
+                                        </li>
+                                        <li class="list-inline-item">|</li>
+                                    {% endif %}
+                                    <li class="list-inline-item">
+                                        Hace {{ notify.created_at| timesince }}</li>
+                                </ul>
+
+
+                            </div><!--//col-->
+                        </div><!--//row-->
+
+                        <button type="button"
+                                class="btn-close badge bg-soft-secondary text-secondary rounded-pill m-2 p-2"
+                                hx-post="{% url 'delete_notification' notify.pk %}"
+                                hx-target="#notification-list">
+                        </button>
+                    </div><!--//app-card-body-->
+                </div><!--//inner-->
+            </div>
+
+        {% elif notify.level == 'success' %}
+
+            <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
+                 role="alert">
+                <div class="inner">
+                    <div class="app-card-body p-0 ">
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <i class="bi-check-circle-fill text-primary fa-2x"></i>
+                            </div><!--//col-->
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <h5 class="notification-title mb-1">{{ notify.message }}</h5>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    {% if not notify.read %}
+                                        <li class="list-inline-item">
+                                            <span class=" text-success">●</span>
+                                        </li>
+                                        <li class="list-inline-item">|</li>
+                                    {% endif %}
+                                    <li class="list-inline-item">
+                                        Hace {{ notify.created_at| timesince }}</li>
+                                </ul>
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <button type="button"
+                                class="btn-close badge bg-soft-secondary text-secondary rounded-pill m-2 p-2"
+                                hx-post="{% url 'delete_notification' notify.pk %}"
+                                hx-target="#notification-list">
+                        </button>
+                    </div><!--//app-card-body-->
+                </div><!--//inner-->
+            </div>
+
+        {% elif notify.level == 'wrong' %}
+
+            <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
+                 role="alert">
+                <div class="inner">
+                    <div class="app-card-body p-0 ">
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <i class="bi-exclamation-triangle-fill text-warning fa-2x"></i>
+                            </div><!--//col-->
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <h5 class="notification-title mb-1">{{ notify.message }}</h5>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    {% if not notify.read %}
+                                        <li class="list-inline-item">
+                                            <span class=" text-success">●</span>
+                                        </li>
+                                        <li class="list-inline-item">|</li>
+                                    {% endif %}
+                                    <li class="list-inline-item">
+                                        Hace {{ notify.created_at| timesince }}</li>
+                                </ul>
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <button type="button"
+                                class="btn-close badge bg-soft-secondary text-secondary rounded-pill m-2 p-2"
+                                hx-post="{% url 'delete_notification' notify.pk %}"
+                                hx-target="#notification-list">
+                        </button>
+                    </div><!--//app-card-body-->
+                </div><!--//inner-->
+            </div>
+
+        {% elif notify.level == 'error' %}
+
+            <div class="app-card alert alert-dismissible shadow-sm mb-4 bd-callout
+                                {% if  not notify.read %} border-left-decoration {% endif %} "
+                 role="alert">
+                <div class="inner">
+                    <div class="app-card-body p-0 ">
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <i class="bi-x-octagon-fill text-danger fa-2x"></i>
+                            </div><!--//col-->
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <h5 class="notification-title mb-1">{{ notify.message }}</h5>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    {% if not notify.read %}
+                                        <li class="list-inline-item">
+                                            <span class=" text-success">●</span>
+                                        </li>
+                                        <li class="list-inline-item">|</li>
+                                    {% endif %}
+                                    <li class="list-inline-item">
+                                        Hace {{ notify.created_at| timesince }}</li>
+                                </ul>
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <button type="button"
+                                class="btn-close badge bg-soft-secondary text-secondary rounded-pill m-2 p-2"
+                                hx-post="{% url 'delete_notification' notify.pk %}"
+                                hx-target="#notification-list">
+                        </button>
+                    </div><!--//app-card-body-->
+                </div><!--//inner-->
+            </div>
+
+        {% else %}
+
+            <div class="app-card alert alert-dismissible shadow-sm mb-4
+                                {% if  not notify.read %} border-left-decoration {% endif %}"
+                 role="alert">
+                <div class="inner">
+                    <div class="app-card-body p-0 ">
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <div class="app-icon-holder icon-holder-mono">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="bi bi-exclamation-circle"
+                                         viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                    </svg>
+                                </div>
+                                <!--//app-icon-holder-->
+                            </div>
+                            <!--//col-->
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                <div class="notification-type mb-2">
+                                    {% if notify.read %}
+                                        <span class="badge bg-secondary">Leído</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">Nuevo</span>
+                                    {% endif %}
+                                </div>
+                                <h5 class="notification-title mb-1">{{ notify.verbo }}</h5>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        Hace {{ notify.timestamp| timesince }}</li>
+                                    {# <li class="list-inline-item">|</li>#}
+                                    {# <li class="list-inline-item">Información</li>#}
+                                </ul>
+
+                            </div>
+                            <!--//col-->
+
+                        </div>
+                        <!--//row-->
+                        <button type="button"
+                                class="btn-close badge bg-soft-secondary text-secondary rounded-pill m-2 p-2"
+                                hx-post="{% url 'delete_notification' notify.pk %}"
+                                hx-target="#notification-list">
+                        </button>
+                    </div>
+                    <!--//app-card-body-->
+
+                </div>
+                <!--//inner-->
+            </div>
+
+        {% endif %}
+    {% endfor %}
+
+
+{% else %}
+    {% include 'includes/_no_data.html' %}
+{% endif %}

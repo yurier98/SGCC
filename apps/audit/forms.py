@@ -13,8 +13,8 @@ class RuleForm(forms.ModelForm):
 
         content_type = self.cleaned_data.get('content_type')
 
-        if self.instance and self.instance.content_type == content_type:
-            return content_type
+        # if self.instance and self.instance.content_type == content_type:
+        #     return content_type
 
         if Rule.objects.filter(content_type=content_type).exists():
             raise forms.ValidationError('Ya existe una regla para ese objeto.')

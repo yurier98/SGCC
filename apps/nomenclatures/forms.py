@@ -1,6 +1,8 @@
 from django.forms import ModelForm
 from django import forms
-from apps.nomenclatures.models import Manifestation, Category
+
+from apps.inventory.models import Category
+from apps.nomenclatures.models import Manifestation
 
 
 class ManifestationForm(ModelForm):

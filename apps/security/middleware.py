@@ -1,59 +1,40 @@
-""" Tracing Middleware """
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render
+from django.core.cache import cache
+from .models import BlockedIP
+from .conf import settings
 
-# Python
-import threading
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
-# Local
-from .services import TraceService
-
-
-class TracingMiddleware:
-    thread_local = threading.local()
-    rules = TraceService.load_rules()
-
+class BlockedIPMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    @classmethod
-    def set_data(cls, data):
-        cls.thread_local.data = data
-
-    @classmethod
-    def get_data(cls):
-        if hasattr(cls.thread_local, "data"):
-            return cls.thread_local.data
-
-    @classmethod
-    def get_info(cls):
-        user = cls.thread_local.user if hasattr(cls.thread_local, "user") else None
-        ip = cls.thread_local.ip if hasattr(cls.thread_local, "ip") else None
-        os = cls.thread_local.os if hasattr(cls.thread_local, "os") else None
-        return {
-            "user": user,
-            "ip": ip,
-            "os": os,
+    def __call__(self, request):
+        ip_address = request.META.get('REMOTE_ADDR')
+        context = {
+            "ip_address": ip_address,
         }
 
-    @classmethod
-    def reload_rules(cls):
-        cls.rules = TraceService.load_rules()
+        # if ip_address is not None:
+        #     try:
+        #         blocked_ip = BlockedIP.objects.get(ip_address=ip_address)
+        #         if settings.BLOCKED_IP_TEMPLATE:
+        #             return render(request, settings.BLOCKED_IP_TEMPLATE, context, status=403)
+        #
+        #         raise PermissionDenied("You have been blocked from this site.")
+        #     except BlockedIP.DoesNotExist:
+        #         pass
 
-    @classmethod
-    def get_rule_by_classname(cls, classname):
-        if classname.lower() in cls.rules:
-            return cls.rules.get(classname.lower())
+        if ip_address is not None:
+            blocked_ip = cache.get(ip_address)
+            if blocked_ip is not None:
+                if settings.BLOCKED_IP_TEMPLATE:
+                    return render(request, settings.BLOCKED_IP_TEMPLATE, context, status=403)
+                raise PermissionDenied("You have been blocked from this site.")
+            else:
+                blocked_ip = BlockedIP.objects.filter(ip_address=ip_address).first()
+                if blocked_ip is not None:
+                    cache.set(ip_address, blocked_ip)
 
-    def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called
 
-        if request.user.is_authenticated:
-            self.thread_local.user = request.user
-        self.thread_local.ip = TraceService.get_ip(request)
-        self.thread_local.os = TraceService.get_os(request)
-
-        if request.method == "POST":
-            self.thread_local.data = request.POST.dict()
         response = self.get_response(request)
         return response

@@ -20,11 +20,21 @@
         {% endif %}
 
     </a><!--//dropdown-toggle-->
-    <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
-        <div class="dropdown-menu-header p-3">
+    <div class="dropdown-menu shadow p-0" aria-labelledby="notifications-dropdown-toggle">
+        <div class="dropdown-menu-header align-content-end  p-3">
             <h5 class="dropdown-menu-title mb-0">Notificaciones</h5>
-        </div><!--//dropdown-menu-title-->
-        <div class="dropdown-menu-content">
+            <!-- notification_mark_all_as_read -->
+            <button class="small btn text-primary" style="cursor: pointer;"
+               hx-post="{% url 'notification_mark_all_as_read' %}"
+               hx-target="#notifys-list">
+                <i class="bi-check2-all dropdown-item-icon"></i>
+                Marcar como leídas</button>
+            <!-- End notification_mark_all_as_read -->
+
+        </div><!--//dropdown-menu-header-->
+
+
+        <div id="notifys-list" class="dropdown-menu-content">
             {% if notifys %}
                 {% for notify in notifys %}
                     <div class="item p-3">
@@ -32,29 +42,40 @@
                             <div class="col-auto">
                                 {% if notify.level == 'info' %}
                                     <div class="">
-                                        <i class="bi bi-info-circle me-1 text-info fa-2x" style="line-height: 0;"></i>
+                                        <i class="bi-info-circle-fill text-body fa-2x" style="line-height: 0;"></i>
                                     </div><!--//app-icon-holder-->
+
                                 {% elif notify.level == 'success' %}
                                     <div class="">
-                                        <i class="bi bi-check-circle text-primary fa-2x" style="line-height: 0;"></i>
+                                        <i class="bi-check-circle-fill text-primary fa-2x" style="line-height: 0;"></i>
                                     </div><!--//app-icon-holder-->
+
+                                {% elif notify.level == 'wrong' %}
+                                    <div class="">
+                                        <i class="bi-exclamation-triangle-fill text-warning fa-2x"
+                                           style="line-height: 0;"></i>
+                                    </div><!--//app-icon-holder-->
+
+                                {% elif notify.level == 'error' %}
+                                    <div class="">
+                                        <i class="bi-x-octagon-fill text-danger fa-2x" style="line-height: 0;"></i>
+                                    </div><!--//app-icon-holder-->
+
                                 {% else %}
                                     <div class="">
-                                        <i class="bi bi-exclamation-octagon  text-warning fa-2x"
-                                           style="line-height: 0;"></i>
+                                        N/A
                                     </div><!--//app-icon-holder-->
                                 {% endif %}
 
                             </div><!--//col-->
                             <div class="col">
                                 <div class="info">
-                                    <div class="desc">{{ notify.actor }}</div>
-                                    <div class="desc">{{ notify.verbo }}</div>
-                                    <div class="meta"> {{ notify.timestamp| timesince }}</div>
+                                    <div class="desc">{{ notify.message }}</div>
+                                    <div class="meta"> {{ notify.created_at| timesince }}</div>
                                 </div>
                             </div><!--//col-->
                         </div><!--//row-->
-                        <a class="link-mask" href="{% url 'notifications_detail' notify.pk %}"></a>
+
                     </div><!--//item-->
                 {% endfor %}
             {% else %}

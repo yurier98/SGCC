@@ -20,10 +20,9 @@
                 <hr class="dropdown-divider">
             </li>
             <li>
-                <button type="button" class="delete-btn dropdown-item text-danger"
-                        data-id="{{ object.pk }}" data-bs-toggle="modal" data-bs-target="#delete-modal">
-                    <i class="bi-trash me-2"></i>
-                    Eliminar
+                <button type="button" class="dropdown-item text-danger"
+                        onclick="deleteProduct({{ object.pk }})">
+                    <i class="bi-trash me-2"></i>Eliminar
                 </button>
             </li>
         </ul>

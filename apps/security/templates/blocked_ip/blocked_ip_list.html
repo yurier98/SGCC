@@ -1,0 +1,238 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block stylesheets %}
+    <!-- DataTables CSS -->
+    <link href="{% static 'assets/plugins/datatables/1.13.6/dataTables.bootstrap5.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/datatables/1.13.6/buttons.dataTables.min.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block javascript %}
+    <!-- DataTables javascript -->
+    <script src="{% static 'assets/plugins/datatables/1.13.6/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatables/1.13.6/dataTables.bootstrap5.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#Table').DataTable({
+                select: {
+                    style: 'multi'
+                },
+                "order": [], // Ajusta si necesitas un orden predeterminado
+                "columnDefs": [
+                    {"orderable": false, "targets": [0, -1]} // Ajusta las columnas no ordenables
+                ],
+                "language": {
+                    "url": "{% static 'assets/plugins/datatables/1.13.6/es-ES.json' %}"
+                },
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+
+                "isResponsive": false,
+                "isShowPaging": false,
+
+                "initComplete": function () {
+                    var table = $('#Table').DataTable();
+
+                }
+            });
+
+
+        });
+
+        function deleteGroup(id) {
+            var parameters = new FormData();
+            parameters.append('id', id)
+            var url = `/security/group/${id}/delete/`
+
+            delete_with_ajax(url, 'Confirmar Eliminación', '¿Estás seguro de que desea eliminar el rol? Esta acción no se puede deshacer.', parameters, function (response) {
+                if (response.ok)
+                    location.reload()
+            });
+        }
+
+    </script>
+
+    <script>
+        $('#frmGroup').submit(function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: '{% url "validate_rule_form" %}',
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        // Si la validación es exitosa, envía el formulario normalmente
+                        $('#frmGroup').off('submit').submit();
+                    } else {
+                        // Si la validación falla, muestra los mensajes de error correspondientes
+                        var errors = JSON.parse(data.errors);
+                        for (var field in errors) {
+                            // var errorMessage = errors[field][0];
+                            var errorMessage = errors[field][0]['message'];
+
+                            var $field = $('#id_' + field);
+                            $field.addClass('is-invalid');
+                            $field.after('<span class="invalid-feedback">' + errorMessage + '</span>');
+                        }
+                    }
+                },
+            });
+        });
+    </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <div class="row g-3 mb-4 align-items-center justify-content-between">
+                    <div class="col-md-4">
+                        <h1 class="app-page-title mb-0">{{ entity }}
+                            <span class="badge bg-soft-secondary text-primary rounded-pill ms-2">{{ stats.total_loans }}</span>
+                        </h1>
+                        {% include "includes/_breadcrumbs.html" %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="page-utilities ">
+
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div><!--//row-->
+
+
+                <div class="app-card app-card-basic align-items-start shadow-sm">
+
+                    <div class="app-card-header p-3 border-bottom-0">
+                        <div class="row  justify-content-between align-items-center gx-3">
+                            <div class="col-auto">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto">
+                                        <div class="app-icon-holder">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                      d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"></path>
+                                                <path fill-rule="evenodd"
+                                                      d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <h4 class="app-card-title">{{ title }}</h4>
+                                    </div><!--//col-->
+                                </div>
+
+                            </div><!--//col-->
+                            <div class="col-auto">
+                                <div class="col-auto">
+                                    <a class="btn app-btn-primary" href="#" data-bs-toggle="modal"
+                                       data-bs-target="#createGroupModel">
+                                        <i class="fas fa-plus"></i>
+                                        Crear</a>
+                                </div>
+                            </div><!--//col-->
+                        </div><!--//row-->
+                        <hr>
+                    </div><!--//app-card-header-->
+
+                    <div class="app-card-body app-card-orders-table px-3">
+                        {% if object_list %}
+                            <div class="table-responsive datatable">
+                                <table id="Table" class="table app-table-hover mb-0 text-left">
+
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th class="cell" style="width: 1%;"><input type="checkbox" id="marcarTodos">
+                                        </th>
+                                        <th class="cell">IP</th>
+                                        <th class="cell">FECHA AÑADIDO</th>
+                                        <th class="cell">FECHA DE DESBLOQUEO</th>
+                                        <th class="cell" style="width: 6%;">ACCIONES</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for object in object_list %}
+                                        <tr>
+                                            <td class="cell">
+                                                <input type="checkbox" name="checkbox[]" value="{{ object.id }}">
+                                            </td>
+                                            <td class="cell">
+                                                <span class="truncate"><strong>{{ object.ip_address }}</strong></span>
+                                            </td>
+                                            <td class="cell">
+                                                <span class="truncate"><strong>{{ object.date_added }}</strong></span>
+                                            </td>
+                                            <td class="cell">
+                                                <span class="truncate"><strong>{{ object.date_unblocked }}</strong></span>
+                                            </td>
+
+                                            <td class="cell">
+                                                <button class="btn btn-sm text-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#editRuleModel"
+                                                        onclick="SearchAndFillModal('{{ object.id }}','{{ object.name }}', '{{ object.permissions }}')"
+                                                ><i class="fas fa-edit"></i>
+                                                </button>
+                                                <a role="button" onclick="deleteGroup({{ object.id }})"
+                                                   class="btn btn-sm text-danger"><i class="fas fa-trash-alt"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div><!--//table-responsive-->
+                        {% else %}
+                            {% include 'includes/_no_data.html' %}
+                        {% endif %}
+
+                    </div><!--//app-card-body-->
+
+                    <div class="app-card-footer p-4 mt-auto">
+                        <div class="row justify-content-between align-items-center ">
+                            <div class="col-auto">
+
+                                <!-- Pagination -->
+                                <div class="d-flex justify-content-center justify-content-sm-end">
+                                    <nav id="datatableWithPaginationPagination"
+                                         aria-label="Activity pagination"></nav>
+                                </div>
+                                <!-- End Pagination -->
+
+
+                            </div><!--//col-->
+                            <div class="col-auto">
+                                {#                                {% include 'includes/app_pagination.html' %}#}
+                            </div><!--//col-->
+                        </div>
+                    </div><!--//app-card-footer-->
+
+                </div>
+
+
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+
+
+    </div><!--//app-wrapper-->
+{% endblock %}
+
+
+{% block modal %}
+
+    <!-- Modal de crear group -->
+
+
+
+{% endblock %}
+
+
+
+

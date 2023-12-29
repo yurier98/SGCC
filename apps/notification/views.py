@@ -6,22 +6,28 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect, redirect
 from django.utils import timezone
 from django.views import View
-from django.views.generic import TemplateView, ListView, FormView, DetailView
+from django.views.generic import TemplateView, ListView, FormView, DetailView, CreateView
+from django.contrib.messages.views import SuccessMessageMixin
 from swapper import load_model
+from django.contrib import messages
+from django.core.mail import send_mail
+from apps.loan.models import Loan
+from django.contrib.auth import get_user_model
+# from apps.accounts.models import UserProfile
 
-from .forms import EmailForm, NotificationFilterForm
+from .signals import notificar
+from .forms import EmailForm
 from .mixins import EmailMixin
+from .models import SystemNotification, EmailNotification
 
-# from .models import Notification
-
-
-Notification = load_model('notification', 'Notification')
+User = get_user_model()
 
 
 class Index(EmailMixin, TemplateView):
@@ -53,14 +59,10 @@ class Index(EmailMixin, TemplateView):
 ####################Vistas de Notification##################
 class NotificationListView(ListView):
     """ Return las notifications del usuario logeado"""
-    model = Notification
+    model = SystemNotification
     paginate_by = 10
     template_name = 'notifications/notifications.html'
-
-    # template_name = 'notifications/notify.html'
-    # context_object_name = 'notify'
-
-    # permission_required = 'view_loan'
+    context_object_name = 'notifications'
 
     # def post(self, request, *args, **kwargs):
     #     data = {}
@@ -96,8 +98,7 @@ class NotificationListView(ListView):
     #                 queryset = queryset.
     #
     #                 hacer consulta para este mes
-    #
-    #
+
     #                 hacer consulta para esta semana
     #
     #
@@ -116,69 +117,32 @@ class NotificationListView(ListView):
     #         print(e)
     #     return JsonResponse(data, safe=False)
 
-    @method_decorator(login_required)
-    def dispatch(self, requets, *args, **kwargs):
-        return super(NotificationListView, self).dispatch(requets, *args, **kwargs)
+    def get(self, request):
+        queryset = self.get_queryset()
+        time_period = request.GET.get('time_period')
 
-    # def get_queryset(self):
-    #     ''' aqui tengo q devolver las notificaciones asociadas al usauario autenticado'''
-    #     return self.request.user.notifications.all()
+        if time_period == 'last_week':
+            filtered_queryset = queryset.filter(created_at__gte=timezone.now() - timezone.timedelta(days=2))
+        elif time_period == 'last_month':
+            filtered_queryset = queryset.filter(created_at__gte=timezone.now() - timezone.timedelta(days=30))
+        elif time_period == 'last_3_months':
+            filtered_queryset = queryset.filter(created_at__gte=timezone.now() - timezone.timedelta(days=90))
+        else:
+            filtered_queryset = queryset
+
+        self.object_list = filtered_queryset
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
 
     def get_queryset(self):
-        queryset = Notification.objects.filter(destiny=get_current_request().user)
-        return queryset
+        queryset = SystemNotification.objects.filter(user__username=get_current_request().user, is_delete=False)
+        # queryset.update(read=True)  # cambiar esta propiedad para q solo cumpla por la paginacion
+        return queryset.order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Notificaciones'
-        context['create_url'] = reverse_lazy('create')
-        context['list_url'] = reverse_lazy('loan_list')
         context['entity'] = 'Notificaciones'
-        return context
-
-
-class NotificationListViewFilter(FormView):
-    """ Return all the Notifications"""
-    form_class = NotificationFilterForm
-    template_name = 'notifications/notifications.html'
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'search':
-                data = []
-                start_date = request.POST['start_date']
-                end_date = request.POST['end_date']
-                queryset = Notification.objects.all()
-                if len(start_date) and len(end_date):
-                    queryset = queryset.filter(created__range=[start_date, end_date])
-                for i in queryset:
-                    data.append(i.toJSON())
-            elif action == 'delete':
-                data = []
-                for i in Notification.objects.filter(id=request.POST['id']):
-                    data.append(i.toJSON())
-                    # Toamar el objeto y cambiarle el estado a eliminado
-
-
-            elif action == 'search_products_detail':
-                data = []
-                for i in Notification.objects.filter(loan_id=request.POST['id']):
-                    data.append(i.toJSON())
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-            print(e)
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Notificaciones'
-        context['create_url'] = reverse_lazy('loan_create')
-        context['list_url'] = reverse_lazy('loan_list')
-        context['entity'] = 'Notificaciones'
+        context['title'] = ' Listado de notificaciones'
         return context
 
 
@@ -235,45 +199,111 @@ class NotificationListViewFilter(FormView):
 #         results = request.user.notifications.filter(unread=True)
 #         results.update(unread=False)
 #         return Response({'status': status.HTTP_200_OK})
-class NotificationDetailView(LoginRequiredMixin, DetailView):
-    model = Notification
-    template_name = 'notifications/notification_detail.html'
-    success_url = reverse_lazy('notifications_list')
-    url_redirect = success_url
 
+
+class SendEmailView(View):
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        notify = Notification.objects.get(pk=self.kwargs['pk'])
-        try:
-            notify.read = True
-            notify.save()
-        except:
-            pass
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
+        form = EmailForm()
+        loan = Loan.objects.get(pk=self.kwargs['pk'])
+        user = loan.order.user.pk
+        if user:
+            email = User.objects.get(id=user).email
+        context = {
+            'form': form,
+            'email_value': email,
+            'title': 'Enviar correo electrónico',
+            'entity': 'Préstamos'
+        }
+        return render(request, 'notifications/notify_by_email.html', context)
 
-    # def post(self, request, *args, **kwargs):
-    #     form = DetailForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         # Write Your Logic here
-    #
-    #         self.object = self.get_object()
-    #         context = super(Detail, self).get_context_data(**kwargs)
-    #         context['form'] = DetailForm
-    #         return self.render_to_response(context=context)
-    #
-    #     else:
-    #         self.object = self.get_object()
-    #         context = super(NotificationDetailView, self).get_context_data(**kwargs)
-    #         context['form'] = form
-    #         return self.render_to_response(context=context)
+    def post(self, request, **kwargs):
+        print('Entrando al post')
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            print('form valido')
+            subject = form.cleaned_data['subject']
+            body = form.cleaned_data['body']
+            email_to = [form.cleaned_data['email_to']]
+            from_email = 'ztazhorde@gmail.com'
+            print('antes del try')
+            try:
+                print('dentor del try enviando correo')
+                response = send_mail(subject, body, from_email, email_to)
+                print('respuesta', response)
+                messages.success(request, 'Correo electrónico enviado con éxito.')
+                loan = Loan.objects.get(pk=self.kwargs['pk'])
+                user = User.objects.get(id=loan.order.user.pk)
+                notificar.send(sender=self.__class__, user=user,
+                               message='Se le ha enviado un correo electrónico con información sobre un préstamo',
+                               level='info')
+            except Exception as e:
+                messages.error(request, f"Error al enviar el correo: {e}")
 
+        return redirect('loan_list')
+
+
+class SendEmailView2(SuccessMessageMixin, CreateView):
+    model = EmailNotification
+    form_class = EmailForm
+    template_name = 'notifications/notify_by_email.html'
+    success_message = 'Correo electrónico enviado con éxito.'
+    success_url = reverse_lazy('loan_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Detalles de la notificación'
-        context['entity'] = 'Notificaciones'
+        context['entity'] = 'Préstamos'
+        context['title'] = 'Enviar correo electrónico'
         context['list_url'] = self.success_url
-        # context['action'] = 'edit'
-        # context['products'] = self.get_details_product()
         return context
+
+
+class SendEmailViewTest(View):
+    def get(self, request, **kwargs):
+        form = EmailForm()
+        loan = Loan.objects.get(pk=self.kwargs['pk'])
+        user = loan.order.user.pk
+        if user:
+            email = User.objects.get(id=user).email
+        context = {
+            'form': form,
+            'email_value': email,
+            'title': 'Enviar correo electrónico',
+            'entity': 'Préstamos'
+        }
+        return render(request, 'loan/notify_by_email.html', context)
+
+    def post(self, request, **kwargs):
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['body']
+            to_email = [form.cleaned_data['email_to']]
+            from_email = 'ztazhorde@gmail.com'
+
+            try:
+                send_mail(subject, message, from_email, to_email)
+                messages.success(request, "Correo enviado con éxito.")
+            except Exception as e:
+                messages.error(request, f"Error al enviar el correo: {e}")
+
+        return redirect('loan_list')
+
+
+@require_http_methods(['POST'])
+def delete_notification(request, pk):
+    # remove the film from the user's list
+    my_object = SystemNotification.objects.get(pk=pk)
+    my_object.is_delete = True
+    my_object.save()
+
+    notifications = SystemNotification.objects.filter(user__username=get_current_request().user,
+                                                      is_delete=False).order_by('-created_at')
+
+    return render(request, 'notifications/partials/notification-list.html', {'notifications': notifications})
+
+@require_http_methods(['POST'])
+def mark_all_as_read(request, pk=None):
+    results = request.user.notifications.filter(read=False)
+    results.update(read=True)
+    # return Response({'status': status.HTTP_200_OK})
+    return render(request, 'notifications/partials/notification-list.html')

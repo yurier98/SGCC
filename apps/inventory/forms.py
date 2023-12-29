@@ -10,11 +10,11 @@ class ProductoForm(ModelForm):
         model = Product
         # fields = ['name', 'category', 'img', 'state', 'active', 'stock', 'available']
         # fields = '__all__'
-        exclude = ['created', 'updated']
+        exclude = ['created_at', 'updated']
         widgets = {
             'category': forms.Select(attrs={
                 'class': 'custom-select select2',
-                # 'style': 'width: 100%'
+                'style': 'width: 100%'
             }),
             'state': forms.Select(attrs={
                 'class': 'custom-select select2',

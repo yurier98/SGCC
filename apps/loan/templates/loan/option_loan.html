@@ -21,7 +21,7 @@
     <!-- End Datatable Info -->
 
 
-    <!-- Dropdown -->
+    <!-- FilterDropdown -->
     <div class="dropdown">
         <button type="button" class="btn app-btn-secondary w-100" id="FilterDropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -76,7 +76,7 @@
     </div>
     <!-- End Dropdown -->
 
-    <!-- Dropdown -->
+    <!-- TableExportDropdown -->
     <div class="dropdown">
         <button type="button" class="btn app-btn-secondary dropdown-toggle w-100"
                 id="TableExportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -85,11 +85,11 @@
 
         <div class="dropdown-menu dropdown-menu-sm-end" aria-labelledby="TableExportDropdown">
             <span class="dropdown-header">Options</span>
-            <a id="export-copy" class="dropdown-item" href="#">
+            <button id="export-copy" class="dropdown-item" >
                 <img class="avatar avatar-4x3 me-2"
                      src="{% static 'assets/images/options/copy-icon.svg' %}" alt="Image Description">
                 Copy
-            </a>
+            </button>
             <a id="export-print" class="dropdown-item" href="#">
                 <img class="avatar avatar-xss avatar-4x3 me-2"
                      src="{% static 'assets/images/options/print-icon.svg' %}" alt="Image Description">
@@ -97,11 +97,11 @@
             </a>
             <div class="dropdown-divider"></div>
             <span class="dropdown-header">Download options</span>
-            <a id="export-excel" class="dropdown-item" href="#">
+            <button id="export-excel" class="dropdown-item">
                 <img class="avatar avatar-xss avatar-4x3 me-2"
                      src="{% static 'assets/images/options/excel-icon.svg' %}" alt="Image Description">
                 Excel
-            </a>
+            </button>
             <a id="export-csv" class="dropdown-item" href="#">
                 <img class="avatar avatar-xss avatar-4x3 me-2"
                      src="{% static 'assets/images/options/placeholder-csv-format.svg' %}"

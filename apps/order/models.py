@@ -1,39 +1,54 @@
-import uuid
+from uuid import uuid4
 from datetime import datetime, timedelta
-from django.db import models
+from django.db import models, connection
 from django.forms import model_to_dict
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 # Create your models here.
 from apps.accounts.models import UserProfile
 from apps.inventory.models import Product
 from apps.nomenclatures.models import Manifestation
 
+User = get_user_model()
+last_order_number = 0
+
+
+def get_order_number():
+    global last_order_number
+    if 'sqlite' in connection.vendor:
+        last_order_number += 1
+        return last_order_number
+    elif 'postgresql' in connection.vendor:
+        # Utiliza la secuencia de PostgreSQL
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT nextval('order_order_number_seq')")
+            result = cursor.fetchone()
+            return result[0]
+    else:
+        # Otros sistemas de base de datos no son compatibles
+        raise NotImplementedError("Este sistema de base de datos no es compatible con la función get_order_number()")
+
 
 class Order(models.Model):
     """Pedido model. """
-
-    # STATE = (
-    #     ('P', 'Pendiente'),
-    #     ('A', 'Aprobado'),
-    #     ('R', 'Rechazado'),
-    # )
 
     class State(models.TextChoices):
         PENDIENTE = 'P', 'Pendiente'
         APROBADO = 'A', 'Aprobado'
         RECHAZADO = 'R', 'Rechazado'
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, editable=False, unique=True, default=uuid4)
+    # number = models.IntegerField(unique=True, default=get_order_number, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateField("Fecha de inicio")
     end_date = models.DateField("Fecha de devolución")
     description = models.TextField("Descripción", help_text='Describa para que va a ser utilizado el medio prestado',
                                    null=True, blank=True)
     manifestation = models.ForeignKey(Manifestation, on_delete=models.CASCADE)
     state = models.CharField("Estado", max_length=1, choices=State.choices, default=State.PENDIENTE)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False, db_index=True)
     is_delete = models.BooleanField(default=False)
 
     def __str__(self):
@@ -43,7 +58,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Pedido"
         verbose_name_plural = "Pedidos"
-        ordering = ["-created"]
+        ordering = ["-created_at"]
         permissions = (
             ("approve_order", "Aprobar Pedido"),
             ("view_all_order", "Ver todos los pedidos"),
@@ -58,7 +73,7 @@ class Order(models.Model):
         # item['id'] = self.id
         item['start_date'] = self.start_date.strftime('%Y-%m-%d')
         item['end_date'] = self.end_date.strftime('%Y-%m-%d')
-        item['created'] = self.created.strftime('%Y-%m-%d')
+        item['created'] = self.created_at.strftime('%Y-%m-%d')
         item['user'] = self.user.toJSON()
         item['manifestation'] = self.manifestation.toJSON()
         item['orderproduct'] = [i.toJSON() for i in self.products.all()]
@@ -77,7 +92,7 @@ class Order(models.Model):
         # Calcular la fecha hace 30 días
         last_month = today - timedelta(days=30)
         # Obtener el total de pedidos de los últimos 30 días
-        last_month_orders = Order.objects.filter(created__gte=last_month).count()
+        last_month_orders = Order.objects.filter(created_at__gte=last_month).count()
         # Obtener el total de pedidos
         total_orders = Order.objects.all().count()
         # Calcular el porcentaje de aumento

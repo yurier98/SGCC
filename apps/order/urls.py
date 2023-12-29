@@ -18,7 +18,8 @@ urlpatterns = [
 
     path('all/update/<uuid:pk>/', views.OrderUpdatePermissionView.as_view(), name='order_update_permission'),
 
-    path('delete/<uuid:pk>/', views.OrderDeleteView.as_view(), name='order_delete'),
+    # path('delete/<uuid:pk>/', views.OrderDeleteView.as_view(), name='order_delete'),
+    path('delete/<uuid:pk>/', views.order_delete, name='order_delete'),
 
 
 

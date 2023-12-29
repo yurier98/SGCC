@@ -5,7 +5,7 @@ from django.db.models import ImageField
 from django.forms import model_to_dict
 from django.urls import reverse
 from config.settings import base
-from apps.nomenclatures.models import Category
+from apps.nomenclatures.models import AbstractBaseNomenclature
 from apps.utils import optimize_image
 
 
@@ -26,13 +26,33 @@ class ProductAttribute(models.Model):
         return self.atributo
 
 
+class Category(AbstractBaseNomenclature):
+    name = models.CharField("Categoría del producto", max_length=50, unique=True)
+
+    # slug = models.SlugField(max_length=200, default='null', db_index=True, unique=True)
+
+    class Meta:
+        # ordering = 'name'
+        verbose_name = 'Categoría de producto'
+        verbose_name_plural = 'Categorías de los productos'
+
+    def __str__(self):
+        return self.name
+
+    # def get_absolute_url(self):
+    #     return reverse('shop:product_list_by_category', args=[self.slug])
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+
 class Product(models.Model):
     ESTADO = (
         ('D', 'Disponible'),
         ('P', 'Prestado'),
     )
     # id_producto = models.AutoField(primary_key=True)
-    category = models.ForeignKey(Category, verbose_name=("Categoria del producto"), on_delete=models.PROTECT)
+
     name = models.CharField("Nombre del producto", max_length=100)
     img = ImageField(verbose_name='Imagen del producto', upload_to='products/%Y/%m/%d', null=True, blank=True,
                      default='no_picture.jpg',
@@ -44,25 +64,32 @@ class Product(models.Model):
                                  help_text="Si no está marcado, le permitirá ocultar el producto sin eliminarlo.")
     available = models.BooleanField("Está disponible", default=True,
                                     help_text="Marcar si el producto está disponible en el sistema.")
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+
+    category = models.ForeignKey(Category, related_name="products", on_delete=models.SET_NULL, null=True, blank=True, )
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     def get_absolute_url(self):
         return reverse('inventory:detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return f'{self.name} ({self.category.name})'
+        return f'{self.name}'
 
     @property
     def recently_created(self) -> bool:
-        return (timezone.now() - self.created) <= timezone.timedelta(days=5)
+        return (timezone.now() - self.created_at) <= timezone.timedelta(days=5)
 
     def toJSON(self):
         item = model_to_dict(self)
         item['full_name'] = self.__str__()
-        item['category'] = self.category.toJSON()
+        category = self.category
+        if category:
+            item['category'] = category.toJSON()
+        else:
+            item['category'] = 'N/A'
         item['img'] = self.get_image()
-        item['created'] = self.created.strftime('%Y-%m-%d')
+        item['created'] = self.created_at.strftime('%Y-%m-%d')
         return item
 
     def get_image(self):
@@ -80,7 +107,7 @@ class Product(models.Model):
             optimize_image(self.img.path)
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["-created_at"]
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
 

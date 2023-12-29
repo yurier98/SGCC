@@ -20,6 +20,16 @@
                     Descargar pdf</span>
             </a>
 
+            <a class="dropdown-item" href="{% url 'notify_by_email' object.pk %}" target="_blank">
+                <span><i class="bi-envelope-plus-fill me-2 fa-2xl text-primary"></i> Enviar correo</span>
+            </a>
+
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendEmailModel"
+                    onclick="OpenModalEmail('{{ object.order.user.email }}')">
+                <span><i class="bi-envelope-plus-fill me-2 fa-2xl text-primary"></i> Enviar correo</span>
+            </button>
+
+
             {#            {% if object.state == 'Pendiente' %}#}
             {#                <div class="dropdown-divider"></div>#}
             {#                <span class="dropdown-header">Opciones</span>#}

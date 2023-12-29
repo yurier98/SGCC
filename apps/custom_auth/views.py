@@ -18,32 +18,64 @@ from config.settings import base as settings
 from .forms import CustomLoginForm, ResetPasswordForm, ChangePasswordForm
 
 
-# Create your views here.
-
 class LoginFormView(LoginView):
     template_name = 'login/login.html'
-    form_class = CustomLoginForm
+    # form_class = CustomLoginForm
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(settings.LOGIN_REDIRECT_URL)
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(self.request, user)
-            return redirect(settings.LOGIN_REDIRECT_URL)
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password, request=request)
+            if user is not None:
+                login(request, user)
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
         else:
-            form.add_error(None, 'Por favor verifique sus credenciales.')
             return self.form_invalid(form)
+
+    # def form_valid(self, form):
+    #     form.request = self.request
+    #     username = form.cleaned_data.get('username')
+    #     password = form.cleaned_data.get('password')
+    #     user = authenticate(
+    #         username=username,
+    #         password=password)
+    #     if user is not None:
+    #         login(self.request, user)
+    #         return redirect(settings.LOGIN_REDIRECT_URL)
+    #     else:
+    #         form.add_error(None, 'Por favor verifique sus credenciales.')
+    #         return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Iniciar sesión'
         return context
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = CustomLoginForm(request=request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request=request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirige a la página de inicio después del inicio de sesión exitoso
+    else:
+        form = CustomLoginForm(request=request)
+
+    return render(request, 'login/login.html', {'form': form})
+
 
 
 

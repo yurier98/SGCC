@@ -60,20 +60,20 @@ class Trace(models.Model):
         EDIT = 'edit', 'Editar'
         DELETE = 'delete', 'Eliminar'
 
-    id = models.BigAutoField(primary_key=True)
+    # id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=128, verbose_name="nombre")
     action = models.CharField(max_length=6, choices=ActionChoices.choices, verbose_name="acción")
     message = models.TextField(verbose_name="detalle")
     ip = models.CharField(max_length=32, null=True, verbose_name="dirección IP")
-    os = models.CharField(max_length=32, null=True, verbose_name="sistema operativo")
+    os = models.CharField(max_length=100, null=True, verbose_name="sistema operativo")
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name="contenido")
     object_id = models.PositiveIntegerField(verbose_name="id del objecto")
     content_object = GenericForeignKey("content_type", "object_id")
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="usuario")
+    user = models.ForeignKey(User, verbose_name="usuario", on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True, verbose_name="fecha")
 
     def __str__(self):
-        return self.name
+        return f"{self.date} - {self.user} - {self.content_type}"
 
     class Meta:
         verbose_name = "Rastro"

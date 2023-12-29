@@ -24,7 +24,8 @@ from apps.accounts.models import UserProfile
 from apps.order.models import Order, OrderProduct
 from apps.inventory.models import Product
 from apps.notification.signals import notificar
-
+from apps.notification.forms import EmailForm
+from django.urls import reverse
 
 @login_required(login_url="/login/")
 def index(request):
@@ -35,12 +36,13 @@ def index(request):
 
 ####################Vistas de Prestamos##################
 
-class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
+class LoanListView(ValidatePermissionRequiredMixin, FormView, FilterView, ListView):
     model = Loan
     filterset_class = LoanFilter
     # paginate_by = 10
     template_name = 'loan/loan_list.html'
     permission_required = 'loan.view_loan'
+    form_class = EmailForm
 
     # def get_queryset(self):
     #     queryset = super().get_queryset()
@@ -62,21 +64,25 @@ class LoanListView(ValidatePermissionRequiredMixin, FilterView, ListView):
         context['list_url'] = reverse_lazy('loan_list')
         context['filter'] = LoanFilter(self.request.GET, queryset=self.get_queryset())
         context['stats'] = self.model.stats()
+        # context['EmailForm'] = EmailForm()
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     data = {}
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         action = form.cleaned_data['action']
-    #         if action == 'search':
-    #             loans = self.get_queryset()
-    #             data = [loan.toJSON() for loan in loans]
-    #         else:
-    #             data['error'] = 'Ha ocurrido un error'
-    #     else:
-    #         data['error'] = form.errors
-    #     return JsonResponse(data, safe=False)
+    def post(self, request, *args, **kwargs):
+        data = {}
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            # action = form.cleaned_data['action']
+            # if action == 'search':
+            #     loans = self.get_queryset()
+            #     data = [loan.toJSON() for loan in loans]
+            # else:
+            #     messages.error(request, 'Ha ocurrido un error')
+        else:
+            print(form.errors)
+            data['error'] = 'Ha ocurrido un error'
+            messages.error(request, 'Formulario inválido.')
+        return JsonResponse(data, safe=False)
 
 
 class LoanListView2(ExistsInventaryMixin, ValidatePermissionRequiredMixin, FormView):
@@ -204,8 +210,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
                         #     product.state = 'P'
                         # product.save()
 
-
-                    if loan.state == 'Prestado':
+                    if loan.state == Loan.State.PRESTADO:
                         products_order_loan = loan.order.products.all()
                         for i in products_order_loan:
 
@@ -221,13 +226,15 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
 
                     loan.save()
 
-
                     # user = UserProfile.objects.get(id=request.POST['user'])
                     user = Order.objects.get(pk=order.pk).user
-                    notificar.send(user, destiny=user, verb='Se ha creado un préstamo a su usuario exitosamente, '
-                                                            'para recogerlo contacte con nosotros.',
+                    notificar.send(user, user=user,
+                                   message='Se ha creado un préstamo a su usuario exitosamente, para recogerlo contacte con nosotros.',
                                    level='info')
                     messages.success(request, '¡Préstamo guardado con éxito!')
+                    my_url = reverse('loan_list')
+
+                    messages.success(request, f'Se ha creado el préstamo {loan}. <a href="{my_url}">Ver</a>')
 
                     data = {'id': order.id}
                     # detail = OrderProduct()
@@ -241,7 +248,7 @@ class LoanCreateView(ExistsInventaryMixin, ValidatePermissionRequiredMixin, Crea
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
-            print(e)
+            print(str(e))
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
