@@ -30,6 +30,12 @@ class UserProfile(AbstractUser):
             return f'{base.MEDIA_URL}{self.image}'
         return f'{base.MEDIA_URL}user.jpg'
 
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        else:
+            return None
+
     def save(self, *args, **kwargs):
         # Llama al método save() del modelo para guardar la imagen original
         super(UserProfile, self).save(*args, **kwargs)

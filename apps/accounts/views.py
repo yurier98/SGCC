@@ -2,24 +2,26 @@ from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve, reverse
+from django.shortcuts import redirect
+from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View, FormView, RedirectView, DetailView
-
+from django_filters.views import FilterView
 from apps.security.Mixin.mixins import ValidatePermissionRequiredMixin
-from .forms import UserForm, UserProfileForm
-
 from .models import UserProfile
-
+from .filters import UserFilter
+from .forms import UserForm, UserProfileForm
 
 # Create your views here.
 
-#   Vistas de los Autenticacion del sistema ######
+MODULE_NAME = 'Cuentas'
 
 #   Vistas de los Usuarios que solo tiene acceso el admin ######
-class UserListView(ValidatePermissionRequiredMixin, ListView):
+class UserListView(ValidatePermissionRequiredMixin, FilterView, ListView):
     model = UserProfile
-    template_name = 'user/list.html'
+    template_name = 'user/user_list.html'
     permission_required = 'view_userprofile'
+    filterset_class = UserFilter
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -37,10 +39,11 @@ class UserListView(ValidatePermissionRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Listado de Usuarios'
         context['create_url'] = reverse_lazy('user_create')
         context['list_url'] = reverse_lazy('user_list')
-        context['entity'] = 'Usuarios'
+
         return context
 
 
@@ -67,8 +70,9 @@ class UserCreateView(ValidatePermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['entity'] = MODULE_NAME
         context['title'] = 'Crear Usuario'
-        context['entity'] = 'Usuarios'
+
         context['list_url'] = self.success_url
         context['action'] = 'add'
         return context
@@ -227,3 +231,25 @@ class UserChangePasswordView(LoginRequiredMixin, FormView):
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         return context
+
+
+class UserDeactivateView(ValidatePermissionRequiredMixin, View):
+    permission_required = 'approve_order'
+
+    def get(self, request, *args, **kwargs):
+        current_url = resolve(request.path_info).url_name
+        user = UserProfile.objects.get(pk=self.kwargs['pk'])
+        prev_url = request.META.get('HTTP_REFERER', reverse('user_list'))
+        try:
+            if request.user.has_perm('order.approve_order'):
+                if current_url.__eq__('user_desactivate'):
+                    user.is_active = False
+                    user.save()
+                    messages.warning(request, 'El usuario ha sido desactivado.')
+                elif current_url.__eq__('user_activate'):
+                    user.is_active = True
+                    user.save()
+                    messages.warning(request, 'El usuario ha sido activado.')
+        except:
+            pass
+        return redirect(prev_url)
